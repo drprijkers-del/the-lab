@@ -4,18 +4,18 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header with subtle admin link */}
-      <header className="p-6 flex justify-between items-center">
+      <header className="p-6 flex justify-between items-center relative z-10">
         <div className="flex items-center gap-2">
           <span className="text-xl">🐔</span>
           <span className="text-sm font-medium text-stone-400">Pink Pollos</span>
         </div>
-        <Link href="/admin/login" className="link-subtle">
-          Admin
+        <Link href="/admin/login" className="link-subtle hover:underline">
+          Admin →
         </Link>
       </header>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col items-center justify-center p-6 -mt-16">
+      <main className="flex-1 flex flex-col items-center justify-center p-6">
         <div className="text-center max-w-xl">
           {/* Tool badge */}
           <div className="inline-block tool-badge mb-6">
