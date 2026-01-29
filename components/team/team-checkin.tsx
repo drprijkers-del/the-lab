@@ -159,11 +159,18 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
           </h2>
 
           {/* Signal selector - cyan/teal like blue meth */}
-          <div className="flex justify-center gap-3 md:gap-4 mb-4">
+          <div
+            className="flex justify-center gap-3 md:gap-4 mb-4"
+            role="radiogroup"
+            aria-label="Select your mood level from 1 to 5"
+          >
             {SIGNAL_SCALE.map((signal) => (
               <button
                 key={signal.value}
                 onClick={() => setSelectedSignal(signal.value)}
+                role="radio"
+                aria-checked={selectedSignal === signal.value}
+                aria-label={`Mood level ${signal.value}, ${signal.label} purity`}
                 className={`
                   relative w-14 h-14 md:w-16 md:h-16
                   rounded-xl
@@ -200,6 +207,7 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
               placeholder={t('checkinName')}
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
+              aria-label="Your nickname (optional)"
               className="w-full px-4 py-3 rounded-xl bg-white border border-stone-200 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all"
             />
 
@@ -209,6 +217,7 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 rows={2}
+                aria-label="Add a comment (optional)"
                 className="w-full px-4 py-3 rounded-xl bg-white border border-stone-200 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all resize-none"
               />
               {/* Coaching tip for low scores */}
@@ -223,7 +232,7 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
 
           {/* Error message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm text-center">
+            <div role="alert" className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm text-center">
               {error}
             </div>
           )}
@@ -232,6 +241,8 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
           <button
             onClick={handleSubmit}
             disabled={!selectedSignal || loading}
+            aria-label={loading ? 'Submitting your check-in' : 'Submit your mood check-in'}
+            aria-busy={loading}
             className={`
               w-full py-4 px-6 rounded-xl font-medium text-lg
               transition-all duration-200

@@ -70,7 +70,8 @@ export function SuperAdminDashboard({ users: initialUsers }: Props) {
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-sm text-stone-400 hover:text-white transition-colors"
+            className="px-4 py-3 min-h-11 text-sm text-stone-400 hover:text-white hover:bg-stone-800 rounded-lg transition-colors"
+            aria-label="Log out of super admin"
           >
             Logout
           </button>
@@ -123,7 +124,8 @@ export function SuperAdminDashboard({ users: initialUsers }: Props) {
                 <button
                   onClick={() => handleDelete(user.id, user.email)}
                   disabled={deleting === user.id}
-                  className="px-4 py-2 text-sm bg-red-900/50 hover:bg-red-900 text-red-300 rounded-lg transition-colors disabled:opacity-50"
+                  className="px-4 py-3 min-h-11 text-sm bg-red-900/50 hover:bg-red-900 text-red-300 rounded-lg transition-colors disabled:opacity-50"
+                  aria-label={`Delete user ${user.email}`}
                 >
                   {deleting === user.id ? 'Deleting...' : 'Delete'}
                 </button>

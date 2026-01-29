@@ -95,7 +95,7 @@ export function LoginForm() {
           </p>
           <button
             onClick={() => setEmailSent(false)}
-            className="text-sm text-cyan-600 hover:text-cyan-700"
+            className="text-sm text-cyan-600 hover:text-cyan-700 py-2 px-4 min-h-11 rounded-lg hover:bg-cyan-50 transition-colors"
           >
             {t('loginOtherEmail')}
           </button>
@@ -165,7 +165,7 @@ export function LoginForm() {
           <button
             type="button"
             onClick={() => setUsePassword(!usePassword)}
-            className="text-xs text-cyan-600 hover:text-cyan-700"
+            className="text-sm text-cyan-600 hover:text-cyan-700 py-2 px-4 min-h-11 rounded-lg hover:bg-cyan-50 transition-colors"
           >
             {usePassword ? 'Use magic link instead' : 'Have a password? Sign in with password'}
           </button>

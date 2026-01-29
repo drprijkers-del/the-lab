@@ -13,7 +13,7 @@ export function TeamCard({ team }: TeamCardProps) {
   const t = useTranslation()
 
   return (
-    <Link href={`/admin/teams/${team.id}`}>
+    <Link href={`/admin/teams/${team.id}`} aria-label={`View team ${team.name}`}>
       <Card className="card-hover cursor-pointer">
         <CardContent className="py-4">
           <div className="flex items-center gap-3 sm:gap-4">
@@ -38,7 +38,7 @@ export function TeamCard({ team }: TeamCardProps) {
             </div>
 
             {/* Arrow */}
-            <svg className="w-5 h-5 text-stone-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-stone-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </div>
