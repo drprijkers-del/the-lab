@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useTranslation } from '@/lib/i18n/context'
 import { Button } from '@/components/ui/button'
@@ -10,11 +10,14 @@ import { Card, CardContent } from '@/components/ui/card'
 
 export function LoginForm() {
   const t = useTranslation()
+  const router = useRouter()
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [emailSent, setEmailSent] = useState(false)
+  const [usePassword, setUsePassword] = useState(false)
 
   const unauthorized = searchParams.get('error') === 'unauthorized'
 
@@ -35,11 +38,45 @@ export function LoginForm() {
     setLoading(false)
 
     if (signInError) {
-      setError(signInError.message)
+      // Check if rate limited
+      if (signInError.message.includes('rate') || signInError.message.includes('limit')) {
+        setError('Email rate limit exceeded. Use password login instead.')
+        setUsePassword(true)
+      } else {
+        setError(signInError.message)
+      }
       return
     }
 
     setEmailSent(true)
+  }
+
+  async function handlePasswordLogin(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/auth/login-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error || 'Login failed')
+        setLoading(false)
+        return
+      }
+
+      router.push(data.redirect || '/admin/teams')
+      router.refresh()
+    } catch {
+      setError('An error occurred')
+      setLoading(false)
+    }
   }
 
   // Success state - email sent
@@ -90,7 +127,7 @@ export function LoginForm() {
           </div>
         )}
 
-        <form onSubmit={handleMagicLink} className="space-y-4">
+        <form onSubmit={usePassword ? handlePasswordLogin : handleMagicLink} className="space-y-4">
           <Input
             id="email"
             type="email"
@@ -102,19 +139,37 @@ export function LoginForm() {
             autoFocus
           />
 
+          {usePassword && (
+            <Input
+              id="password"
+              type="password"
+              label="Password"
+              placeholder="Enter password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          )}
+
           <Button
             type="submit"
             className="w-full"
             size="lg"
             loading={loading}
           >
-            {loading ? t('loginLoading') : t('loginButton')}
+            {loading ? t('loginLoading') : (usePassword ? 'Sign in' : t('loginButton'))}
           </Button>
         </form>
 
-        <p className="text-xs text-gray-400 text-center mt-4">
-          {t('loginNoPassword')}
-        </p>
+        <div className="text-center mt-4">
+          <button
+            type="button"
+            onClick={() => setUsePassword(!usePassword)}
+            className="text-xs text-cyan-600 hover:text-cyan-700"
+          >
+            {usePassword ? 'Use magic link instead' : 'Have a password? Sign in with password'}
+          </button>
+        </div>
       </CardContent>
     </Card>
   )

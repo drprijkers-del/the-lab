@@ -28,6 +28,21 @@ export async function middleware(request: NextRequest) {
 
   // Handle admin routes - require authentication
   if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
+    // First check for password session cookie
+    const passwordSession = request.cookies.get('admin_password_session')?.value
+    if (passwordSession) {
+      try {
+        const session = JSON.parse(passwordSession)
+        if (session.exp > Date.now()) {
+          // Valid password session, allow through
+          return NextResponse.next()
+        }
+      } catch {
+        // Invalid session, continue to check Supabase session
+      }
+    }
+
+    // Check Supabase session
     const { user, supabaseResponse } = await updateSession(request)
 
     if (!user) {
