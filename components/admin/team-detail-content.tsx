@@ -7,6 +7,7 @@ import { AdminHeader } from '@/components/admin/header'
 import { TeamActions } from '@/components/admin/team-actions'
 import { ShareLinkSection } from '@/components/admin/share-link-section'
 import { TeamStats } from '@/components/admin/team-stats'
+import { TeamSettings } from '@/components/admin/team-settings'
 import { PulseMetrics } from '@/components/admin/pulse-metrics'
 import { useTranslation, useLanguage } from '@/lib/i18n/context'
 
@@ -73,6 +74,9 @@ export function TeamDetailContent({ team, metrics, insights }: TeamDetailContent
 
             {/* Basic stats */}
             <TeamStats team={team} />
+
+            {/* Team settings */}
+            <TeamSettings team={team} />
           </div>
         </div>
       </main>

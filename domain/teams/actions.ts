@@ -12,12 +12,14 @@ export interface Team {
   slug: string
   description: string | null
   owner_id: string | null
+  expected_team_size: number | null // Optional: for accurate participation %
   created_at: string
   updated_at: string
 }
 
 export interface TeamWithStats extends Team {
-  participantCount: number
+  participantCount: number        // People who have checked in at least once
+  effectiveTeamSize: number       // expected_team_size or participantCount
   todayEntries: number
   activeLink?: {
     id: string
@@ -80,9 +82,12 @@ export async function getTeams(): Promise<TeamWithStats[]> {
         .eq('is_active', true)
         .single()
 
+      const actualParticipants = participantCount || 0
+
       return {
         ...team,
-        participantCount: participantCount || 0,
+        participantCount: actualParticipants,
+        effectiveTeamSize: team.expected_team_size || actualParticipants,
         todayEntries: todayEntries || 0,
         activeLink: activeLink || undefined,
       }
@@ -127,9 +132,12 @@ export async function getTeam(id: string): Promise<TeamWithStats | null> {
     .eq('is_active', true)
     .single()
 
+  const actualParticipants = participantCount || 0
+
   return {
     ...team,
-    participantCount: participantCount || 0,
+    participantCount: actualParticipants,
+    effectiveTeamSize: team.expected_team_size || actualParticipants,
     todayEntries: todayEntries || 0,
     activeLink: activeLink || undefined,
   }
@@ -141,9 +149,16 @@ export async function createTeam(formData: FormData): Promise<{ success: boolean
 
   const name = formData.get('name') as string
   const description = formData.get('description') as string | null
+  const expectedTeamSizeRaw = formData.get('expected_team_size') as string | null
+  const expectedTeamSize = expectedTeamSizeRaw ? parseInt(expectedTeamSizeRaw, 10) : null
 
   if (!name || name.trim().length < 2) {
     return { success: false, error: 'Team name is required (min 2 characters)' }
+  }
+
+  // Validate expected_team_size if provided
+  if (expectedTeamSize !== null && (isNaN(expectedTeamSize) || expectedTeamSize < 1 || expectedTeamSize > 100)) {
+    return { success: false, error: 'Team size must be between 1 and 100' }
   }
 
   const slug = generateSlug(name)
@@ -167,6 +182,7 @@ export async function createTeam(formData: FormData): Promise<{ success: boolean
       slug,
       description: description?.trim() || null,
       owner_id: adminUser.id,
+      expected_team_size: expectedTeamSize,
     })
     .select()
     .single()
@@ -202,9 +218,16 @@ export async function updateTeam(
 
   const name = formData.get('name') as string
   const description = formData.get('description') as string | null
+  const expectedTeamSizeRaw = formData.get('expected_team_size') as string | null
+  const expectedTeamSize = expectedTeamSizeRaw ? parseInt(expectedTeamSizeRaw, 10) : null
 
   if (!name || name.trim().length < 2) {
     return { success: false, error: 'Team name is required (min 2 characters)' }
+  }
+
+  // Validate expected_team_size if provided
+  if (expectedTeamSize !== null && (isNaN(expectedTeamSize) || expectedTeamSize < 1 || expectedTeamSize > 100)) {
+    return { success: false, error: 'Team size must be between 1 and 100' }
   }
 
   const { error } = await supabase
@@ -212,6 +235,7 @@ export async function updateTeam(
     .update({
       name: name.trim(),
       description: description?.trim() || null,
+      expected_team_size: expectedTeamSize,
       updated_at: new Date().toISOString(),
     })
     .eq('id', id)

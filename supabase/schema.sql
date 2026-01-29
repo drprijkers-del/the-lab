@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS teams (
   slug TEXT UNIQUE NOT NULL,
   description TEXT,
   owner_id UUID REFERENCES admin_users(id) ON DELETE CASCADE,
+  expected_team_size SMALLINT DEFAULT NULL, -- Optional: expected number of team members for participation %
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -489,6 +490,14 @@ BEGIN
     WHERE table_name = 'teams' AND column_name = 'owner_id'
   ) THEN
     ALTER TABLE teams ADD COLUMN owner_id UUID REFERENCES admin_users(id) ON DELETE CASCADE;
+  END IF;
+
+  -- Add expected_team_size column to teams
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'teams' AND column_name = 'expected_team_size'
+  ) THEN
+    ALTER TABLE teams ADD COLUMN expected_team_size SMALLINT DEFAULT NULL;
   END IF;
 END $$;
 

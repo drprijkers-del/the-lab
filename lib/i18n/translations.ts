@@ -110,6 +110,9 @@ export const translations = {
     newTeamNamePlaceholder: 'bijv. Sprint Team Alpha',
     newTeamDescription: 'Beschrijving (optioneel)',
     newTeamDescriptionPlaceholder: 'Korte beschrijving',
+    newTeamSize: 'Team grootte (optioneel)',
+    newTeamSizePlaceholder: 'bijv. 8',
+    newTeamSizeHelp: 'Voor nauwkeurige deelname %',
     newTeamCreate: 'Experiment starten',
     newTeamCreating: 'Opstarten...',
 
@@ -149,6 +152,8 @@ export const translations = {
     teamDeleteTitle: 'Experiment stoppen',
     teamDeleteMessage: 'Weet je zeker dat je dit experiment wilt stoppen? Dit kan niet ongedaan worden.',
     teamDeleteButton: 'Stoppen',
+    teamSettings: 'Instellingen',
+    teamSettingsSaved: 'Opgeslagen',
 
     // Stats
     statsParticipants: 'Lab medewerkers',
@@ -267,6 +272,9 @@ export const translations = {
     newTeamNamePlaceholder: 'e.g. Sprint Team Alpha',
     newTeamDescription: 'Description (optional)',
     newTeamDescriptionPlaceholder: 'Short description',
+    newTeamSize: 'Team size (optional)',
+    newTeamSizePlaceholder: 'e.g. 8',
+    newTeamSizeHelp: 'For accurate participation %',
     newTeamCreate: 'Start experiment',
     newTeamCreating: 'Starting...',
 
@@ -306,6 +314,8 @@ export const translations = {
     teamDeleteTitle: 'Stop experiment',
     teamDeleteMessage: 'Are you sure you want to stop this experiment? This cannot be undone.',
     teamDeleteButton: 'Stop',
+    teamSettings: 'Settings',
+    teamSettingsSaved: 'Saved',
 
     // Stats
     statsParticipants: 'Lab members',

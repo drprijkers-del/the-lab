@@ -83,6 +83,16 @@ export default function NewTeamPage() {
                 />
               </div>
 
+              <Input
+                id="expected_team_size"
+                name="expected_team_size"
+                type="number"
+                label={t('newTeamSize')}
+                placeholder={t('newTeamSizePlaceholder')}
+                min={1}
+                max={100}
+              />
+
               <div className="flex gap-3 pt-4">
                 <Link href="/admin/teams" className="flex-1">
                   <Button type="button" variant="secondary" className="w-full">
