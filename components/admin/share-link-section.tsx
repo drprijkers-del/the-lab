@@ -60,31 +60,47 @@ export function ShareLinkSection({ teamId, teamSlug }: ShareLinkSectionProps) {
         {loading ? (
           <div className="h-12 bg-gray-100 rounded-xl animate-pulse" />
         ) : (
-          <div className="flex gap-2">
-            <div className="flex-1 px-4 py-3 bg-gray-50 rounded-xl text-sm text-gray-600 font-mono truncate">
+          <div className="space-y-3">
+            {/* Link display - word wrap on mobile */}
+            <div className="px-4 py-3 bg-gray-50 rounded-xl text-sm text-gray-600 font-mono break-all">
               {shareUrl || 'Geen actieve link'}
             </div>
-            <Button
-              variant="secondary"
-              onClick={handleCopy}
-              disabled={!shareUrl}
-            >
-              {copied ? (
-                <>
-                  <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Gekopieerd
-                </>
-              ) : (
-                <>
-                  <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                  Kopieer
-                </>
-              )}
-            </Button>
+
+            {/* Action buttons - stack on mobile */}
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button
+                onClick={() => shareUrl && window.open(shareUrl, '_blank')}
+                disabled={!shareUrl}
+                className="flex-1"
+              >
+                <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+                Open Mood Meter
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={handleCopy}
+                disabled={!shareUrl}
+                className="flex-1"
+              >
+                {copied ? (
+                  <>
+                    <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Gekopieerd!
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Kopieer link
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         )}
 

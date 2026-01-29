@@ -16,13 +16,13 @@ export default async function TeamsPage() {
 
       <main className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Teams</h1>
             <p className="text-gray-500">Beheer je team mood check-ins</p>
           </div>
           <Link href="/admin/teams/new">
-            <Button>
+            <Button className="w-full sm:w-auto">
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>

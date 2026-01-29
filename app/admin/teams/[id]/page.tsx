@@ -38,21 +38,23 @@ export default async function TeamDetailPage({ params }: TeamDetailPageProps) {
         </Link>
 
         {/* Team header */}
-        <div className="flex items-start justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">{team.name}</h1>
-            {team.description && (
-              <p className="text-gray-500 mt-1">{team.description}</p>
-            )}
-            <p className="text-sm text-gray-400 mt-2">
-              Aangemaakt op {new Date(team.created_at).toLocaleDateString('nl-NL', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-              })}
-            </p>
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">{team.name}</h1>
+              {team.description && (
+                <p className="text-gray-500 mt-1">{team.description}</p>
+              )}
+              <p className="text-sm text-gray-400 mt-2">
+                Aangemaakt op {new Date(team.created_at).toLocaleDateString('nl-NL', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                })}
+              </p>
+            </div>
+            <TeamActions team={team} />
           </div>
-          <TeamActions team={team} />
         </div>
 
         <div className="grid gap-6">
