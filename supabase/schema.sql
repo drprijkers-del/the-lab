@@ -37,6 +37,20 @@ CREATE TABLE IF NOT EXISTS teams (
 -- Index for team ownership queries
 CREATE INDEX IF NOT EXISTS idx_teams_owner_id ON teams(owner_id);
 
+-- Team tools (which tools are enabled for each team)
+CREATE TABLE IF NOT EXISTS team_tools (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
+  tool TEXT NOT NULL CHECK (tool IN ('pulse', 'delta')),
+  enabled_at TIMESTAMPTZ DEFAULT NOW(),
+  config JSONB DEFAULT '{}',
+  UNIQUE(team_id, tool)
+);
+
+-- Indexes for team_tools
+CREATE INDEX IF NOT EXISTS idx_team_tools_team_id ON team_tools(team_id);
+CREATE INDEX IF NOT EXISTS idx_team_tools_tool ON team_tools(tool);
+
 -- Invite links (token_hash stored, never raw token)
 CREATE TABLE IF NOT EXISTS invite_links (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -618,3 +632,81 @@ CREATE TRIGGER release_notes_updated_at
   BEFORE UPDATE ON release_notes
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at();
+
+-- ============================================
+-- TEAM TOOLS (Unified Teams)
+-- ============================================
+
+-- Enable RLS on team_tools
+ALTER TABLE team_tools ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policies for team_tools
+CREATE POLICY "Admins can view their team_tools"
+  ON team_tools FOR SELECT
+  TO authenticated
+  USING (
+    is_super_admin()
+    OR EXISTS (
+      SELECT 1 FROM teams
+      WHERE teams.id = team_tools.team_id
+      AND teams.owner_id = get_admin_user_id()
+    )
+  );
+
+CREATE POLICY "Admins can manage their team_tools"
+  ON team_tools FOR ALL
+  TO authenticated
+  USING (
+    is_super_admin()
+    OR EXISTS (
+      SELECT 1 FROM teams
+      WHERE teams.id = team_tools.team_id
+      AND teams.owner_id = get_admin_user_id()
+    )
+  )
+  WITH CHECK (
+    is_super_admin()
+    OR EXISTS (
+      SELECT 1 FROM teams
+      WHERE teams.id = team_tools.team_id
+      AND teams.owner_id = get_admin_user_id()
+    )
+  );
+
+CREATE POLICY "Public can read team_tools"
+  ON team_tools FOR SELECT
+  TO anon
+  USING (TRUE);
+
+-- ============================================
+-- MIGRATION: Enable tools for existing teams
+-- ============================================
+
+-- Enable pulse for teams that have mood_entries
+INSERT INTO team_tools (team_id, tool)
+SELECT DISTINCT t.id, 'pulse'
+FROM teams t
+WHERE EXISTS (SELECT 1 FROM mood_entries me WHERE me.team_id = t.id)
+ON CONFLICT (team_id, tool) DO NOTHING;
+
+-- Enable delta for teams that have delta_sessions
+INSERT INTO team_tools (team_id, tool)
+SELECT DISTINCT t.id, 'delta'
+FROM teams t
+WHERE EXISTS (SELECT 1 FROM delta_sessions ds WHERE ds.team_id = t.id)
+ON CONFLICT (team_id, tool) DO NOTHING;
+
+-- Enable both tools for teams with no data yet (or new teams)
+-- First pulse
+INSERT INTO team_tools (team_id, tool)
+SELECT t.id, 'pulse'
+FROM teams t
+WHERE NOT EXISTS (SELECT 1 FROM team_tools tt WHERE tt.team_id = t.id AND tt.tool = 'pulse')
+ON CONFLICT (team_id, tool) DO NOTHING;
+
+-- Then delta
+INSERT INTO team_tools (team_id, tool)
+SELECT t.id, 'delta'
+FROM teams t
+WHERE NOT EXISTS (SELECT 1 FROM team_tools tt WHERE tt.team_id = t.id AND tt.tool = 'delta')
+ON CONFLICT (team_id, tool) DO NOTHING;

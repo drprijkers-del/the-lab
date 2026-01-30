@@ -12,6 +12,7 @@ export function AdminHeader() {
   const router = useRouter()
   const pathname = usePathname()
 
+  const isTeams = pathname?.startsWith('/teams')
   const isPulse = pathname?.startsWith('/pulse')
   const isDelta = pathname?.startsWith('/delta')
 
@@ -35,6 +36,16 @@ export function AdminHeader() {
 
             {/* Tool navigation */}
             <div className="hidden sm:flex items-center gap-1">
+              <Link
+                href="/teams"
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  isTeams
+                    ? 'bg-cyan-50 text-cyan-700'
+                    : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100'
+                }`}
+              >
+                Teams
+              </Link>
               <Link
                 href="/pulse/admin/teams"
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
@@ -73,30 +84,40 @@ export function AdminHeader() {
         </div>
 
         {/* Mobile navigation */}
-        <div className="sm:hidden flex items-center gap-1 pb-3 -mt-1">
+        <div className="sm:hidden flex items-center gap-1 pb-3 -mt-1 overflow-x-auto">
+          <Link
+            href="/teams"
+            className={`flex-1 text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+              isTeams
+                ? 'bg-cyan-50 text-cyan-700'
+                : 'text-stone-500 hover:bg-stone-100'
+            }`}
+          >
+            Teams
+          </Link>
           <Link
             href="/pulse/admin/teams"
-            className={`flex-1 text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex-1 text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
               isPulse
                 ? 'bg-cyan-50 text-cyan-700'
                 : 'text-stone-500 hover:bg-stone-100'
             }`}
           >
-            💗 Pulse
+            Pulse
           </Link>
           <Link
             href="/delta/teams"
-            className={`flex-1 text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex-1 text-center px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
               isDelta
                 ? 'bg-cyan-50 text-cyan-700'
                 : 'text-stone-500 hover:bg-stone-100'
             }`}
           >
-            Δ Delta
+            Delta
           </Link>
           <Link
             href="/backlog"
-            className="flex-1 text-center px-3 py-2 rounded-lg text-sm font-medium text-stone-500 hover:bg-stone-100 transition-colors"
+            className="flex-1 text-center px-3 py-2 rounded-lg text-sm font-medium text-stone-500 hover:bg-stone-100 transition-colors whitespace-nowrap"
           >
             Backlog
           </Link>

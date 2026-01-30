@@ -27,6 +27,41 @@ export interface TeamWithStats extends Team {
   }
 }
 
+export interface TeamTool {
+  tool: 'pulse' | 'delta'
+  enabled_at: string
+  config: Record<string, unknown>
+}
+
+export interface UnifiedTeam extends Team {
+  // Tools enabled
+  tools_enabled: ('pulse' | 'delta')[]
+
+  // Pulse stats (null if not enabled)
+  pulse: {
+    enabled: boolean
+    participant_count: number
+    today_entries: number
+    average_score: number | null
+    trend: 'up' | 'down' | 'stable' | null
+    share_link: string | null
+  } | null
+
+  // Delta stats (null if not enabled)
+  delta: {
+    enabled: boolean
+    total_sessions: number
+    active_sessions: number
+    closed_sessions: number
+    average_score: number | null
+    last_session_date: string | null
+  } | null
+
+  // Computed
+  last_updated: string
+  needs_attention: boolean
+}
+
 // Helper to verify team ownership
 async function verifyTeamOwnership(teamId: string, adminUser: AdminUser): Promise<boolean> {
   // Super admin can access all teams
@@ -42,15 +77,14 @@ async function verifyTeamOwnership(teamId: string, adminUser: AdminUser): Promis
   return data?.owner_id === adminUser.id
 }
 
-export async function getTeams(appType: 'pulse' | 'delta' = 'pulse'): Promise<TeamWithStats[]> {
+export async function getTeams(appType?: 'pulse' | 'delta'): Promise<TeamWithStats[]> {
   const adminUser = await requireAdmin()
   const supabase = await createClient()
 
-  // Build query - filter by app_type and owner unless super admin
+  // Build query - filter by owner unless super admin
   let query = supabase
     .from('teams')
     .select('*')
-    .eq('app_type', appType)
     .order('created_at', { ascending: false })
 
   // If not super_admin, filter by owner_id
@@ -62,9 +96,21 @@ export async function getTeams(appType: 'pulse' | 'delta' = 'pulse'): Promise<Te
 
   if (error) throw error
 
+  // If appType filter is provided, filter by enabled tools
+  let filteredTeams = teams || []
+  if (appType) {
+    const { data: toolTeams } = await supabase
+      .from('team_tools')
+      .select('team_id')
+      .eq('tool', appType)
+
+    const toolTeamIds = new Set(toolTeams?.map(t => t.team_id) || [])
+    filteredTeams = filteredTeams.filter(team => toolTeamIds.has(team.id))
+  }
+
   // Get stats for each team
   const teamsWithStats: TeamWithStats[] = await Promise.all(
-    (teams || []).map(async (team) => {
+    filteredTeams.map(async (team) => {
       const { count: participantCount } = await supabase
         .from('participants')
         .select('*', { count: 'exact', head: true })
@@ -98,6 +144,153 @@ export async function getTeams(appType: 'pulse' | 'delta' = 'pulse'): Promise<Te
   return teamsWithStats
 }
 
+// Get all teams with unified stats for both tools
+export async function getTeamsUnified(filter?: 'all' | 'pulse' | 'delta' | 'needs_attention'): Promise<UnifiedTeam[]> {
+  const adminUser = await requireAdmin()
+  const supabase = await createClient()
+
+  // Build query - filter by owner unless super admin
+  let query = supabase
+    .from('teams')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (adminUser.role !== 'super_admin') {
+    query = query.eq('owner_id', adminUser.id)
+  }
+
+  const { data: teams, error } = await query
+  if (error) throw error
+
+  // Get all team tools in one query
+  const teamIds = (teams || []).map(t => t.id)
+  const { data: allTools } = await supabase
+    .from('team_tools')
+    .select('*')
+    .in('team_id', teamIds)
+
+  const toolsByTeam = new Map<string, TeamTool[]>()
+  allTools?.forEach(tool => {
+    const existing = toolsByTeam.get(tool.team_id) || []
+    existing.push({ tool: tool.tool, enabled_at: tool.enabled_at, config: tool.config || {} })
+    toolsByTeam.set(tool.team_id, existing)
+  })
+
+  // Build unified teams
+  const unifiedTeams: UnifiedTeam[] = await Promise.all(
+    (teams || []).map(async (team) => {
+      const teamTools = toolsByTeam.get(team.id) || []
+      const tools_enabled = teamTools.map(t => t.tool) as ('pulse' | 'delta')[]
+      const hasPulse = tools_enabled.includes('pulse')
+      const hasDelta = tools_enabled.includes('delta')
+
+      // Pulse stats
+      let pulseStats = null
+      if (hasPulse) {
+        const { count: participantCount } = await supabase
+          .from('participants')
+          .select('*', { count: 'exact', head: true })
+          .eq('team_id', team.id)
+
+        const { count: todayEntries } = await supabase
+          .from('mood_entries')
+          .select('*', { count: 'exact', head: true })
+          .eq('team_id', team.id)
+          .eq('entry_date', new Date().toISOString().split('T')[0])
+
+        // Get 7-day average
+        const sevenDaysAgo = new Date()
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+        const { data: recentMoods } = await supabase
+          .from('mood_entries')
+          .select('mood')
+          .eq('team_id', team.id)
+          .gte('entry_date', sevenDaysAgo.toISOString().split('T')[0])
+
+        const avgScore = recentMoods && recentMoods.length > 0
+          ? recentMoods.reduce((sum, m) => sum + m.mood, 0) / recentMoods.length
+          : null
+
+        // Get active link
+        const { data: activeLink } = await supabase
+          .from('invite_links')
+          .select('id')
+          .eq('team_id', team.id)
+          .eq('is_active', true)
+          .single()
+
+        pulseStats = {
+          enabled: true,
+          participant_count: participantCount || 0,
+          today_entries: todayEntries || 0,
+          average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
+          trend: null as 'up' | 'down' | 'stable' | null, // TODO: compute trend
+          share_link: activeLink ? team.slug : null,
+        }
+      }
+
+      // Delta stats
+      let deltaStats = null
+      if (hasDelta) {
+        const { data: sessions } = await supabase
+          .from('delta_sessions')
+          .select('id, status, overall_score, created_at')
+          .eq('team_id', team.id)
+
+        const activeSessions = sessions?.filter(s => s.status === 'active').length || 0
+        const closedSessions = sessions?.filter(s => s.status === 'closed') || []
+        const avgScore = closedSessions.length > 0
+          ? closedSessions.reduce((sum, s) => sum + (s.overall_score || 0), 0) / closedSessions.length
+          : null
+
+        const lastSession = sessions?.sort((a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        )[0]
+
+        deltaStats = {
+          enabled: true,
+          total_sessions: sessions?.length || 0,
+          active_sessions: activeSessions,
+          closed_sessions: closedSessions.length,
+          average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
+          last_session_date: lastSession?.created_at || null,
+        }
+      }
+
+      // Compute needs_attention
+      const needsAttention =
+        (pulseStats && pulseStats.average_score !== null && pulseStats.average_score < 2.5) ||
+        (deltaStats && deltaStats.average_score !== null && deltaStats.average_score < 2.5) ||
+        false
+
+      // Compute last_updated
+      const lastUpdated = deltaStats?.last_session_date || team.updated_at
+
+      return {
+        ...team,
+        tools_enabled,
+        pulse: pulseStats,
+        delta: deltaStats,
+        last_updated: lastUpdated,
+        needs_attention: needsAttention,
+      }
+    })
+  )
+
+  // Apply filter
+  if (filter === 'pulse') {
+    return unifiedTeams.filter(t => t.tools_enabled.includes('pulse'))
+  }
+  if (filter === 'delta') {
+    return unifiedTeams.filter(t => t.tools_enabled.includes('delta'))
+  }
+  if (filter === 'needs_attention') {
+    return unifiedTeams.filter(t => t.needs_attention)
+  }
+
+  return unifiedTeams
+}
+
 export async function getTeam(id: string): Promise<TeamWithStats | null> {
   const adminUser = await requireAdmin()
   const supabase = await createClient()
@@ -106,7 +299,6 @@ export async function getTeam(id: string): Promise<TeamWithStats | null> {
     .from('teams')
     .select('*')
     .eq('id', id)
-    .eq('app_type', 'pulse')
     .single()
 
   if (error || !team) return null
@@ -143,6 +335,183 @@ export async function getTeam(id: string): Promise<TeamWithStats | null> {
     todayEntries: todayEntries || 0,
     activeLink: activeLink || undefined,
   }
+}
+
+// Get a single unified team with full stats
+export async function getTeamUnified(id: string): Promise<UnifiedTeam | null> {
+  const adminUser = await requireAdmin()
+  const supabase = await createClient()
+
+  const { data: team, error } = await supabase
+    .from('teams')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error || !team) return null
+
+  // Verify ownership
+  if (!(await verifyTeamOwnership(id, adminUser))) {
+    return null
+  }
+
+  // Get team tools
+  const { data: tools } = await supabase
+    .from('team_tools')
+    .select('*')
+    .eq('team_id', id)
+
+  const tools_enabled = (tools || []).map(t => t.tool) as ('pulse' | 'delta')[]
+  const hasPulse = tools_enabled.includes('pulse')
+  const hasDelta = tools_enabled.includes('delta')
+
+  // Pulse stats
+  let pulseStats = null
+  if (hasPulse) {
+    const { count: participantCount } = await supabase
+      .from('participants')
+      .select('*', { count: 'exact', head: true })
+      .eq('team_id', team.id)
+
+    const { count: todayEntries } = await supabase
+      .from('mood_entries')
+      .select('*', { count: 'exact', head: true })
+      .eq('team_id', team.id)
+      .eq('entry_date', new Date().toISOString().split('T')[0])
+
+    // Get 7-day average
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+    const { data: recentMoods } = await supabase
+      .from('mood_entries')
+      .select('mood')
+      .eq('team_id', team.id)
+      .gte('entry_date', sevenDaysAgo.toISOString().split('T')[0])
+
+    const avgScore = recentMoods && recentMoods.length > 0
+      ? recentMoods.reduce((sum, m) => sum + m.mood, 0) / recentMoods.length
+      : null
+
+    const { data: activeLink } = await supabase
+      .from('invite_links')
+      .select('id')
+      .eq('team_id', team.id)
+      .eq('is_active', true)
+      .single()
+
+    pulseStats = {
+      enabled: true,
+      participant_count: participantCount || 0,
+      today_entries: todayEntries || 0,
+      average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
+      trend: null as 'up' | 'down' | 'stable' | null,
+      share_link: activeLink ? team.slug : null,
+    }
+  }
+
+  // Delta stats
+  let deltaStats = null
+  if (hasDelta) {
+    const { data: sessions } = await supabase
+      .from('delta_sessions')
+      .select('id, status, overall_score, created_at')
+      .eq('team_id', team.id)
+
+    const activeSessions = sessions?.filter(s => s.status === 'active').length || 0
+    const closedSessions = sessions?.filter(s => s.status === 'closed') || []
+    const avgScore = closedSessions.length > 0
+      ? closedSessions.reduce((sum, s) => sum + (s.overall_score || 0), 0) / closedSessions.length
+      : null
+
+    const lastSession = sessions?.sort((a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    )[0]
+
+    deltaStats = {
+      enabled: true,
+      total_sessions: sessions?.length || 0,
+      active_sessions: activeSessions,
+      closed_sessions: closedSessions.length,
+      average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
+      last_session_date: lastSession?.created_at || null,
+    }
+  }
+
+  const needsAttention =
+    (pulseStats && pulseStats.average_score !== null && pulseStats.average_score < 2.5) ||
+    (deltaStats && deltaStats.average_score !== null && deltaStats.average_score < 2.5) ||
+    false
+
+  const lastUpdated = deltaStats?.last_session_date || team.updated_at
+
+  return {
+    ...team,
+    tools_enabled,
+    pulse: pulseStats,
+    delta: deltaStats,
+    last_updated: lastUpdated,
+    needs_attention: needsAttention,
+  }
+}
+
+// Get tools enabled for a team
+export async function getTeamTools(teamId: string): Promise<('pulse' | 'delta')[]> {
+  const supabase = await createClient()
+
+  const { data } = await supabase
+    .from('team_tools')
+    .select('tool')
+    .eq('team_id', teamId)
+
+  return (data || []).map(t => t.tool as 'pulse' | 'delta')
+}
+
+// Enable a tool for a team
+export async function enableTool(teamId: string, tool: 'pulse' | 'delta'): Promise<{ success: boolean; error?: string }> {
+  const adminUser = await requireAdmin()
+  const supabase = await createClient()
+
+  if (!(await verifyTeamOwnership(teamId, adminUser))) {
+    return { success: false, error: 'Access denied' }
+  }
+
+  const { error } = await supabase
+    .from('team_tools')
+    .upsert({ team_id: teamId, tool }, { onConflict: 'team_id,tool' })
+
+  if (error) {
+    return { success: false, error: error.message }
+  }
+
+  revalidatePath('/teams')
+  revalidatePath(`/teams/${teamId}`)
+
+  return { success: true }
+}
+
+// Disable a tool for a team
+export async function disableTool(teamId: string, tool: 'pulse' | 'delta'): Promise<{ success: boolean; error?: string }> {
+  const adminUser = await requireAdmin()
+  const supabase = await createClient()
+
+  if (!(await verifyTeamOwnership(teamId, adminUser))) {
+    return { success: false, error: 'Access denied' }
+  }
+
+  const { error } = await supabase
+    .from('team_tools')
+    .delete()
+    .eq('team_id', teamId)
+    .eq('tool', tool)
+
+  if (error) {
+    return { success: false, error: error.message }
+  }
+
+  revalidatePath('/teams')
+  revalidatePath(`/teams/${teamId}`)
+
+  return { success: true }
 }
 
 export async function createTeam(formData: FormData): Promise<{ success: boolean; teamId?: string; error?: string }> {
@@ -193,7 +562,15 @@ export async function createTeam(formData: FormData): Promise<{ success: boolean
     return { success: false, error: error.message }
   }
 
-  // Create initial invite link
+  // Enable both tools by default
+  await supabase
+    .from('team_tools')
+    .insert([
+      { team_id: team.id, tool: 'pulse' },
+      { team_id: team.id, tool: 'delta' },
+    ])
+
+  // Create initial invite link for Pulse
   const token = generateToken()
   const tokenHash = hashToken(token)
 
@@ -201,7 +578,9 @@ export async function createTeam(formData: FormData): Promise<{ success: boolean
     .from('invite_links')
     .insert({ team_id: team.id, token_hash: tokenHash })
 
+  revalidatePath('/teams')
   revalidatePath('/pulse/admin/teams')
+  revalidatePath('/delta/teams')
 
   return { success: true, teamId: team.id }
 }
@@ -246,8 +625,12 @@ export async function updateTeam(
     return { success: false, error: error.message }
   }
 
+  revalidatePath('/teams')
+  revalidatePath(`/teams/${id}`)
   revalidatePath('/pulse/admin/teams')
   revalidatePath(`/pulse/admin/teams/${id}`)
+  revalidatePath('/delta/teams')
+  revalidatePath(`/delta/teams/${id}`)
 
   return { success: true }
 }
@@ -270,7 +653,9 @@ export async function deleteTeam(id: string): Promise<{ success: boolean; error?
     return { success: false, error: error.message }
   }
 
+  revalidatePath('/teams')
   revalidatePath('/pulse/admin/teams')
+  revalidatePath('/delta/teams')
 
   return { success: true }
 }
@@ -304,6 +689,8 @@ export async function resetTeam(id: string): Promise<{ success: boolean; error?:
     return { success: false, error: participantError.message }
   }
 
+  revalidatePath('/teams')
+  revalidatePath(`/teams/${id}`)
   revalidatePath('/pulse/admin/teams')
   revalidatePath(`/pulse/admin/teams/${id}`)
 
@@ -337,6 +724,7 @@ export async function regenerateInviteLink(teamId: string): Promise<{ success: b
     return { success: false, error: error.message }
   }
 
+  revalidatePath(`/teams/${teamId}`)
   revalidatePath(`/pulse/admin/teams/${teamId}`)
 
   return { success: true, token }
