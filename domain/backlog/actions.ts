@@ -100,21 +100,24 @@ export async function getBacklogItem(id: string): Promise<BacklogItem | null> {
 export async function createBacklogItem(formData: FormData): Promise<{ success: boolean; error?: string; id?: string }> {
   const supabase = await createAdminClient()
 
+  const status = formData.get('status') as BacklogStatus
+  const titleEn = formData.get('title_en') as string
+  const sourceEn = formData.get('source_en') as string
+  const ourTakeEn = (formData.get('our_take_en') as string) || 'To be reviewed'
+
   const item = {
     product: formData.get('product') as ProductType,
     category: formData.get('category') as BacklogCategory,
-    status: formData.get('status') as BacklogStatus,
-    decision: formData.get('decision') as BacklogDecision | null || null,
-    title_nl: formData.get('title_nl') as string,
-    title_en: formData.get('title_en') as string,
-    source_nl: formData.get('source_nl') as string,
-    source_en: formData.get('source_en') as string,
-    our_take_nl: formData.get('our_take_nl') as string,
-    our_take_en: formData.get('our_take_en') as string,
-    rationale_nl: formData.get('rationale_nl') as string || null,
-    rationale_en: formData.get('rationale_en') as string || null,
+    status,
+    decision: status === 'decided' ? (formData.get('decision') as BacklogDecision) : null,
+    title_nl: titleEn,
+    title_en: titleEn,
+    source_nl: sourceEn,
+    source_en: sourceEn,
+    our_take_nl: ourTakeEn,
+    our_take_en: ourTakeEn,
     reviewed_at: formData.get('reviewed_at') as string || new Date().toISOString().split('T')[0],
-    decided_at: formData.get('decided_at') as string || null,
+    decided_at: status === 'decided' ? new Date().toISOString().split('T')[0] : null,
   }
 
   const { data, error } = await supabase
@@ -140,24 +143,23 @@ export async function updateBacklogItem(id: string, formData: FormData): Promise
   const supabase = await createAdminClient()
 
   const status = formData.get('status') as BacklogStatus
-  const decision = status === 'decided' ? (formData.get('decision') as BacklogDecision) : null
-  const decidedAt = status === 'decided' ? (formData.get('decided_at') as string || new Date().toISOString().split('T')[0]) : null
+  const titleEn = formData.get('title_en') as string
+  const sourceEn = formData.get('source_en') as string
+  const ourTakeEn = (formData.get('our_take_en') as string) || 'To be reviewed'
 
   const updates = {
     product: formData.get('product') as ProductType,
     category: formData.get('category') as BacklogCategory,
     status,
-    decision,
-    title_nl: formData.get('title_nl') as string,
-    title_en: formData.get('title_en') as string,
-    source_nl: formData.get('source_nl') as string,
-    source_en: formData.get('source_en') as string,
-    our_take_nl: formData.get('our_take_nl') as string,
-    our_take_en: formData.get('our_take_en') as string,
-    rationale_nl: formData.get('rationale_nl') as string || null,
-    rationale_en: formData.get('rationale_en') as string || null,
+    decision: status === 'decided' ? (formData.get('decision') as BacklogDecision) : null,
+    title_nl: titleEn,
+    title_en: titleEn,
+    source_nl: sourceEn,
+    source_en: sourceEn,
+    our_take_nl: ourTakeEn,
+    our_take_en: ourTakeEn,
     reviewed_at: formData.get('reviewed_at') as string,
-    decided_at: decidedAt,
+    decided_at: status === 'decided' ? new Date().toISOString().split('T')[0] : null,
   }
 
   const { error } = await supabase

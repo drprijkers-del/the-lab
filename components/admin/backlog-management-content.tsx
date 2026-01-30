@@ -36,6 +36,7 @@ export function BacklogManagementContent({ backlogItems, releaseNotes }: Backlog
   const [deleteBacklogId, setDeleteBacklogId] = useState<string | null>(null)
   const [deleteReleaseId, setDeleteReleaseId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [formStatus, setFormStatus] = useState<BacklogStatus>('review')
 
   const itemsByStatus = {
     review: backlogItems.filter(i => i.status === 'review'),
@@ -196,7 +197,7 @@ export function BacklogManagementContent({ backlogItems, releaseNotes }: Backlog
           <div>
             <div className="flex justify-end mb-4">
               <button
-                onClick={() => { setEditingBacklog(null); setShowBacklogForm(true) }}
+                onClick={() => { setEditingBacklog(null); setFormStatus('review'); setShowBacklogForm(true) }}
                 className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg text-sm font-medium"
               >
                 + New item
@@ -227,7 +228,7 @@ export function BacklogManagementContent({ backlogItems, releaseNotes }: Backlog
                       <label className="block text-sm font-medium text-stone-300 mb-1">Category</label>
                       <select
                         name="category"
-                        defaultValue={editingBacklog?.category || 'ux'}
+                        defaultValue={editingBacklog?.category || 'features'}
                         className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
                       >
                         <option value="ux">UX</option>
@@ -241,7 +242,8 @@ export function BacklogManagementContent({ backlogItems, releaseNotes }: Backlog
                       <label className="block text-sm font-medium text-stone-300 mb-1">Status</label>
                       <select
                         name="status"
-                        defaultValue={editingBacklog?.status || 'review'}
+                        value={formStatus}
+                        onChange={(e) => setFormStatus(e.target.value as BacklogStatus)}
                         className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
                       >
                         <option value="review">Review</option>
@@ -252,20 +254,21 @@ export function BacklogManagementContent({ backlogItems, releaseNotes }: Backlog
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {formStatus === 'decided' && (
+                      <div>
+                        <label className="block text-sm font-medium text-stone-300 mb-1">Decision</label>
+                        <select
+                          name="decision"
+                          defaultValue={editingBacklog?.decision || 'building'}
+                          className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
+                        >
+                          <option value="building">Building</option>
+                          <option value="not_doing">Not doing</option>
+                        </select>
+                      </div>
+                    )}
                     <div>
-                      <label className="block text-sm font-medium text-stone-300 mb-1">Decision (if decided)</label>
-                      <select
-                        name="decision"
-                        defaultValue={editingBacklog?.decision || ''}
-                        className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
-                      >
-                        <option value="">-</option>
-                        <option value="building">Building</option>
-                        <option value="not_doing">Not doing</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-stone-300 mb-1">Reviewed date</label>
+                      <label className="block text-sm font-medium text-stone-300 mb-1">Date</label>
                       <input
                         type="date"
                         name="reviewed_at"
@@ -275,96 +278,47 @@ export function BacklogManagementContent({ backlogItems, releaseNotes }: Backlog
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-stone-300 mb-1">Titel (NL)</label>
-                      <input
-                        name="title_nl"
-                        defaultValue={editingBacklog?.title_nl || ''}
-                        required
-                        className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-stone-300 mb-1">Title (EN)</label>
-                      <input
-                        name="title_en"
-                        defaultValue={editingBacklog?.title_en || ''}
-                        required
-                        className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
-                      />
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-stone-300 mb-1">Title</label>
+                    <input
+                      name="title_en"
+                      defaultValue={editingBacklog?.title_en || ''}
+                      required
+                      placeholder="What is being requested?"
+                      className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white placeholder:text-stone-500"
+                    />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-stone-300 mb-1">Bron (NL)</label>
-                      <input
-                        name="source_nl"
-                        defaultValue={editingBacklog?.source_nl || ''}
-                        required
-                        className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-stone-300 mb-1">Source (EN)</label>
-                      <input
-                        name="source_en"
-                        defaultValue={editingBacklog?.source_en || ''}
-                        required
-                        className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
-                      />
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-stone-300 mb-1">Source</label>
+                    <p className="text-xs text-stone-500 mb-2">Where did this request come from? (e.g., user feedback, internal idea, customer interview)</p>
+                    <input
+                      name="source_en"
+                      defaultValue={editingBacklog?.source_en || ''}
+                      required
+                      placeholder="e.g., User feedback via backlog page"
+                      className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white placeholder:text-stone-500"
+                    />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {formStatus === 'decided' && (
                     <div>
-                      <label className="block text-sm font-medium text-stone-300 mb-1">Onze kijk (NL)</label>
-                      <textarea
-                        name="our_take_nl"
-                        rows={3}
-                        defaultValue={editingBacklog?.our_take_nl || ''}
-                        required
-                        className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-stone-300 mb-1">Our take (EN)</label>
+                      <label className="block text-sm font-medium text-stone-300 mb-1">Our take</label>
+                      <p className="text-xs text-stone-500 mb-2">Explain the decision - why are we building or not building this?</p>
                       <textarea
                         name="our_take_en"
                         rows={3}
                         defaultValue={editingBacklog?.our_take_en || ''}
-                        required
-                        className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
+                        placeholder="Explain the reasoning behind this decision..."
+                        className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white placeholder:text-stone-500"
                       />
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-stone-300 mb-1">Rationale (NL)</label>
-                      <textarea
-                        name="rationale_nl"
-                        rows={2}
-                        defaultValue={editingBacklog?.rationale_nl || ''}
-                        className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-stone-300 mb-1">Rationale (EN)</label>
-                      <textarea
-                        name="rationale_en"
-                        rows={2}
-                        defaultValue={editingBacklog?.rationale_en || ''}
-                        className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
-                      />
-                    </div>
-                  </div>
+                  )}
 
                   <div className="flex gap-2 justify-end">
                     <button
                       type="button"
-                      onClick={() => { setShowBacklogForm(false); setEditingBacklog(null) }}
+                      onClick={() => { setShowBacklogForm(false); setEditingBacklog(null); setFormStatus('review') }}
                       className="px-4 py-2 bg-stone-700 hover:bg-stone-600 text-white rounded-lg text-sm"
                     >
                       Cancel
@@ -410,7 +364,7 @@ export function BacklogManagementContent({ backlogItems, releaseNotes }: Backlog
                             </div>
                             <div className="flex gap-1 flex-shrink-0">
                               <button
-                                onClick={() => { setEditingBacklog(item); setShowBacklogForm(true) }}
+                                onClick={() => { setEditingBacklog(item); setFormStatus(item.status); setShowBacklogForm(true) }}
                                 className="p-2 text-stone-400 hover:text-white"
                                 title="Edit"
                               >
