@@ -3,14 +3,14 @@
 import { usePathname } from 'next/navigation'
 
 /**
- * Floating link to Delta - visible on backlog page.
+ * Floating link to Delta - visible on all Pulse pages.
  * Shows the connection between Pulse and Delta apps.
  */
 export function DeltaLink() {
   const pathname = usePathname()
 
-  // Only show on backlog page
-  if (!pathname?.includes('/feedback/backlog')) {
+  // Don't show on super-admin pages
+  if (pathname?.includes('/super-admin')) {
     return null
   }
 
