@@ -67,9 +67,11 @@ export async function getBacklogItems(product?: ProductType): Promise<BacklogIte
   const { data, error } = await query
 
   if (error) {
-    console.error('Error fetching backlog items:', error)
+    console.error('[getBacklogItems] Error:', error)
     return []
   }
+
+  console.log('[getBacklogItems] Fetched', data?.length || 0, 'items for product:', product || 'all')
 
   return data || []
 }
@@ -117,6 +119,8 @@ export async function createBacklogItem(formData: FormData): Promise<{ success: 
     decided_at: formData.get('decided_at') as string || null,
   }
 
+  console.log('[createBacklogItem] Attempting to insert:', JSON.stringify(item, null, 2))
+
   const { data, error } = await supabase
     .from('backlog_items')
     .insert(item)
@@ -124,9 +128,11 @@ export async function createBacklogItem(formData: FormData): Promise<{ success: 
     .single()
 
   if (error) {
-    console.error('Error creating backlog item:', error)
-    return { success: false, error: error.message }
+    console.error('[createBacklogItem] Error:', error)
+    return { success: false, error: `${error.message} (code: ${error.code})` }
   }
+
+  console.log('[createBacklogItem] Success! ID:', data.id)
 
   revalidatePath('/feedback/backlog')
   revalidatePath('/super-admin/backlog')

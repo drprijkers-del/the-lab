@@ -48,7 +48,7 @@ export function BacklogManagementContent({ backlogItems, releaseNotes }: Backlog
     setLoading(true)
     const formData = new FormData(e.currentTarget)
 
-    let result
+    let result: { success: boolean; error?: string; id?: string }
     if (editingBacklog) {
       result = await updateBacklogItem(editingBacklog.id, formData)
     } else {
@@ -60,6 +60,12 @@ export function BacklogManagementContent({ backlogItems, releaseNotes }: Backlog
     if (!result.success) {
       alert('Error: ' + (result.error || 'Unknown error'))
       return
+    }
+
+    // Show success with ID for debugging
+    if (!editingBacklog && result.id) {
+      console.log('Created backlog item with ID:', result.id)
+      alert('Item created! ID: ' + result.id)
     }
 
     setShowBacklogForm(false)
