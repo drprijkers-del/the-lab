@@ -78,101 +78,59 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
           </Link>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredTeams.map(team => (
             <Link
               key={team.id}
               href={`/teams/${team.id}`}
-              className="block bg-white rounded-xl border border-stone-200 p-4 hover:border-stone-300 transition-colors"
+              className="block bg-white rounded-xl border border-stone-200 p-4 hover:border-cyan-300 hover:shadow-sm transition-all group"
             >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  {/* Team name and badges */}
-                  <div className="flex items-center gap-2 flex-wrap mb-2">
-                    <h3 className="font-semibold text-stone-900 truncate">{team.name}</h3>
-                    {team.needs_attention && (
-                      <span className="px-2 py-0.5 text-xs font-medium bg-red-100 text-red-700 rounded-full">
-                        {t('teamsNeedsAttention')}
-                      </span>
-                    )}
-                  </div>
+              {/* Header: Name + attention badge */}
+              <div className="flex items-start justify-between gap-2 mb-3">
+                <h3 className="font-semibold text-stone-900 truncate group-hover:text-cyan-600 transition-colors">
+                  {team.name}
+                </h3>
+                {team.needs_attention && (
+                  <span className="w-2 h-2 rounded-full bg-red-500 shrink-0 mt-2" title={t('teamsNeedsAttention')} />
+                )}
+              </div>
 
-                  {/* Tools badges */}
-                  <div className="flex gap-2 mb-3">
-                    {team.tools_enabled.includes('pulse') && (
-                      <span className="px-2 py-0.5 text-xs font-medium bg-pink-100 text-pink-700 rounded-full">
-                        Pulse
-                      </span>
-                    )}
-                    {team.tools_enabled.includes('delta') && (
-                      <span className="px-2 py-0.5 text-xs font-medium bg-cyan-100 text-cyan-700 rounded-full">
-                        Delta
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Stats row */}
-                  <div className="flex flex-wrap gap-4 text-sm text-stone-500">
-                    {team.pulse && (
-                      <div className="flex items-center gap-1">
-                        <span className="text-pink-500">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                          </svg>
-                        </span>
-                        <span>{team.pulse.today_entries} {t('teamsPulseSignals')}</span>
-                        {team.pulse.average_score && (
-                          <span className="text-stone-400">({team.pulse.average_score})</span>
-                        )}
-                      </div>
-                    )}
-                    {team.delta && (
-                      <div className="flex items-center gap-1">
-                        <span className="text-cyan-500 font-bold text-sm">Δ</span>
-                        <span>{team.delta.total_sessions} {t('teamsDeltaSessions')}</span>
-                        {team.delta.average_score && (
-                          <span className="text-stone-400">({team.delta.average_score})</span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Score circles + Last activity */}
-                <div className="flex items-center gap-3 shrink-0">
-                  {/* Pulse score circle */}
-                  {team.pulse?.average_score && (
-                    <div className="flex flex-col items-center">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg ${
-                        team.pulse.average_score >= 4 ? 'bg-green-500' :
-                        team.pulse.average_score >= 3 ? 'bg-cyan-500' :
-                        team.pulse.average_score >= 2 ? 'bg-amber-500' :
-                        'bg-red-500'
-                      }`}>
-                        {team.pulse.average_score}
-                      </div>
-                      <span className="text-xs text-pink-500 mt-1">Pulse</span>
+              {/* Score indicators */}
+              <div className="flex items-center gap-3 mb-3">
+                {team.pulse?.average_score && (
+                  <div className="flex items-center gap-1.5">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm ${
+                      team.pulse.average_score >= 4 ? 'bg-green-500' :
+                      team.pulse.average_score >= 3 ? 'bg-cyan-500' :
+                      team.pulse.average_score >= 2 ? 'bg-amber-500' :
+                      'bg-red-500'
+                    }`}>
+                      {team.pulse.average_score}
                     </div>
-                  )}
-                  {/* Delta score circle */}
-                  {team.delta?.average_score && (
-                    <div className="flex flex-col items-center">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg ${
-                        team.delta.average_score >= 4 ? 'bg-green-500' :
-                        team.delta.average_score >= 3 ? 'bg-cyan-500' :
-                        team.delta.average_score >= 2 ? 'bg-amber-500' :
-                        'bg-red-500'
-                      }`}>
-                        {team.delta.average_score}
-                      </div>
-                      <span className="text-xs text-cyan-500 mt-1">Delta</span>
-                    </div>
-                  )}
-                  {/* Last activity */}
-                  <div className="text-right text-sm text-stone-400 ml-2">
-                    <div>{formatDate(team.last_updated)}</div>
+                    <span className="text-xs text-stone-400">Pulse</span>
                   </div>
-                </div>
+                )}
+                {team.delta?.average_score && (
+                  <div className="flex items-center gap-1.5">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm ${
+                      team.delta.average_score >= 4 ? 'bg-green-500' :
+                      team.delta.average_score >= 3 ? 'bg-cyan-500' :
+                      team.delta.average_score >= 2 ? 'bg-amber-500' :
+                      'bg-red-500'
+                    }`}>
+                      {team.delta.average_score}
+                    </div>
+                    <span className="text-xs text-stone-400">Delta</span>
+                  </div>
+                )}
+                {!team.pulse?.average_score && !team.delta?.average_score && (
+                  <span className="text-xs text-stone-400">{t('teamsNoData')}</span>
+                )}
+              </div>
+
+              {/* Footer: Last activity */}
+              <div className="text-xs text-stone-400 pt-2 border-t border-stone-100">
+                {formatDate(team.last_updated)}
               </div>
             </Link>
           ))}

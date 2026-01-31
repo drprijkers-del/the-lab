@@ -68,34 +68,30 @@ export function ShareLinkSection({ teamId, teamSlug }: ShareLinkSectionProps) {
 
           {loading ? (
             <div className="h-12 bg-gray-100 rounded-xl animate-pulse" />
-          ) : (
+          ) : shareUrl ? (
             <div className="space-y-3">
-              {/* Link display - word wrap on mobile */}
-              <div className="px-4 py-3 bg-gray-50 rounded-xl text-sm text-gray-600 font-mono break-all">
-                {shareUrl || t('shareNoLink')}
+              {/* Clean link display */}
+              <div className="flex items-center gap-3 p-3 bg-cyan-50 border border-cyan-200 rounded-xl">
+                <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-cyan-900">{t('shareReady')}</div>
+                  <div className="text-xs text-cyan-600 truncate">/t/{teamSlug}</div>
+                </div>
               </div>
 
-              {/* Action buttons - stack on mobile */}
-              <div className="flex flex-col sm:flex-row gap-2">
+              {/* Action buttons */}
+              <div className="flex gap-2">
                 <Button
-                  onClick={() => shareUrl && window.open(shareUrl, '_blank')}
-                  disabled={!shareUrl}
-                  className="flex-1"
-                >
-                  <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                  {t('shareOpen')}
-                </Button>
-                <Button
-                  variant="secondary"
                   onClick={handleCopy}
-                  disabled={!shareUrl}
                   className="flex-1"
                 >
                   {copied ? (
                     <>
-                      <svg className="w-4 h-4 mr-1.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                       {t('shareCopied')}
@@ -109,6 +105,15 @@ export function ShareLinkSection({ teamId, teamSlug }: ShareLinkSectionProps) {
                     </>
                   )}
                 </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => window.open(shareUrl, '_blank')}
+                >
+                  <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                  {t('shareOpen')}
+                </Button>
               </div>
 
               {/* Success message after reset */}
@@ -120,6 +125,10 @@ export function ShareLinkSection({ teamId, teamSlug }: ShareLinkSectionProps) {
                   <span className="text-sm text-green-700">{t('shareResetSuccess')}</span>
                 </div>
               )}
+            </div>
+          ) : (
+            <div className="p-4 bg-stone-50 rounded-xl text-center text-sm text-stone-500">
+              {t('shareNoLink')}
             </div>
           )}
 

@@ -121,18 +121,6 @@ export function TeamDetailContent({ team, pulseMetrics, pulseInsights = [], delt
         {team.description && (
           <p className="text-stone-600">{team.description}</p>
         )}
-        <div className="flex gap-2 mt-3">
-          {team.tools_enabled.includes('pulse') && (
-            <span className="px-2 py-0.5 text-xs font-medium bg-pink-100 text-pink-700 rounded-full">
-              Pulse
-            </span>
-          )}
-          {team.tools_enabled.includes('delta') && (
-            <span className="px-2 py-0.5 text-xs font-medium bg-cyan-100 text-cyan-700 rounded-full">
-              Delta
-            </span>
-          )}
-        </div>
       </div>
 
       {/* Tabs */}
@@ -222,26 +210,43 @@ export function TeamDetailContent({ team, pulseMetrics, pulseInsights = [], delt
         <div className="space-y-6">
           {team.delta ? (
             <>
-              {/* Delta stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="bg-white rounded-xl border border-stone-200 p-4">
-                  <div className="text-2xl font-bold text-stone-900">{team.delta.total_sessions}</div>
-                  <div className="text-sm text-stone-500">{t('sessions')}</div>
-                </div>
-                <div className="bg-white rounded-xl border border-stone-200 p-4">
-                  <div className="text-2xl font-bold text-stone-900">{team.delta.active_sessions}</div>
-                  <div className="text-sm text-stone-500">{t('active')}</div>
-                </div>
-                <div className="bg-white rounded-xl border border-stone-200 p-4">
-                  <div className="text-2xl font-bold text-stone-900">
-                    {team.delta.average_score ?? '-'}
+              {/* Header with New Session button */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-stone-900">{team.delta.total_sessions}</div>
+                    <div className="text-xs text-stone-500">{t('sessions')}</div>
                   </div>
-                  <div className="text-sm text-stone-500">{t('teamsAvgScore')}</div>
+                  <div className="w-px h-8 bg-stone-200" />
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-cyan-600">{team.delta.active_sessions}</div>
+                    <div className="text-xs text-stone-500">{t('active')}</div>
+                  </div>
+                  {team.delta.average_score && (
+                    <>
+                      <div className="w-px h-8 bg-stone-200" />
+                      <div className="text-center">
+                        <div className={`text-2xl font-bold ${
+                          team.delta.average_score >= 4 ? 'text-green-600' :
+                          team.delta.average_score >= 3 ? 'text-cyan-600' :
+                          team.delta.average_score >= 2 ? 'text-amber-600' :
+                          'text-red-600'
+                        }`}>
+                          {team.delta.average_score.toFixed(1)}
+                        </div>
+                        <div className="text-xs text-stone-500">{t('teamsAvgScore')}</div>
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div className="bg-white rounded-xl border border-stone-200 p-4">
-                  <div className="text-2xl font-bold text-stone-900">{team.delta.closed_sessions}</div>
-                  <div className="text-sm text-stone-500">{t('sessionsCompleted')}</div>
-                </div>
+                <Link href={`/teams/${team.id}/delta/new`} className="shrink-0">
+                  <Button className="w-full sm:w-auto">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    {t('newSession')}
+                  </Button>
+                </Link>
               </div>
 
               {/* Sessions list */}
@@ -293,20 +298,8 @@ export function TeamDetailContent({ team, pulseMetrics, pulseInsights = [], delt
                 </div>
               )}
 
-              {/* Actions */}
-              <div className="flex gap-3">
-                <Link href={`/teams/${team.id}/delta/new`} className="flex-1">
-                  <Button className="w-full">
-                    {t('newSession')}
-                  </Button>
-                </Link>
-                <Link href={`/teams/${team.id}/delta`} className="flex-1">
-                  <Button variant="secondary" className="w-full">
-                    {t('teamsGoToDelta')}
-                  </Button>
-                </Link>
-              </div>
-              <div className="flex justify-end">
+              {/* Disable tool option */}
+              <div className="pt-4 border-t border-stone-200">
                 <Button
                   variant="secondary"
                   size="sm"

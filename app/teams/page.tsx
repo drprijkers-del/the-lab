@@ -16,13 +16,13 @@ export default async function TeamsPage() {
       <AdminHeader />
       <main className="max-w-4xl mx-auto px-4 pt-8 pb-24">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-stone-900">{t.teamsTitle}</h1>
             <p className="text-stone-600 mt-1">{t.teamsSubtitle}</p>
           </div>
-          <Link href="/teams/new">
-            <Button>{t.teamsNewTeam}</Button>
+          <Link href="/teams/new" className="shrink-0">
+            <Button className="w-full sm:w-auto">{t.teamsNewTeam}</Button>
           </Link>
         </div>
 
