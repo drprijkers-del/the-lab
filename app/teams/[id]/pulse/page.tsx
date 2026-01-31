@@ -32,12 +32,12 @@ export default async function TeamPulsePage({ params }: TeamPulsePageProps) {
       <AdminHeader />
       <main className="max-w-4xl mx-auto px-4 pt-8 pb-24">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-stone-500 mb-6">
-          <Link href="/teams" className="hover:text-stone-700">Teams</Link>
+        <div className="flex items-center gap-2 text-sm text-stone-500 dark:text-stone-400 mb-6">
+          <Link href="/teams" className="hover:text-stone-700 dark:hover:text-stone-200">Teams</Link>
           <span>/</span>
-          <Link href={`/teams/${id}`} className="hover:text-stone-700">{team.name}</Link>
+          <Link href={`/teams/${id}`} className="hover:text-stone-700 dark:hover:text-stone-200">{team.name}</Link>
           <span>/</span>
-          <span className="text-stone-900">Pulse</span>
+          <span className="text-stone-900 dark:text-stone-100">Pulse</span>
         </div>
 
         <TeamDetailContent

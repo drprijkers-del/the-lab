@@ -30,20 +30,20 @@ export function TeamCard({ team, appType = 'pulse' }: TeamCardProps) {
             {/* Team info - grows to fill space */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-stone-900 truncate">{team.name}</h3>
+                <h3 className="font-semibold text-stone-900 dark:text-stone-100 truncate">{team.name}</h3>
                 {team.activeLink && (
-                  <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full flex-shrink-0 hidden sm:inline">
+                  <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-2 py-0.5 rounded-full flex-shrink-0 hidden sm:inline">
                     {t('adminActive')}
                   </span>
                 )}
               </div>
-              <p className="text-sm text-stone-500">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
                 {team.participantCount} {t('adminParticipants')} • {team.todayEntries} {t('adminToday')}
               </p>
             </div>
 
             {/* Arrow */}
-            <svg className="w-5 h-5 text-stone-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <svg className="w-5 h-5 text-stone-400 dark:text-stone-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </div>

@@ -13,11 +13,11 @@ export default async function BacklogPage() {
   ])
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-900">
       <div className="max-w-3xl mx-auto px-4 py-12">
         <header className="mb-12">
-          <h1 className="text-3xl font-bold text-stone-900 mb-2">Pulse Backlog</h1>
-          <p className="text-stone-500">
+          <h1 className="text-3xl font-bold text-stone-900 dark:text-stone-100 mb-2">Pulse Backlog</h1>
+          <p className="text-stone-500 dark:text-stone-400">
             What we&apos;re exploring, building, and have decided against.
           </p>
         </header>

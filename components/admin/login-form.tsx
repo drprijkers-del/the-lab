@@ -86,16 +86,16 @@ export function LoginForm() {
         <CardContent className="pt-6 text-center">
           <div className="text-6xl mb-4">📬</div>
           <h2 className="text-xl font-semibold mb-2">{t('loginCheckInbox')}</h2>
-          <p className="text-stone-500 mb-6">
+          <p className="text-stone-500 dark:text-stone-400 mb-6">
             {t('loginEmailSent')}<br />
-            <span className="font-medium text-stone-900">{email}</span>
+            <span className="font-medium text-stone-900 dark:text-stone-100">{email}</span>
           </p>
-          <p className="text-sm text-stone-400 mb-4">
+          <p className="text-sm text-stone-400 dark:text-stone-500 mb-4">
             {t('loginClickLink')}
           </p>
           <button
             onClick={() => setEmailSent(false)}
-            className="text-sm text-cyan-600 hover:text-cyan-700 py-2 px-4 min-h-11 rounded-lg hover:bg-cyan-50 transition-colors"
+            className="text-sm text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 py-2 px-4 min-h-11 rounded-lg hover:bg-cyan-50 dark:hover:bg-cyan-900/30 transition-colors"
           >
             {t('loginOtherEmail')}
           </button>
@@ -108,21 +108,21 @@ export function LoginForm() {
     <Card>
       <CardContent className="pt-6">
         <div className="text-center mb-6">
-          <h2 className="text-xl font-semibold text-stone-900 mb-1">{t('loginWelcome')}</h2>
-          <p className="text-sm text-stone-500">
+          <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-1">{t('loginWelcome')}</h2>
+          <p className="text-sm text-stone-500 dark:text-stone-400">
             {t('loginSubtitle')}
           </p>
         </div>
 
         {unauthorized && (
-          <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 text-sm">
+          <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-xl text-amber-700 dark:text-amber-400 text-sm">
             <span className="font-medium">Hmm, </span>
             {t('loginUnauthorized')}
           </div>
         )}
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">
             {error}
           </div>
         )}
@@ -165,7 +165,7 @@ export function LoginForm() {
           <button
             type="button"
             onClick={() => setUsePassword(!usePassword)}
-            className="text-sm text-cyan-600 hover:text-cyan-700 py-2 px-4 min-h-11 rounded-lg hover:bg-cyan-50 transition-colors"
+            className="text-sm text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 py-2 px-4 min-h-11 rounded-lg hover:bg-cyan-50 dark:hover:bg-cyan-900/30 transition-colors"
           >
             {usePassword ? 'Use magic link instead' : 'Have a password? Sign in with password'}
           </button>

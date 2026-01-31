@@ -18,8 +18,8 @@ export default async function TeamsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-stone-900">{t.teamsTitle}</h1>
-            <p className="text-stone-600 mt-1">{t.teamsSubtitle}</p>
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">{t.teamsTitle}</h1>
+            <p className="text-stone-600 dark:text-stone-400 mt-1">{t.teamsSubtitle}</p>
           </div>
           <Link href="/teams/new" className="shrink-0">
             <Button className="w-full sm:w-auto">{t.teamsNewTeam}</Button>

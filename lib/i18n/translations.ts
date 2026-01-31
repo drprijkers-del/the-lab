@@ -364,6 +364,100 @@ export const translations = {
     teamsGoToDelta: 'Open Delta',
     teamsAvgScore: 'Gem. score',
     teamsNoScore: 'Geen data',
+
+    // Attention indicator explanation
+    teamsAttentionExplain: 'Score onder 2.5 of dalende trend',
+    teamsAttentionTooltip: 'Dit team heeft aandacht nodig: lage score of dalende trend gedetecteerd.',
+
+    // Score explanation
+    scoreExcellent: 'Uitstekend - Team presteert zeer goed',
+    scoreGood: 'Goed - Team is op de goede weg',
+    scoreAverage: 'Gemiddeld - Ruimte voor verbetering',
+    scoreLow: 'Laag - Directe aandacht nodig',
+    scoreTrendUp: 'Score stijgt',
+    scoreTrendDown: 'Score daalt',
+    scoreTrendStable: 'Score stabiel',
+
+    // Contact expert
+    contactExpert: 'Expert',
+    contactExpertTitle: 'Hulp nodig?',
+    contactExpertMessage: 'Neem contact op met een agile expert voor coaching of advies.',
+    contactExpertEmail: 'expert@pinkpollos.nl',
+    contactExpertButton: 'Mail expert',
+
+    // Feedback tool
+    feedbackTitle: 'Team Feedback',
+    feedbackSubtitle: 'Geef en ontvang constructieve feedback',
+    feedbackRules: 'Feedback regels',
+    feedbackRule1: 'Specifiek en observeerbaar',
+    feedbackRule2: 'Gericht op gedrag, niet persoon',
+    feedbackRule3: 'Tijdig en relevant',
+    feedbackRule4: 'Bied een oplossing of suggestie',
+    feedbackComingSoon: 'Binnenkort beschikbaar',
+
+    // Delta compare
+    deltaCompare: 'Vergelijk',
+    deltaCompareTitle: 'Sessies vergelijken',
+    deltaCompareSelect: 'Selecteer sessies om te vergelijken',
+    deltaCompareImproved: 'Verbeterd',
+    deltaCompareDeclined: 'Gedaald',
+    deltaCompareUnchanged: 'Ongewijzigd',
+    deltaRepeat: 'Herhaal sessie',
+    deltaRepeatInfo: 'Voer dezelfde invalshoek opnieuw uit',
+
+    // Dark mode
+    darkMode: 'Donkere modus',
+    lightMode: 'Lichte modus',
+    systemMode: 'Systeeminstelling',
+
+    // Team maturity & gamification
+    maturityBasic: 'Starter',
+    maturityMedium: 'Gevorderd',
+    maturityMature: 'Expert',
+    maturityLevel: 'Team niveau',
+    maturityUnlock: 'Ontgrendel meer mogelijkheden',
+    maturityProgress: 'Voortgang naar volgend niveau',
+    maturityFree: 'Gratis',
+    maturityPaid: 'Premium',
+    maturityUpgrade: 'Upgrade',
+    maturityUpgradeTitle: 'Upgrade naar Premium',
+    maturityUpgradeDesc: 'Ontgrendel geavanceerde features en analyses',
+    maturityStarterDesc: 'Basis tools om te starten',
+    maturityMediumDesc: 'Geavanceerde analyses en inzichten',
+    maturityMatureDesc: 'Volledige toolkit voor experts',
+    maturityStarterFeatures: 'Pulse check-ins, Delta sessies, Basis metrics',
+    maturityMediumFeatures: 'Trend analyses, AI insights, Coach vragen, Vergelijkingen',
+    maturityMatureFeatures: 'Obeya, Leadership tools, Portfolio, Department views',
+    maturitySessions: 'sessies',
+    maturityDaysActive: 'dagen actief',
+    maturityNextLevel: 'Nog {count} {unit} naar volgend niveau',
+    maturityMaxLevel: 'Hoogste niveau bereikt!',
+    maturityViewLevels: 'Bekijk alle niveaus',
+
+    // Coach Questions tab
+    coachQuestionsTab: 'Coach Vragen',
+    coachQuestionsTitle: 'Coaching Vragen',
+    coachQuestionsSubtitle: 'Transformeer problemen naar coachingvragen',
+    coachQuestionsExample: 'Voorbeeld: "We halen onze sprints niet" → "Wat zou er moeten veranderen om consistent te leveren?"',
+    coachQuestionsGenerate: 'Genereer vragen',
+
+    // Department level
+    departmentTitle: 'Afdelingen',
+    departmentSubtitle: 'Combineer teams voor afdelingsoverzicht',
+    departmentCreate: 'Nieuwe afdeling',
+    departmentAddTeams: 'Teams toevoegen',
+    departmentOverallScore: 'Afdelingsscore',
+
+    // Module tabs (paywall)
+    moduleComingSoon: 'Binnenkort',
+    moduleUnlock: 'Ontgrendelen',
+    modulePremium: 'Premium',
+    moduleObeya: 'Obeya',
+    moduleObeyaDesc: 'Visueel management dashboard',
+    moduleLeadership: 'Leadership',
+    moduleLeadershipDesc: 'Leiderschapsmetingen en ontwikkeling',
+    modulePortfolio: 'Portfolio',
+    modulePortfolioDesc: 'Portfolio management tips en sessies',
   },
 
   en: {
@@ -731,6 +825,100 @@ export const translations = {
     teamsGoToDelta: 'Open Delta',
     teamsAvgScore: 'Avg. score',
     teamsNoScore: 'No data',
+
+    // Attention indicator explanation
+    teamsAttentionExplain: 'Score below 2.5 or declining trend',
+    teamsAttentionTooltip: 'This team needs attention: low score or declining trend detected.',
+
+    // Score explanation
+    scoreExcellent: 'Excellent - Team performing very well',
+    scoreGood: 'Good - Team is on track',
+    scoreAverage: 'Average - Room for improvement',
+    scoreLow: 'Low - Immediate attention needed',
+    scoreTrendUp: 'Score improving',
+    scoreTrendDown: 'Score declining',
+    scoreTrendStable: 'Score stable',
+
+    // Contact expert
+    contactExpert: 'Expert',
+    contactExpertTitle: 'Need help?',
+    contactExpertMessage: 'Contact an agile expert for coaching or advice.',
+    contactExpertEmail: 'expert@pinkpollos.nl',
+    contactExpertButton: 'Email expert',
+
+    // Feedback tool
+    feedbackTitle: 'Team Feedback',
+    feedbackSubtitle: 'Give and receive constructive feedback',
+    feedbackRules: 'Feedback rules',
+    feedbackRule1: 'Specific and observable',
+    feedbackRule2: 'Focus on behavior, not person',
+    feedbackRule3: 'Timely and relevant',
+    feedbackRule4: 'Offer a solution or suggestion',
+    feedbackComingSoon: 'Coming soon',
+
+    // Delta compare
+    deltaCompare: 'Compare',
+    deltaCompareTitle: 'Compare sessions',
+    deltaCompareSelect: 'Select sessions to compare',
+    deltaCompareImproved: 'Improved',
+    deltaCompareDeclined: 'Declined',
+    deltaCompareUnchanged: 'Unchanged',
+    deltaRepeat: 'Repeat session',
+    deltaRepeatInfo: 'Run the same angle again',
+
+    // Dark mode
+    darkMode: 'Dark mode',
+    lightMode: 'Light mode',
+    systemMode: 'System setting',
+
+    // Team maturity & gamification
+    maturityBasic: 'Starter',
+    maturityMedium: 'Intermediate',
+    maturityMature: 'Expert',
+    maturityLevel: 'Team level',
+    maturityUnlock: 'Unlock more capabilities',
+    maturityProgress: 'Progress to next level',
+    maturityFree: 'Free',
+    maturityPaid: 'Premium',
+    maturityUpgrade: 'Upgrade',
+    maturityUpgradeTitle: 'Upgrade to Premium',
+    maturityUpgradeDesc: 'Unlock advanced features and analytics',
+    maturityStarterDesc: 'Basic tools to get started',
+    maturityMediumDesc: 'Advanced analytics and insights',
+    maturityMatureDesc: 'Complete toolkit for experts',
+    maturityStarterFeatures: 'Pulse check-ins, Delta sessions, Basic metrics',
+    maturityMediumFeatures: 'Trend analysis, AI insights, Coach questions, Comparisons',
+    maturityMatureFeatures: 'Obeya, Leadership tools, Portfolio, Department views',
+    maturitySessions: 'sessions',
+    maturityDaysActive: 'days active',
+    maturityNextLevel: '{count} more {unit} to next level',
+    maturityMaxLevel: 'Highest level reached!',
+    maturityViewLevels: 'View all levels',
+
+    // Coach Questions tab
+    coachQuestionsTab: 'Coach Questions',
+    coachQuestionsTitle: 'Coaching Questions',
+    coachQuestionsSubtitle: 'Transform problems into coaching questions',
+    coachQuestionsExample: 'Example: "We don\'t hit our sprints" → "What would need to change to deliver consistently?"',
+    coachQuestionsGenerate: 'Generate questions',
+
+    // Department level
+    departmentTitle: 'Departments',
+    departmentSubtitle: 'Combine teams for department overview',
+    departmentCreate: 'New department',
+    departmentAddTeams: 'Add teams',
+    departmentOverallScore: 'Department score',
+
+    // Module tabs (paywall)
+    moduleComingSoon: 'Coming soon',
+    moduleUnlock: 'Unlock',
+    modulePremium: 'Premium',
+    moduleObeya: 'Obeya',
+    moduleObeyaDesc: 'Visual management dashboard',
+    moduleLeadership: 'Leadership',
+    moduleLeadershipDesc: 'Leadership measurements and development',
+    modulePortfolio: 'Portfolio',
+    modulePortfolioDesc: 'Portfolio management tips and sessions',
   },
 } as const
 

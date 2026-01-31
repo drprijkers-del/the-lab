@@ -92,8 +92,8 @@ export function PulseMetrics({ metrics, insights }: PulseMetricsProps) {
       <Card>
         <CardContent className="py-12 text-center">
           <div className="text-5xl mb-4 opacity-30">⚗️</div>
-          <h3 className="font-semibold text-stone-600 mb-2">{t.noData}</h3>
-          <p className="text-sm text-stone-400">{t.noDataDetail}</p>
+          <h3 className="font-semibold text-stone-600 dark:text-stone-400 mb-2">{t.noData}</h3>
+          <p className="text-sm text-stone-400 dark:text-stone-500">{t.noDataDetail}</p>
         </CardContent>
       </Card>
     )
@@ -105,8 +105,8 @@ export function PulseMetrics({ metrics, insights }: PulseMetricsProps) {
       <Card>
         <CardContent className="py-8 text-center">
           <div className="text-4xl mb-4 opacity-40">📊</div>
-          <h3 className="font-semibold text-stone-600 mb-2">{t.notEnoughData}</h3>
-          <p className="text-sm text-stone-400 mb-4">{t.notEnoughDetail}</p>
+          <h3 className="font-semibold text-stone-600 dark:text-stone-400 mb-2">{t.notEnoughData}</h3>
+          <p className="text-sm text-stone-400 dark:text-stone-500 mb-4">{t.notEnoughDetail}</p>
           <ParticipationBar metrics={metrics} t={t} language={language} />
         </CardContent>
       </Card>
@@ -145,7 +145,7 @@ export function PulseMetrics({ metrics, insights }: PulseMetricsProps) {
   return (
     <div className="space-y-4">
       {/* Time view selector */}
-      <div className="flex gap-1 p-1 bg-stone-100 rounded-xl">
+      <div className="flex gap-1 p-1 bg-stone-100 dark:bg-stone-800 rounded-xl">
         <TimeButton
           active={activeView === 'live'}
           onClick={() => setActiveView('live')}
@@ -179,7 +179,7 @@ export function PulseMetrics({ metrics, insights }: PulseMetricsProps) {
               {active.isLive && (
                 <span className="inline-flex rounded-full h-2 w-2 bg-cyan-500" />
               )}
-              <span className="text-sm font-medium text-stone-500 uppercase tracking-wide">
+              <span className="text-sm font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wide">
                 {active.label}
               </span>
             </div>
@@ -209,13 +209,13 @@ export function PulseMetrics({ metrics, insights }: PulseMetricsProps) {
                 )}
 
                 {/* Confidence indicator */}
-                <div className="mt-4 pt-4 border-t border-stone-100">
+                <div className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700">
                   <span className={`text-xs px-2 py-1 rounded-full ${
                     active.metric.confidence === 'high'
-                      ? 'bg-cyan-50 text-cyan-600'
+                      ? 'bg-cyan-50 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400'
                       : active.metric.confidence === 'moderate'
-                        ? 'bg-stone-100 text-stone-500'
-                        : 'bg-amber-50 text-amber-600'
+                        ? 'bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400'
+                        : 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
                   }`}>
                     {getConfidenceLabel(active.metric.confidence, language)}
                   </span>
@@ -223,8 +223,8 @@ export function PulseMetrics({ metrics, insights }: PulseMetricsProps) {
               </>
             ) : (
               <div className="py-4">
-                <span className="text-2xl text-stone-300">—</span>
-                <p className="text-sm text-stone-400 mt-2">{t.noData}</p>
+                <span className="text-2xl text-stone-300 dark:text-stone-600">—</span>
+                <p className="text-sm text-stone-400 dark:text-stone-500 mt-2">{t.noData}</p>
               </div>
             )}
           </div>
@@ -236,7 +236,7 @@ export function PulseMetrics({ metrics, insights }: PulseMetricsProps) {
         <Card>
           <CardContent className="py-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-stone-500">{t.momentum}</span>
+              <span className="text-sm text-stone-500 dark:text-stone-400">{t.momentum}</span>
               <div className={`flex items-center gap-2 ${getTrendColor(metrics.momentum.direction)}`}>
                 <span className="text-lg">{getTrendArrow(metrics.momentum.direction)}</span>
                 <span className="text-sm font-medium">
@@ -258,14 +258,14 @@ export function PulseMetrics({ metrics, insights }: PulseMetricsProps) {
       <Card>
         <CardContent className="py-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-stone-500">
+            <span className="text-sm text-stone-500 dark:text-stone-400">
               {language === 'nl' ? 'Signaal status' : 'Signal status'}
             </span>
             <span className={`text-xs px-2 py-1 rounded-full ${getMaturityColor(metrics.maturity.level)}`}>
               {getMaturityLabel(metrics.maturity.level, language)}
             </span>
           </div>
-          <p className="text-xs text-stone-400 mt-1">
+          <p className="text-xs text-stone-400 dark:text-stone-500 mt-1">
             {getMaturityDescription(metrics.maturity.level, metrics.maturity.daysOfData, language)}
           </p>
         </CardContent>
@@ -275,7 +275,7 @@ export function PulseMetrics({ metrics, insights }: PulseMetricsProps) {
       {insights.length > 0 && (
         <Card>
           <CardContent className="py-4">
-            <h3 className="text-sm font-medium text-stone-700 mb-3">{t.signals}</h3>
+            <h3 className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-3">{t.signals}</h3>
             <div className="space-y-3">
               {insights.map((insight) => (
                 <InsightCard key={insight.id} insight={insight} language={language} />
@@ -308,10 +308,10 @@ function TimeButton({
       className={`
         flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all min-h-11
         ${active
-          ? 'bg-white text-stone-900 shadow-sm'
+          ? 'bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-sm'
           : hasData
-            ? 'text-stone-600 hover:text-stone-900'
-            : 'text-stone-300 cursor-not-allowed'
+            ? 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
+            : 'text-stone-300 dark:text-stone-600 cursor-not-allowed'
         }
         ${isLive && hasData ? 'flex items-center justify-center gap-1.5' : ''}
       `}
@@ -339,34 +339,34 @@ function ParticipationBar({
     <Card>
       <CardContent className="py-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-stone-500">{t.participation}</span>
+          <span className="text-sm text-stone-500 dark:text-stone-400">{t.participation}</span>
           <span className={`text-xs px-2 py-0.5 rounded-full ${
             metrics.dayState === 'day_complete'
-              ? 'bg-cyan-50 text-cyan-600'
+              ? 'bg-cyan-50 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400'
               : metrics.dayState === 'signal_emerging'
-                ? 'bg-amber-50 text-amber-600'
-                : 'bg-stone-100 text-stone-500'
+                ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
+                : 'bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400'
           }`}>
             {getDayStateLabel(metrics.dayState, language)}
           </span>
         </div>
-        <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
+        <div className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-500 ${
               metrics.participation.rate >= 60
                 ? 'bg-cyan-500'
                 : metrics.participation.rate >= 30
                   ? 'bg-amber-400'
-                  : 'bg-stone-300'
+                  : 'bg-stone-300 dark:bg-stone-500'
             }`}
             style={{ width: `${Math.min(metrics.participation.rate, 100)}%` }}
           />
         </div>
         <div className="flex justify-between mt-1">
-          <span className="text-xs text-stone-400">
+          <span className="text-xs text-stone-400 dark:text-stone-500">
             {formatParticipationRate(metrics.participation.today, metrics.participation.teamSize)}
           </span>
-          <span className="text-xs text-stone-400">
+          <span className="text-xs text-stone-400 dark:text-stone-500">
             {metrics.participation.today}/{metrics.participation.teamSize}
           </span>
         </div>
@@ -378,9 +378,9 @@ function ParticipationBar({
 // Insight card
 function InsightCard({ insight, language }: { insight: PulseInsight; language: 'nl' | 'en' }) {
   const severityStyles = {
-    info: 'border-stone-200 bg-stone-50',
-    attention: 'border-amber-200 bg-amber-50',
-    warning: 'border-red-200 bg-red-50',
+    info: 'border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800',
+    attention: 'border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/30',
+    warning: 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30',
   }
 
   const severityIcons = {
@@ -396,16 +396,16 @@ function InsightCard({ insight, language }: { insight: PulseInsight; language: '
       <div className="flex items-start gap-2">
         <span className="text-sm" aria-hidden="true">{severityIcons[insight.severity]}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-stone-800">{insight.message}</p>
+          <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{insight.message}</p>
           {insight.detail && (
-            <p className="text-xs text-stone-600 mt-1">{insight.detail}</p>
+            <p className="text-xs text-stone-600 dark:text-stone-400 mt-1">{insight.detail}</p>
           )}
           {insight.suggestions && insight.suggestions.length > 0 && (
             <details className="mt-2">
-              <summary className="text-xs text-cyan-600 cursor-pointer hover:text-cyan-700 min-h-11 flex items-center">
+              <summary className="text-xs text-cyan-600 dark:text-cyan-400 cursor-pointer hover:text-cyan-700 dark:hover:text-cyan-300 min-h-11 flex items-center">
                 {checkLabel}
               </summary>
-              <ul className="mt-2 text-xs text-stone-600 space-y-1 pl-4">
+              <ul className="mt-2 text-xs text-stone-600 dark:text-stone-400 space-y-1 pl-4">
                 {insight.suggestions.map((s, i) => (
                   <li key={i} className="list-disc">{s}</li>
                 ))}

@@ -59,27 +59,27 @@ export function ShareLinkSection({ teamId, teamSlug }: ShareLinkSectionProps) {
     <>
       <Card>
         <CardHeader>
-          <h2 className="font-semibold text-gray-900">{t('shareTitle')}</h2>
+          <h2 className="font-semibold text-stone-900 dark:text-stone-100">{t('shareTitle')}</h2>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">
             {t('shareDescription')}
           </p>
 
           {loading ? (
-            <div className="h-12 bg-gray-100 rounded-xl animate-pulse" />
+            <div className="h-12 bg-stone-100 dark:bg-stone-700 rounded-xl animate-pulse" />
           ) : shareUrl ? (
             <div className="space-y-3">
               {/* Clean link display */}
-              <div className="flex items-center gap-3 p-3 bg-cyan-50 border border-cyan-200 rounded-xl">
-                <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center shrink-0">
-                  <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center gap-3 p-3 bg-cyan-50 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800 rounded-xl">
+                <div className="w-10 h-10 rounded-lg bg-cyan-100 dark:bg-cyan-900/50 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-cyan-900">{t('shareReady')}</div>
-                  <div className="text-xs text-cyan-600 truncate">/t/{teamSlug}</div>
+                  <div className="text-sm font-medium text-cyan-900 dark:text-cyan-100">{t('shareReady')}</div>
+                  <div className="text-xs text-cyan-600 dark:text-cyan-400 truncate">/t/{teamSlug}</div>
                 </div>
               </div>
 
@@ -118,25 +118,25 @@ export function ShareLinkSection({ teamId, teamSlug }: ShareLinkSectionProps) {
 
               {/* Success message after reset */}
               {resetSuccess && (
-                <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg animate-fade-in">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg animate-fade-in">
+                  <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span className="text-sm text-green-700">{t('shareResetSuccess')}</span>
+                  <span className="text-sm text-green-700 dark:text-green-300">{t('shareResetSuccess')}</span>
                 </div>
               )}
             </div>
           ) : (
-            <div className="p-4 bg-stone-50 rounded-xl text-center text-sm text-stone-500">
+            <div className="p-4 bg-stone-50 dark:bg-stone-800 rounded-xl text-center text-sm text-stone-500 dark:text-stone-400">
               {t('shareNoLink')}
             </div>
           )}
 
           {/* Advanced section - collapsed by default */}
-          <div className="mt-5 pt-4 border-t border-gray-100">
+          <div className="mt-5 pt-4 border-t border-stone-100 dark:border-stone-700">
             <button
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="flex items-center gap-2 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+              className="flex items-center gap-2 text-xs text-stone-400 dark:text-stone-500 hover:text-stone-600 dark:hover:text-stone-300 transition-colors"
             >
               <svg
                 className={`w-3 h-3 transition-transform duration-200 ${showAdvanced ? 'rotate-90' : ''}`}
@@ -152,16 +152,16 @@ export function ShareLinkSection({ teamId, teamSlug }: ShareLinkSectionProps) {
             {showAdvanced && (
               <div className="mt-4 space-y-4 animate-fade-in">
                 {/* Info card */}
-                <div className="p-4 bg-amber-50 border border-amber-100 rounded-xl">
+                <div className="p-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-100 dark:border-amber-800 rounded-xl">
                   <div className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
                     <div>
-                      <h4 className="text-sm font-medium text-amber-900 mb-1">{t('shareResetTitle')}</h4>
-                      <p className="text-xs text-amber-700 leading-relaxed">
+                      <h4 className="text-sm font-medium text-amber-900 dark:text-amber-200 mb-1">{t('shareResetTitle')}</h4>
+                      <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
                         {t('shareResetInfo')}
                       </p>
                     </div>
@@ -171,7 +171,7 @@ export function ShareLinkSection({ teamId, teamSlug }: ShareLinkSectionProps) {
                 {/* Reset button */}
                 <button
                   onClick={() => setShowModal(true)}
-                  className="flex items-center gap-2 text-sm text-gray-500 hover:text-red-600 transition-colors group"
+                  className="flex items-center gap-2 text-sm text-stone-500 dark:text-stone-400 hover:text-red-600 dark:hover:text-red-400 transition-colors group"
                 >
                   <svg className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -194,25 +194,25 @@ export function ShareLinkSection({ teamId, teamSlug }: ShareLinkSectionProps) {
           />
 
           {/* Modal */}
-          <div className="relative bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 animate-scale-in">
+          <div className="relative bg-white dark:bg-stone-800 rounded-2xl shadow-xl max-w-sm w-full p-6 animate-scale-in">
             {/* Warning icon */}
-            <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-              <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center mx-auto mb-4">
+              <svg className="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
 
-            <h3 className="text-lg font-semibold text-gray-900 text-center mb-2">
+            <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 text-center mb-2">
               {t('shareResetConfirm')}
             </h3>
-            <p className="text-sm text-gray-500 text-center mb-6">
+            <p className="text-sm text-stone-500 dark:text-stone-400 text-center mb-6">
               {t('shareResetWarning')}
             </p>
 
             <div className="flex gap-3">
               <button
                 onClick={() => setShowModal(false)}
-                className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+                className="flex-1 px-4 py-2.5 text-sm font-medium text-stone-700 dark:text-stone-300 bg-stone-100 dark:bg-stone-700 hover:bg-stone-200 dark:hover:bg-stone-600 rounded-xl transition-colors"
               >
                 {t('shareResetCancel')}
               </button>

@@ -113,13 +113,13 @@ export function ParticipationContent({
       <div className="min-h-screen bg-stone-900 flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="py-12 text-center">
-            <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+              <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h1 className="text-xl font-bold text-stone-900 mb-2">{t('alreadyResponded')}</h1>
-            <p className="text-stone-500">
+            <h1 className="text-xl font-bold text-stone-900 dark:text-stone-100 mb-2">{t('alreadyResponded')}</h1>
+            <p className="text-stone-500 dark:text-stone-400">
               {t('alreadyRespondedMessage')}
             </p>
           </CardContent>
@@ -134,13 +134,13 @@ export function ParticipationContent({
       <div className="min-h-screen bg-stone-900 flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="py-8 text-center">
-            <div className="text-sm text-cyan-600 font-medium mb-2">{t('deltaSession')}</div>
-            <h1 className="text-2xl font-bold text-stone-900 mb-1">{teamName}</h1>
-            <p className="text-stone-500 mb-8">{title || angleInfo.label}</p>
+            <div className="text-sm text-cyan-600 dark:text-cyan-400 font-medium mb-2">{t('deltaSession')}</div>
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-1">{teamName}</h1>
+            <p className="text-stone-500 dark:text-stone-400 mb-8">{title || angleInfo.label}</p>
 
-            <div className="text-left bg-stone-50 rounded-xl p-4 mb-8">
-              <div className="text-sm font-medium text-stone-700 mb-2">{t('howItWorks')}</div>
-              <ul className="text-sm text-stone-600 space-y-2">
+            <div className="text-left bg-stone-50 dark:bg-stone-700 rounded-xl p-4 mb-8">
+              <div className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">{t('howItWorks')}</div>
+              <ul className="text-sm text-stone-600 dark:text-stone-400 space-y-2">
                 <li className="flex items-start gap-2">
                   <span className="text-cyan-500 mt-0.5">•</span>
                   <span>{statements.length} {t('statementsHonest')}</span>
@@ -251,13 +251,13 @@ export function ParticipationContent({
       <div className="min-h-screen bg-stone-900 flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="py-12 text-center">
-            <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-cyan-100 flex items-center justify-center">
-              <svg className="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center">
+              <svg className="w-6 h-6 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h1 className="text-xl font-bold text-stone-900 mb-2">{t('thankYou')}</h1>
-            <p className="text-stone-500">
+            <h1 className="text-xl font-bold text-stone-900 dark:text-stone-100 mb-2">{t('thankYou')}</h1>
+            <p className="text-stone-500 dark:text-stone-400">
               {t('responseRecorded')}
             </p>
           </CardContent>

@@ -31,13 +31,13 @@ export function NewTeamForm() {
   return (
     <form action={handleSubmit} className="space-y-6">
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+        <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">
           {error}
         </div>
       )}
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-stone-700 mb-1">
+        <label htmlFor="name" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
           {t('newTeamName')} *
         </label>
         <input
@@ -47,12 +47,12 @@ export function NewTeamForm() {
           required
           minLength={2}
           placeholder={t('newTeamNamePlaceholder')}
-          className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition-colors"
+          className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition-colors"
         />
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-stone-700 mb-1">
+        <label htmlFor="description" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
           {t('newTeamDescription')}
         </label>
         <textarea
@@ -60,12 +60,12 @@ export function NewTeamForm() {
           name="description"
           rows={3}
           placeholder={t('newTeamDescriptionPlaceholder')}
-          className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition-colors resize-none"
+          className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition-colors resize-none"
         />
       </div>
 
       <div>
-        <label htmlFor="expected_team_size" className="block text-sm font-medium text-stone-700 mb-1">
+        <label htmlFor="expected_team_size" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
           {t('newTeamSize')}
         </label>
         <input
@@ -75,21 +75,21 @@ export function NewTeamForm() {
           min={1}
           max={100}
           placeholder={t('newTeamSizePlaceholder')}
-          className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition-colors"
+          className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition-colors"
         />
-        <p className="text-xs text-stone-500 mt-1">{t('newTeamSizeHelp')}</p>
+        <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">{t('newTeamSizeHelp')}</p>
       </div>
 
       {/* Info box about tools */}
-      <div className="bg-stone-50 rounded-xl p-4">
+      <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-4">
         <div className="flex items-start gap-3">
-          <div className="text-cyan-500 mt-0.5">
+          <div className="text-cyan-500 dark:text-cyan-400 mt-0.5">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <div className="text-sm text-stone-600">
-            <p className="font-medium text-stone-700 mb-1">{t('teamsToolsEnabled')}</p>
+          <div className="text-sm text-stone-600 dark:text-stone-400">
+            <p className="font-medium text-stone-700 dark:text-stone-300 mb-1">{t('teamsToolsEnabled')}</p>
             <p>Pulse en Delta worden automatisch geactiveerd voor dit team. Je kunt dit later aanpassen in de team instellingen.</p>
           </div>
         </div>

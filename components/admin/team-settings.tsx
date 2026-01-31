@@ -49,9 +49,9 @@ export function TeamSettings({ team }: TeamSettingsProps) {
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center justify-between w-full text-left"
         >
-          <span className="font-medium text-stone-900">{t('teamSettings')}</span>
+          <span className="font-medium text-stone-900 dark:text-stone-100">{t('teamSettings')}</span>
           <svg
-            className={`w-5 h-5 text-stone-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            className={`w-5 h-5 text-stone-400 dark:text-stone-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -64,13 +64,13 @@ export function TeamSettings({ team }: TeamSettingsProps) {
       {isOpen && (
         <CardContent className="pt-0">
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">
               {error}
             </div>
           )}
 
           {success && (
-            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-600 text-sm">
+            <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-xl text-green-600 dark:text-green-400 text-sm">
               {t('teamSettingsSaved')}
             </div>
           )}
@@ -86,7 +86,7 @@ export function TeamSettings({ team }: TeamSettingsProps) {
             />
 
             <div className="space-y-1">
-              <label htmlFor="description" className="block text-sm font-medium text-stone-700">
+              <label htmlFor="description" className="block text-sm font-medium text-stone-700 dark:text-stone-300">
                 {t('newTeamDescription')}
               </label>
               <textarea
@@ -94,7 +94,7 @@ export function TeamSettings({ team }: TeamSettingsProps) {
                 name="description"
                 rows={2}
                 defaultValue={team.description || ''}
-                className="block w-full px-4 py-3 rounded-xl border border-stone-200 bg-white text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
+                className="block w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
               />
             </div>
 

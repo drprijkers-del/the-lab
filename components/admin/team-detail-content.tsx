@@ -36,7 +36,7 @@ export function TeamDetailContent({ team, metrics, insights, flyFrequency }: Tea
         {/* Back link */}
         <Link
           href="/pulse/admin/teams"
-          className="inline-flex items-center text-stone-500 hover:text-stone-700 mb-6 min-h-11 py-2"
+          className="inline-flex items-center text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 mb-6 min-h-11 py-2"
         >
           <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -48,11 +48,11 @@ export function TeamDetailContent({ team, metrics, insights, flyFrequency }: Tea
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-stone-900">{team.name}</h1>
+              <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">{team.name}</h1>
               {team.description && (
-                <p className="text-stone-500 mt-1">{team.description}</p>
+                <p className="text-stone-500 dark:text-stone-400 mt-1">{team.description}</p>
               )}
-              <p className="text-sm text-stone-400 mt-2">
+              <p className="text-sm text-stone-400 dark:text-stone-500 mt-2">
                 {t('adminCreatedOn')} {new Date(team.created_at).toLocaleDateString(dateLocale, {
                   day: 'numeric',
                   month: 'long',

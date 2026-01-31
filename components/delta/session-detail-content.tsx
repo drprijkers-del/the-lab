@@ -85,7 +85,7 @@ export function SessionDetailContent({ session, synthesis, shareLink, backPath }
         {/* Back link */}
         <Link
           href={resolvedBackPath}
-          className="inline-flex items-center text-stone-500 hover:text-stone-700 mb-6"
+          className="inline-flex items-center text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 mb-6"
         >
           <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -96,21 +96,21 @@ export function SessionDetailContent({ session, synthesis, shareLink, backPath }
       {/* Session header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-2xl font-bold text-stone-900">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
             {session.title || angleInfo.label}
           </h1>
           {isActive && (
-            <span className="text-sm bg-cyan-100 text-cyan-700 px-3 py-1 rounded-full">
+            <span className="text-sm bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400 px-3 py-1 rounded-full">
               Active
             </span>
           )}
           {isClosed && (
-            <span className="text-sm bg-stone-100 text-stone-600 px-3 py-1 rounded-full">
+            <span className="text-sm bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 px-3 py-1 rounded-full">
               Closed
             </span>
           )}
         </div>
-        <p className="text-stone-500">
+        <p className="text-stone-500 dark:text-stone-400">
           {angleInfo.label} • {session.response_count} response{session.response_count !== 1 ? 's' : ''}
         </p>
       </div>
@@ -128,12 +128,12 @@ export function SessionDetailContent({ session, synthesis, shareLink, backPath }
 
       {/* Share link (when 3+ responses, compact view) */}
       {isActive && session.response_count >= 3 && shareLink && (
-        <Card className="mb-8 border-cyan-200 bg-cyan-50">
+        <Card className="mb-8 border-cyan-200 dark:border-cyan-800 bg-cyan-50 dark:bg-cyan-900/20">
           <CardContent className="py-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-stone-700 mb-1">{t('shareWithTeam')}</div>
-                <code className="text-sm text-cyan-700 break-all">{shareLink}</code>
+                <div className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">{t('shareWithTeam')}</div>
+                <code className="text-sm text-cyan-700 dark:text-cyan-400 break-all">{shareLink}</code>
               </div>
               <Button onClick={handleCopy} variant="secondary" className="shrink-0">
                 {copied ? t('copied') : t('copyLink')}
@@ -147,13 +147,13 @@ export function SessionDetailContent({ session, synthesis, shareLink, backPath }
       {synthesis && session.response_count >= 3 && (
         <div className="space-y-6 mb-8">
           {/* Overall Score Card */}
-          <Card className="border-cyan-200 bg-linear-to-r from-cyan-50 to-white">
+          <Card className="border-cyan-200 dark:border-cyan-800 bg-linear-to-r from-cyan-50 dark:from-cyan-900/20 to-white dark:to-stone-800">
             <CardContent className="py-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-sm font-medium text-stone-500">{t('overallTeamScore')}</div>
-                  <div className="text-4xl font-bold text-cyan-700">{synthesis.overall_score.toFixed(1)}</div>
-                  <div className="text-sm text-stone-500 mt-1">
+                  <div className="text-sm font-medium text-stone-500 dark:text-stone-400">{t('overallTeamScore')}</div>
+                  <div className="text-4xl font-bold text-cyan-700 dark:text-cyan-400">{synthesis.overall_score.toFixed(1)}</div>
+                  <div className="text-sm text-stone-500 dark:text-stone-400 mt-1">
                     {synthesis.response_count} {t('responsesCount')} • {synthesis.disagreement_count > 0
                       ? `${synthesis.disagreement_count} ${t('areasOfDisagreement')}`
                       : t('teamAligned')}
@@ -169,8 +169,8 @@ export function SessionDetailContent({ session, synthesis, shareLink, backPath }
           {/* All Statements Breakdown */}
           <Card>
             <CardHeader>
-              <h2 className="text-lg font-semibold text-stone-900">{t('allStatements')}</h2>
-              <p className="text-sm text-stone-500">{t('sortedByScore')}. {t('useInRetro')}</p>
+              <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">{t('allStatements')}</h2>
+              <p className="text-sm text-stone-500 dark:text-stone-400">{t('sortedByScore')}. {t('useInRetro')}</p>
             </CardHeader>
             <CardContent className="space-y-4">
               {synthesis.all_scores.map((item, i) => (
@@ -181,18 +181,18 @@ export function SessionDetailContent({ session, synthesis, shareLink, backPath }
 
           {/* Focus area & experiment suggestion */}
           {isActive && (
-            <Card className="border-cyan-200">
+            <Card className="border-cyan-200 dark:border-cyan-800">
               <CardHeader>
-                <h2 className="text-lg font-semibold text-stone-900">{t('suggestedFocus')}</h2>
+                <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">{t('suggestedFocus')}</h2>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <div className="text-sm font-medium text-stone-500 mb-1">{t('focusArea')}</div>
-                  <p className="text-stone-900 font-medium">{synthesis.focus_area}</p>
+                  <div className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-1">{t('focusArea')}</div>
+                  <p className="text-stone-900 dark:text-stone-100 font-medium">{synthesis.focus_area}</p>
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-stone-500 mb-1">{t('suggestedExperiment')}</div>
-                  <p className="text-stone-700">{synthesis.suggested_experiment}</p>
+                  <div className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-1">{t('suggestedExperiment')}</div>
+                  <p className="text-stone-700 dark:text-stone-300">{synthesis.suggested_experiment}</p>
                 </div>
               </CardContent>
             </Card>
@@ -202,31 +202,55 @@ export function SessionDetailContent({ session, synthesis, shareLink, backPath }
 
       {/* Closed session outcome */}
       {isClosed && session.focus_area && (
-        <Card className="mb-8 border-stone-300">
+        <Card className="mb-8 border-stone-300 dark:border-stone-600">
           <CardHeader>
-            <h2 className="text-lg font-semibold text-stone-900">{t('sessionOutcome')}</h2>
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">{t('sessionOutcome')}</h2>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <div className="text-sm font-medium text-stone-500 mb-1">{t('focusArea')}</div>
-              <p className="text-stone-900 font-medium">{session.focus_area}</p>
+              <div className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-1">{t('focusArea')}</div>
+              <p className="text-stone-900 dark:text-stone-100 font-medium">{session.focus_area}</p>
             </div>
             <div>
-              <div className="text-sm font-medium text-stone-500 mb-1">{t('experiment')}</div>
-              <p className="text-stone-700">{session.experiment}</p>
+              <div className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-1">{t('experiment')}</div>
+              <p className="text-stone-700 dark:text-stone-300">{session.experiment}</p>
             </div>
             <div className="flex gap-8">
               <div>
-                <div className="text-sm font-medium text-stone-500 mb-1">{t('owner')}</div>
-                <p className="text-stone-900">{session.experiment_owner}</p>
+                <div className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-1">{t('owner')}</div>
+                <p className="text-stone-900 dark:text-stone-100">{session.experiment_owner}</p>
               </div>
               <div>
-                <div className="text-sm font-medium text-stone-500 mb-1">{t('followUp')}</div>
-                <p className="text-stone-900">{session.followup_date}</p>
+                <div className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-1">{t('followUp')}</div>
+                <p className="text-stone-900 dark:text-stone-100">{session.followup_date}</p>
               </div>
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Repeat Session (for closed sessions) */}
+      {isClosed && (
+        <div className="mb-8">
+          <Card className="border-cyan-200 dark:border-cyan-800 bg-cyan-50 dark:bg-cyan-900/20">
+            <CardContent className="py-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex-1">
+                  <h3 className="font-medium text-stone-900 dark:text-stone-100">{t('deltaRepeat')}</h3>
+                  <p className="text-sm text-stone-600 dark:text-stone-400">{t('deltaRepeatInfo')}</p>
+                </div>
+                <Link href={`/teams/${session.team_id}/delta/new?angle=${session.angle}`}>
+                  <Button variant="secondary" className="shrink-0">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    {t('deltaRepeat')}
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       )}
 
       {/* Actions */}
@@ -256,52 +280,52 @@ export function SessionDetailContent({ session, synthesis, shareLink, backPath }
         title={t('closeSession')}
       >
         <div className="space-y-4">
-          <p className="text-sm text-stone-500 -mt-2 mb-4">{t('closeSessionInfo')}</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400 -mt-2 mb-4">{t('closeSessionInfo')}</p>
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
               {t('focusArea')}
             </label>
             <input
               type="text"
               value={focusArea}
               onChange={e => setFocusArea(e.target.value)}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-4 py-2 border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder={t('focusAreaPlaceholder')}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
               {t('experiment')}
             </label>
             <textarea
               value={experiment}
               onChange={e => setExperiment(e.target.value)}
               rows={3}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-4 py-2 border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder={t('experimentPlaceholder')}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
               {t('owner')}
             </label>
             <input
               type="text"
               value={owner}
               onChange={e => setOwner(e.target.value)}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-4 py-2 border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder={t('ownerPlaceholder')}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
               {t('followUp')}
             </label>
             <input
               type="date"
               value={followupDate}
               onChange={e => setFollowupDate(e.target.value)}
-              className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full px-4 py-2 border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
             />
           </div>
           <div className="flex gap-3 pt-4">
@@ -330,7 +354,7 @@ export function SessionDetailContent({ session, synthesis, shareLink, backPath }
         onClose={() => setShowDeleteModal(false)}
         title={t('deleteSession')}
       >
-        <p className="text-stone-600 mb-6">
+        <p className="text-stone-600 dark:text-stone-400 mb-6">
           {t('deleteSessionConfirm')}
         </p>
         <div className="flex gap-3">
@@ -364,7 +388,7 @@ function ScoreGauge({ score }: { score: number }) {
     <div className="w-24 h-24 relative">
       <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
         <path
-          className="text-stone-200"
+          className="text-stone-200 dark:text-stone-700"
           stroke="currentColor"
           strokeWidth="3"
           fill="none"
@@ -381,7 +405,7 @@ function ScoreGauge({ score }: { score: number }) {
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-lg font-bold text-stone-700">{score.toFixed(1)}</span>
+        <span className="text-lg font-bold text-stone-700 dark:text-stone-200">{score.toFixed(1)}</span>
       </div>
     </div>
   )
@@ -394,26 +418,26 @@ function StatementRow({ item, rank, t }: { item: StatementScore; rank: number; t
   const hasDisagreement = item.variance > 1.0
 
   // Color based on score
-  const scoreColor = item.score >= 4 ? 'bg-green-100 text-green-700'
-    : item.score >= 3 ? 'bg-cyan-100 text-cyan-700'
-    : item.score >= 2 ? 'bg-amber-100 text-amber-700'
-    : 'bg-red-100 text-red-700'
+  const scoreColor = item.score >= 4 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+    : item.score >= 3 ? 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400'
+    : item.score >= 2 ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
+    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
 
   // Calculate max for distribution bar scaling
   const maxDist = Math.max(...item.distribution, 1)
 
   return (
-    <div className={`p-3 rounded-lg ${isStrength ? 'bg-green-50' : isTension ? 'bg-amber-50' : 'bg-stone-50'}`}>
+    <div className={`p-3 rounded-lg ${isStrength ? 'bg-green-50 dark:bg-green-900/20' : isTension ? 'bg-amber-50 dark:bg-amber-900/20' : 'bg-stone-50 dark:bg-stone-700'}`}>
       <div className="flex items-start gap-3 mb-2">
         <div className={`w-10 h-10 rounded-lg ${scoreColor} flex items-center justify-center text-sm font-bold shrink-0`}>
           {item.score.toFixed(1)}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-stone-800 text-sm leading-relaxed">{item.statement.text}</p>
+          <p className="text-stone-800 dark:text-stone-200 text-sm leading-relaxed">{item.statement.text}</p>
           <div className="flex items-center gap-2 mt-1">
-            {isStrength && <span className="text-xs bg-green-200 text-green-800 px-2 py-0.5 rounded">{t('strength')}</span>}
-            {isTension && <span className="text-xs bg-amber-200 text-amber-800 px-2 py-0.5 rounded">{t('tension')}</span>}
-            {hasDisagreement && <span className="text-xs bg-purple-200 text-purple-800 px-2 py-0.5 rounded">{t('disagreement')}</span>}
+            {isStrength && <span className="text-xs bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200 px-2 py-0.5 rounded">{t('strength')}</span>}
+            {isTension && <span className="text-xs bg-amber-200 dark:bg-amber-800 text-amber-800 dark:text-amber-200 px-2 py-0.5 rounded">{t('tension')}</span>}
+            {hasDisagreement && <span className="text-xs bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 px-2 py-0.5 rounded">{t('disagreement')}</span>}
           </div>
         </div>
       </div>
@@ -423,10 +447,10 @@ function StatementRow({ item, rank, t }: { item: StatementScore; rank: number; t
         {item.distribution.map((count, i) => (
           <div key={i} className="flex-1 flex flex-col items-center">
             <div
-              className={`w-full rounded-t ${i < 2 ? 'bg-red-300' : i === 2 ? 'bg-amber-300' : 'bg-green-300'}`}
+              className={`w-full rounded-t ${i < 2 ? 'bg-red-300 dark:bg-red-600' : i === 2 ? 'bg-amber-300 dark:bg-amber-600' : 'bg-green-300 dark:bg-green-600'}`}
               style={{ height: `${(count / maxDist) * 24}px`, minHeight: count > 0 ? '4px' : '0' }}
             />
-            <span className="text-xs text-stone-400 mt-0.5">{i + 1}</span>
+            <span className="text-xs text-stone-400 dark:text-stone-500 mt-0.5">{i + 1}</span>
           </div>
         ))}
       </div>
@@ -454,18 +478,18 @@ function SessionSetupView({
   return (
     <div className="space-y-6 mb-8">
       {/* Step 1: Session Link */}
-      <Card className="border-cyan-200 bg-linear-to-br from-cyan-50 to-white">
+      <Card className="border-cyan-200 dark:border-cyan-800 bg-linear-to-br from-cyan-50 dark:from-cyan-900/20 to-white dark:to-stone-800">
         <CardContent className="py-6">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-8 h-8 rounded-full bg-cyan-500 text-white flex items-center justify-center text-sm font-bold">
               1
             </div>
-            <h3 className="font-semibold text-stone-900">{t('readyToShare')}</h3>
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('readyToShare')}</h3>
           </div>
 
           {/* Link display */}
-          <div className="bg-white border border-stone-200 rounded-xl p-4 mb-4">
-            <code className="text-sm text-cyan-700 break-all block">{shareLink}</code>
+          <div className="bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-xl p-4 mb-4">
+            <code className="text-sm text-cyan-700 dark:text-cyan-400 break-all block">{shareLink}</code>
           </div>
 
           {/* Actions: Open (primary) + Copy (secondary) */}
@@ -496,20 +520,20 @@ function SessionSetupView({
             </Button>
           </div>
 
-          <p className="text-xs text-stone-500 mt-3">{t('previewFirst')}</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-3">{t('previewFirst')}</p>
         </CardContent>
       </Card>
 
       {/* Step 2: Sharing Guidance */}
-      <Card className="border-stone-200">
+      <Card className="border-stone-200 dark:border-stone-700">
         <CardContent className="py-5">
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-stone-200 text-stone-600 flex items-center justify-center text-sm font-bold shrink-0">
+            <div className="w-8 h-8 rounded-full bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-300 flex items-center justify-center text-sm font-bold shrink-0">
               2
             </div>
             <div>
-              <h3 className="font-semibold text-stone-900 mb-1">{t('shareWithTeam')}</h3>
-              <p className="text-sm text-stone-600 leading-relaxed">
+              <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">{t('shareWithTeam')}</h3>
+              <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
                 {t('sharingTip')}
               </p>
             </div>
@@ -518,25 +542,25 @@ function SessionSetupView({
       </Card>
 
       {/* Step 3: Statements Preview (collapsed) */}
-      <Card className="border-stone-200">
+      <Card className="border-stone-200 dark:border-stone-700">
         <CardContent className="py-5">
           <button
             onClick={() => setShowStatements(!showStatements)}
             className="w-full flex items-center justify-between"
           >
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-stone-200 text-stone-600 flex items-center justify-center text-sm font-bold shrink-0">
+              <div className="w-8 h-8 rounded-full bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-300 flex items-center justify-center text-sm font-bold shrink-0">
                 3
               </div>
               <div className="text-left">
-                <h3 className="font-semibold text-stone-900">
-                  {t('viewStatements')} <span className="text-stone-500 font-normal">({statements.length})</span>
+                <h3 className="font-semibold text-stone-900 dark:text-stone-100">
+                  {t('viewStatements')} <span className="text-stone-500 dark:text-stone-400 font-normal">({statements.length})</span>
                 </h3>
-                <p className="text-sm text-stone-500">{t('statementsNote')}</p>
+                <p className="text-sm text-stone-500 dark:text-stone-400">{t('statementsNote')}</p>
               </div>
             </div>
             <svg
-              className={`w-5 h-5 text-stone-400 transition-transform ${showStatements ? 'rotate-180' : ''}`}
+              className={`w-5 h-5 text-stone-400 dark:text-stone-500 transition-transform ${showStatements ? 'rotate-180' : ''}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -548,7 +572,7 @@ function SessionSetupView({
           {showStatements && (
             <div className="mt-4 ml-11 space-y-2">
               {statements.map((statement, i) => (
-                <div key={statement.id} className="p-3 rounded-lg bg-stone-50 text-sm text-stone-700">
+                <div key={statement.id} className="p-3 rounded-lg bg-stone-50 dark:bg-stone-700 text-sm text-stone-700 dark:text-stone-300">
                   {i + 1}. {statement.text}
                 </div>
               ))}
@@ -558,45 +582,45 @@ function SessionSetupView({
       </Card>
 
       {/* What you will get */}
-      <Card className="border-stone-200 bg-stone-50">
+      <Card className="border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800">
         <CardContent className="py-5">
-          <h3 className="font-semibold text-stone-900 mb-4">{t('whatYouWillGet')}</h3>
+          <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">{t('whatYouWillGet')}</h3>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-cyan-500" />
-                <span className="text-sm font-medium text-stone-800">{t('metricCapability')}</span>
+                <span className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('metricCapability')}</span>
               </div>
-              <p className="text-xs text-stone-500 ml-4">{t('metricCapabilityDesc')}</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 ml-4">{t('metricCapabilityDesc')}</p>
             </div>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-purple-500" />
-                <span className="text-sm font-medium text-stone-800">{t('metricAlignment')}</span>
+                <span className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('metricAlignment')}</span>
               </div>
-              <p className="text-xs text-stone-500 ml-4">{t('metricAlignmentDesc')}</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 ml-4">{t('metricAlignmentDesc')}</p>
             </div>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-amber-500" />
-                <span className="text-sm font-medium text-stone-800">{t('metricFocus')}</span>
+                <span className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('metricFocus')}</span>
               </div>
-              <p className="text-xs text-stone-500 ml-4">{t('metricFocusDesc')}</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 ml-4">{t('metricFocusDesc')}</p>
             </div>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-green-500" />
-                <span className="text-sm font-medium text-stone-800">{t('metricExperiment')}</span>
+                <span className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('metricExperiment')}</span>
               </div>
-              <p className="text-xs text-stone-500 ml-4">{t('metricExperimentDesc')}</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 ml-4">{t('metricExperimentDesc')}</p>
             </div>
           </div>
 
-          <p className="text-xs text-stone-400 mt-4 pt-4 border-t border-stone-200">
+          <p className="text-xs text-stone-400 dark:text-stone-500 mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
             {t('minimumResponses')}
           </p>
         </CardContent>
@@ -606,7 +630,7 @@ function SessionSetupView({
       {session.response_count > 0 && (
         <div className="flex items-center justify-center gap-2 py-4 text-sm">
           <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
-          <span className="text-stone-600">
+          <span className="text-stone-600 dark:text-stone-400">
             {session.response_count} {t('waitingMessagePartial')}
           </span>
         </div>

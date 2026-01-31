@@ -27,18 +27,18 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
           className={cn(
-            'bg-white rounded-2xl shadow-xl w-full max-w-md',
+            'bg-white dark:bg-stone-800 rounded-2xl shadow-xl w-full max-w-md',
             'transform transition-all duration-200',
             'animate-in fade-in zoom-in-95'
           )}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="px-6 py-4 border-b border-stone-200 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-stone-900">{title}</h2>
+          <div className="px-6 py-4 border-b border-stone-200 dark:border-stone-700 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">{title}</h2>
             <button
               onClick={onClose}
-              className="text-stone-400 hover:text-stone-600 transition-colors"
+              className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -53,7 +53,7 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
 
           {/* Footer */}
           {footer && (
-            <div className="px-6 py-4 border-t border-stone-200 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-stone-200 dark:border-stone-700 flex justify-end gap-3">
               {footer}
             </div>
           )}
@@ -100,7 +100,7 @@ export function ConfirmModal({
         </>
       }
     >
-      <p className="text-stone-500">{message}</p>
+      <p className="text-stone-500 dark:text-stone-400">{message}</p>
     </Modal>
   )
 }

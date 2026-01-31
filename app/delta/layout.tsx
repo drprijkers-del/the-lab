@@ -9,7 +9,7 @@ export default async function DeltaLayout({
   await requireAdmin()
 
   return (
-    <div className="min-h-screen bg-stone-50">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-900">
       {children}
     </div>
   )

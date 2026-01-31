@@ -92,11 +92,11 @@ export function DeltaTeamContent({ team, sessions, stats, basePath }: DeltaTeamC
     <div>
       {/* Team header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-stone-900">{team.name}</h1>
+        <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">{team.name}</h1>
         {team.description && (
-          <p className="text-stone-500 mt-1">{team.description}</p>
+          <p className="text-stone-500 dark:text-stone-400 mt-1">{team.description}</p>
         )}
-        <p className="text-sm text-stone-400 mt-2">
+        <p className="text-sm text-stone-400 dark:text-stone-500 mt-2">
           {t('adminCreatedOn')} {new Date(team.created_at).toLocaleDateString(dateLocale, {
             day: 'numeric',
             month: 'long',
@@ -108,44 +108,44 @@ export function DeltaTeamContent({ team, sessions, stats, basePath }: DeltaTeamC
       {/* Team Health Overview */}
       {stats.totalSessions > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-          <Card className={`${getHealthBg(stats.averageScore)} border-0`}>
+          <Card className={`${getHealthBg(stats.averageScore)} dark:bg-stone-800 border-0`}>
             <CardContent className="py-4">
-              <div className="text-xs font-medium text-stone-500 mb-2">{t('teamHealth')}</div>
+              <div className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-2">{t('teamHealth')}</div>
               {stats.averageScore !== null ? (
                 <>
                   <div className={`text-3xl font-bold ${getHealthColor(stats.averageScore)}`}>
                     {stats.averageScore.toFixed(1)}
                   </div>
-                  <div className="text-xs text-stone-500 mt-1">{getHealthLabel(stats.averageScore)}</div>
+                  <div className="text-xs text-stone-500 dark:text-stone-400 mt-1">{getHealthLabel(stats.averageScore)}</div>
                 </>
               ) : (
                 <>
-                  <div className="text-lg font-medium text-stone-400">{t('collecting')}</div>
-                  <div className="text-xs text-stone-400 mt-1">{t('needsClosedSessions')}</div>
+                  <div className="text-lg font-medium text-stone-400 dark:text-stone-500">{t('collecting')}</div>
+                  <div className="text-xs text-stone-400 dark:text-stone-500 mt-1">{t('needsClosedSessions')}</div>
                 </>
               )}
             </CardContent>
           </Card>
 
-          <Card className="bg-stone-50 border-0">
+          <Card className="bg-stone-50 dark:bg-stone-800 border-0">
             <CardContent className="py-4">
-              <div className="text-xs font-medium text-stone-500 mb-2">{t('trendLabel')}</div>
+              <div className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-2">{t('trendLabel')}</div>
               {stats.trend ? (
                 <>
                   <div className="flex items-center gap-1.5">
                     {getTrendIcon()}
-                    <span className="text-lg font-medium text-stone-700">{getTrendLabel()}</span>
+                    <span className="text-lg font-medium text-stone-700 dark:text-stone-300">{getTrendLabel()}</span>
                   </div>
                   {stats.trendDrivers.length > 0 && (
-                    <div className="text-xs text-stone-400 mt-1 truncate">{formatTrendDrivers()}</div>
+                    <div className="text-xs text-stone-400 dark:text-stone-500 mt-1 truncate">{formatTrendDrivers()}</div>
                   )}
                 </>
               ) : (
                 <>
-                  <div className="text-lg font-medium text-stone-400">
+                  <div className="text-lg font-medium text-stone-400 dark:text-stone-500">
                     {stats.closedSessions >= 2 ? t('trendStable') : t('needsMoreData')}
                   </div>
-                  <div className="text-xs text-stone-400 mt-1">
+                  <div className="text-xs text-stone-400 dark:text-stone-500 mt-1">
                     {stats.closedSessions < 2 ? t('needsTwoSessions') : ''}
                   </div>
                 </>
@@ -153,14 +153,14 @@ export function DeltaTeamContent({ team, sessions, stats, basePath }: DeltaTeamC
             </CardContent>
           </Card>
 
-          <Card className="bg-stone-50 border-0">
+          <Card className="bg-stone-50 dark:bg-stone-800 border-0">
             <CardContent className="py-4">
-              <div className="text-xs font-medium text-stone-500 mb-2">{t('sessions')}</div>
-              <div className="text-3xl font-bold text-stone-700">
+              <div className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-2">{t('sessions')}</div>
+              <div className="text-3xl font-bold text-stone-700 dark:text-stone-200">
                 {stats.closedSessions}
-                <span className="text-lg text-stone-400">/{stats.totalSessions}</span>
+                <span className="text-lg text-stone-400 dark:text-stone-500">/{stats.totalSessions}</span>
               </div>
-              <div className="text-xs text-stone-500 mt-1">
+              <div className="text-xs text-stone-500 dark:text-stone-400 mt-1">
                 {stats.activeSessions > 0
                   ? `${stats.activeSessions} ${t('active').toLowerCase()}`
                   : t('sessionsCompleted')
@@ -169,23 +169,23 @@ export function DeltaTeamContent({ team, sessions, stats, basePath }: DeltaTeamC
             </CardContent>
           </Card>
 
-          <Card className="bg-stone-50 border-0">
+          <Card className="bg-stone-50 dark:bg-stone-800 border-0">
             <CardContent className="py-4">
-              <div className="text-xs font-medium text-stone-500 mb-2">{t('responses')}</div>
-              <div className="text-3xl font-bold text-stone-700">{stats.totalResponses}</div>
-              <div className="text-xs text-stone-500 mt-1">{t('responsesCollected')}</div>
+              <div className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-2">{t('responses')}</div>
+              <div className="text-3xl font-bold text-stone-700 dark:text-stone-200">{stats.totalResponses}</div>
+              <div className="text-xs text-stone-500 dark:text-stone-400 mt-1">{t('responsesCollected')}</div>
             </CardContent>
           </Card>
         </div>
       )}
 
       {/* New Delta Session CTA */}
-      <Card className="mb-8 border-cyan-200 bg-gradient-to-r from-cyan-50 to-white">
+      <Card className="mb-8 border-cyan-200 dark:border-cyan-800 bg-gradient-to-r from-cyan-50 dark:from-cyan-900/30 to-white dark:to-stone-800">
         <CardContent className="py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h2 className="text-lg font-semibold text-stone-900">{t('startDeltaSession')}</h2>
-              <p className="text-sm text-stone-600">{t('startDeltaSessionSubtitle')}</p>
+              <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">{t('startDeltaSession')}</h2>
+              <p className="text-sm text-stone-600 dark:text-stone-400">{t('startDeltaSessionSubtitle')}</p>
             </div>
             <Link href={newSessionPath}>
               <Button>
@@ -202,7 +202,7 @@ export function DeltaTeamContent({ team, sessions, stats, basePath }: DeltaTeamC
       {/* Active Sessions */}
       {activeSessions.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-lg font-semibold text-stone-900 mb-4">{t('activeSessions')}</h2>
+          <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">{t('activeSessions')}</h2>
           <div className="grid gap-4">
             {activeSessions.map(session => (
               <SessionCard key={session.id} session={session} t={t} sessionBasePath={sessionBasePath} />
@@ -214,10 +214,10 @@ export function DeltaTeamContent({ team, sessions, stats, basePath }: DeltaTeamC
       {/* Session Diary */}
       {closedSessions.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-lg font-semibold text-stone-500 mb-2">{t('teamDiary')}</h2>
-          <p className="text-sm text-stone-400 mb-4">{t('teamDiarySubtitle')}</p>
+          <h2 className="text-lg font-semibold text-stone-500 dark:text-stone-400 mb-2">{t('teamDiary')}</h2>
+          <p className="text-sm text-stone-400 dark:text-stone-500 mb-4">{t('teamDiarySubtitle')}</p>
           {closedSessions.length >= 2 && (
-            <div className="text-xs text-stone-400 mb-4 flex items-center gap-1.5">
+            <div className="text-xs text-stone-400 dark:text-stone-500 mb-4 flex items-center gap-1.5">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -236,8 +236,8 @@ export function DeltaTeamContent({ team, sessions, stats, basePath }: DeltaTeamC
       {sessions.length === 0 && (
         <Card className="mb-8">
           <CardContent className="py-12 text-center">
-            <h3 className="text-lg font-medium text-stone-900 mb-2">{t('noSessionsYet')}</h3>
-            <p className="text-stone-500 mb-6">{t('noSessionsMessage')}</p>
+            <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">{t('noSessionsYet')}</h3>
+            <p className="text-stone-500 dark:text-stone-400 mb-6">{t('noSessionsMessage')}</p>
           </CardContent>
         </Card>
       )}
@@ -310,32 +310,32 @@ function SessionCard({ session, t, sessionBasePath }: { session: DeltaSessionWit
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-stone-900 truncate">
+                <h3 className="font-semibold text-stone-900 dark:text-stone-100 truncate">
                   {session.title || angleInfo.label}
                 </h3>
                 {isActive && (
-                  <span className="text-xs bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full">
+                  <span className="text-xs bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400 px-2 py-0.5 rounded-full">
                     {t('active')}
                   </span>
                 )}
               </div>
-              <p className="text-sm text-stone-500">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
                 {angleInfo.label} • {session.response_count} {t('responses').toLowerCase()}
               </p>
               {insight && isClosed && (
-                <p className="text-sm text-stone-400 mt-1 italic truncate">{insight}</p>
+                <p className="text-sm text-stone-400 dark:text-stone-500 mt-1 italic truncate">{insight}</p>
               )}
               {isClosed && session.focus_area && !insight && (
-                <p className="text-sm text-stone-400 mt-1 truncate">
+                <p className="text-sm text-stone-400 dark:text-stone-500 mt-1 truncate">
                   {t('focusArea')}: {session.focus_area}
                 </p>
               )}
               {isActive && insight && (
-                <p className="text-sm text-cyan-600 mt-1">{insight}</p>
+                <p className="text-sm text-cyan-600 dark:text-cyan-400 mt-1">{insight}</p>
               )}
             </div>
 
-            <svg className="w-5 h-5 text-stone-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-stone-400 dark:text-stone-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </div>

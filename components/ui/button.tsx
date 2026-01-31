@@ -14,10 +14,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
 
     const variants = {
-      primary: 'bg-cyan-500 text-white hover:bg-cyan-600 active:bg-cyan-700 focus:ring-cyan-500',
-      secondary: 'bg-white text-stone-600 border border-stone-200 hover:border-stone-300 hover:bg-stone-50 active:bg-stone-100 focus:ring-stone-500',
-      ghost: 'bg-transparent text-stone-500 hover:text-stone-700 hover:bg-stone-100 active:bg-stone-200 focus:ring-stone-500',
-      danger: 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 active:bg-red-200 focus:ring-red-500',
+      primary: 'bg-cyan-500 text-white hover:bg-cyan-600 active:bg-cyan-700 focus:ring-cyan-500 dark:focus:ring-offset-stone-900',
+      secondary: 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500 hover:bg-stone-50 dark:hover:bg-stone-700 active:bg-stone-100 dark:active:bg-stone-600 focus:ring-stone-500 dark:focus:ring-offset-stone-900',
+      ghost: 'bg-transparent text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 active:bg-stone-200 dark:active:bg-stone-700 focus:ring-stone-500 dark:focus:ring-offset-stone-900',
+      danger: 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/50 active:bg-red-200 dark:active:bg-red-900/70 focus:ring-red-500 dark:focus:ring-offset-stone-900',
     }
 
     const sizes = {

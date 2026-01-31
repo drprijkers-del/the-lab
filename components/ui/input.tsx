@@ -15,7 +15,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="space-y-1">
         {label && (
-          <label htmlFor={id} className="block text-sm font-medium text-stone-600">
+          <label htmlFor={id} className="block text-sm font-medium text-stone-600 dark:text-stone-400">
             {label}
           </label>
         )}
@@ -25,9 +25,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={errorId}
           className={cn(
-            'block w-full px-4 py-3 rounded-xl border border-stone-200 bg-white text-stone-900',
-            'placeholder:text-stone-400',
-            'focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent',
+            'block w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100',
+            'placeholder:text-stone-400 dark:placeholder:text-stone-500',
+            'focus:outline-none focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-transparent',
             'transition-all duration-200',
             error && 'border-red-500 focus:ring-red-500',
             className
@@ -35,7 +35,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error && (
-          <p id={errorId} role="alert" className="text-sm text-red-500">{error}</p>
+          <p id={errorId} role="alert" className="text-sm text-red-500 dark:text-red-400">{error}</p>
         )}
       </div>
     )

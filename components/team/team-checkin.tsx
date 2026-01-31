@@ -69,13 +69,13 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
 
   if (result?.alreadyCheckedIn) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-stone-50">
+      <div className="min-h-screen flex items-center justify-center p-4 bg-stone-50 dark:bg-stone-900">
         <div className="text-center max-w-md">
           <div className="text-5xl mb-6">🧪</div>
-          <h1 className="text-2xl font-bold text-stone-900 mb-2">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2">
             {t('alreadyTitle')}
           </h1>
-          <p className="text-stone-500">
+          <p className="text-stone-500 dark:text-stone-400">
             {t('alreadyMessage')}
           </p>
         </div>
@@ -84,7 +84,7 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-stone-50 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-stone-50 dark:bg-stone-900 relative overflow-hidden">
       {/* Easter egg: The Fly - Breaking Bad S03E10 */}
       {/* Fly behavior responds to selected signal: low signal = more erratic */}
       <Fly frequency={signalToFlyFrequency(selectedSignal)} />
@@ -94,7 +94,7 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-xl">⚗️</span>
-            <span className="text-sm text-stone-400">{t('pulse')}</span>
+            <span className="text-sm text-stone-400 dark:text-stone-500">{t('pulse')}</span>
           </div>
           <LanguageToggle />
         </div>
@@ -105,12 +105,12 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
         <div className="w-full max-w-lg">
           {/* Team & Date */}
           <div className="text-center mb-8">
-            <p className="text-sm text-stone-400 mb-1">{formatDate(new Date())}</p>
-            <h1 className="text-2xl font-bold text-stone-900">{teamName}</h1>
+            <p className="text-sm text-stone-400 dark:text-stone-500 mb-1">{formatDate(new Date())}</p>
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">{teamName}</h1>
           </div>
 
           {/* Question */}
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 tracking-tight text-stone-900">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 tracking-tight text-stone-900 dark:text-stone-100">
             {t('checkinQuestion')} {t('checkinToday')}?
           </h2>
 
@@ -134,8 +134,8 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
                   text-xl md:text-2xl font-bold
                   transition-all duration-200
                   ${selectedSignal === signal.value
-                    ? `${signal.color} text-white shadow-lg shadow-cyan-500/30 scale-110 ring-4 ring-cyan-200`
-                    : 'bg-white border-2 border-stone-200 text-stone-400 hover:border-cyan-400 hover:text-cyan-600 hover:scale-105 hover:shadow-md active:scale-95'
+                    ? `${signal.color} text-white shadow-lg shadow-cyan-500/30 scale-110 ring-4 ring-cyan-200 dark:ring-cyan-800`
+                    : 'bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 text-stone-400 dark:text-stone-500 hover:border-cyan-400 dark:hover:border-cyan-500 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 hover:shadow-md active:scale-95'
                   }
                 `}
               >
@@ -161,7 +161,7 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               aria-label="Your nickname (optional)"
-              className="w-full px-4 py-3 rounded-xl bg-white border border-stone-200 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-transparent transition-all"
             />
 
             <div>
@@ -171,11 +171,11 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
                 onChange={(e) => setComment(e.target.value)}
                 rows={2}
                 aria-label="Add a comment (optional)"
-                className="w-full px-4 py-3 rounded-xl bg-white border border-stone-200 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all resize-none"
+                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 dark:focus:ring-cyan-500 focus:border-transparent transition-all resize-none"
               />
               {/* Coaching tip for low scores */}
               {selectedSignal && selectedSignal <= 2 && (
-                <p className="mt-2 text-xs text-amber-600 flex items-center gap-1">
+                <p className="mt-2 text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
                   <span>💬</span>
                   {t('coachingTipContext')}
                 </p>
@@ -185,7 +185,7 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
 
           {/* Error message */}
           {error && (
-            <div role="alert" className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm text-center">
+            <div role="alert" className="mb-6 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm text-center">
               {error}
             </div>
           )}
@@ -200,8 +200,8 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
               w-full py-4 px-6 rounded-xl font-medium text-lg
               transition-all duration-200
               ${selectedSignal
-                ? 'bg-stone-900 text-white hover:bg-stone-800'
-                : 'bg-stone-200 text-stone-400 cursor-not-allowed'
+                ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-stone-200'
+                : 'bg-stone-200 dark:bg-stone-700 text-stone-400 dark:text-stone-500 cursor-not-allowed'
               }
               disabled:opacity-50
             `}
@@ -220,7 +220,7 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
           </button>
 
           {/* Anonymous note */}
-          <p className="text-center text-xs text-stone-400 mt-6 flex items-center justify-center gap-1">
+          <p className="text-center text-xs text-stone-400 dark:text-stone-500 mt-6 flex items-center justify-center gap-1">
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>

@@ -83,20 +83,20 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
-      ux: 'bg-purple-100 text-purple-700',
-      statements: 'bg-blue-100 text-blue-700',
-      analytics: 'bg-cyan-100 text-cyan-700',
-      integration: 'bg-amber-100 text-amber-700',
-      features: 'bg-emerald-100 text-emerald-700',
+      ux: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400',
+      statements: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400',
+      analytics: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400',
+      integration: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400',
+      features: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400',
     }
-    return colors[category] || 'bg-stone-100 text-stone-700'
+    return colors[category] || 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-400'
   }
 
   const getProductBadge = (product: string) => {
     const config: Record<string, { label: string; color: string }> = {
-      delta: { label: 'Delta', color: 'bg-cyan-50 text-cyan-600 border-cyan-200' },
-      pulse: { label: 'Pulse', color: 'bg-purple-50 text-purple-600 border-purple-200' },
-      shared: { label: 'Shared', color: 'bg-stone-50 text-stone-600 border-stone-200' },
+      delta: { label: 'Delta', color: 'bg-cyan-50 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-800' },
+      pulse: { label: 'Pulse', color: 'bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800' },
+      shared: { label: 'Shared', color: 'bg-stone-50 dark:bg-stone-800 text-stone-600 dark:text-stone-400 border-stone-200 dark:border-stone-700' },
     }
     return config[product] || config.shared
   }
@@ -106,7 +106,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
       return (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-stone-400">No items yet</p>
+            <p className="text-stone-400 dark:text-stone-500">No items yet</p>
           </CardContent>
         </Card>
       )
@@ -129,12 +129,12 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-stone-900">{item.title_en}</h3>
+                    <h3 className="font-medium text-stone-900 dark:text-stone-100">{item.title_en}</h3>
                     {item.source_en && (
-                      <p className="text-sm text-stone-500 mt-1">{item.source_en}</p>
+                      <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">{item.source_en}</p>
                     )}
                     {item.our_take_en && (
-                      <p className="text-sm text-stone-600 mt-2 italic">
+                      <p className="text-sm text-stone-600 dark:text-stone-300 mt-2 italic">
                         &ldquo;{item.our_take_en}&rdquo;
                       </p>
                     )}
@@ -153,7 +153,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
       return (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-stone-400">No releases yet</p>
+            <p className="text-stone-400 dark:text-stone-500">No releases yet</p>
           </CardContent>
         </Card>
       )
@@ -170,10 +170,10 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
                   <span className={`text-xs px-2 py-0.5 rounded border ${productBadge.color}`}>
                     {productBadge.label}
                   </span>
-                  <span className="text-xs font-mono bg-stone-100 text-stone-600 px-2 py-1 rounded">
+                  <span className="text-xs font-mono bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 px-2 py-1 rounded">
                     v{release.version}
                   </span>
-                  <span className="text-sm text-stone-400">
+                  <span className="text-sm text-stone-400 dark:text-stone-500">
                     {new Date(release.released_at).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'short',
@@ -181,15 +181,15 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
                     })}
                   </span>
                 </div>
-                <h3 className="font-medium text-stone-900">{release.title_en}</h3>
+                <h3 className="font-medium text-stone-900 dark:text-stone-100">{release.title_en}</h3>
                 {release.description_en && (
-                  <p className="text-sm text-stone-500 mt-1">{release.description_en}</p>
+                  <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">{release.description_en}</p>
                 )}
                 {release.changes && release.changes.length > 0 && (
                   <ul className="mt-3 space-y-1">
                     {release.changes.map((change, i) => (
-                      <li key={i} className="text-sm text-stone-600 flex items-start gap-2">
-                        <span className="text-emerald-500 mt-0.5">+</span>
+                      <li key={i} className="text-sm text-stone-600 dark:text-stone-300 flex items-start gap-2">
+                        <span className="text-emerald-500 dark:text-emerald-400 mt-0.5">+</span>
                         {change.en}
                       </li>
                     ))}
@@ -207,12 +207,12 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
     <div>
       {/* Wish submission section */}
       {wishState === 'browsing' && (
-        <Card className="mb-8 border-cyan-200 bg-cyan-50/50">
+        <Card className="mb-8 border-cyan-200 dark:border-cyan-800 bg-cyan-50/50 dark:bg-cyan-900/20">
           <CardContent className="py-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h2 className="font-bold text-stone-900">{t('wishTitle')}</h2>
-                <p className="text-sm text-stone-600 mt-1">
+                <h2 className="font-bold text-stone-900 dark:text-stone-100">{t('wishTitle')}</h2>
+                <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
                   Have an idea or suggestion? We&apos;d love to hear it!
                 </p>
               </div>
@@ -226,13 +226,13 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
 
       {/* Wish form */}
       {(wishState === 'form' || wishState === 'submitting') && (
-        <Card className="mb-8 border-cyan-200">
+        <Card className="mb-8 border-cyan-200 dark:border-cyan-800">
           <CardContent className="py-6">
-            <h2 className="text-lg font-bold text-stone-900 mb-4">{t('wishTitle')}</h2>
+            <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100 mb-4">{t('wishTitle')}</h2>
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="wish-text" className="block text-sm font-medium text-stone-700 mb-1">
+                <label htmlFor="wish-text" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
                   {t('wishLabel')}
                 </label>
                 <textarea
@@ -243,17 +243,17 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
                     setWishError('')
                   }}
                   placeholder={t('wishPlaceholder')}
-                  className="w-full px-3 py-2 border border-stone-300 rounded-lg text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 rounded-lg text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none"
                   rows={3}
                   disabled={wishState === 'submitting'}
                 />
                 {wishError && (
-                  <p className="text-sm text-red-600 mt-1">{wishError}</p>
+                  <p className="text-sm text-red-600 dark:text-red-400 mt-1">{wishError}</p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="wish-why" className="block text-sm font-medium text-stone-700 mb-1">
+                <label htmlFor="wish-why" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
                   {t('wishWhyLabel')}
                 </label>
                 <textarea
@@ -261,7 +261,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
                   value={wishWhy}
                   onChange={(e) => setWishWhy(e.target.value)}
                   placeholder={t('wishWhyPlaceholder')}
-                  className="w-full px-3 py-2 border border-stone-300 rounded-lg text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 rounded-lg text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none"
                   rows={2}
                   disabled={wishState === 'submitting'}
                 />
@@ -290,15 +290,15 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
 
       {/* Success message */}
       {wishState === 'success' && (
-        <Card className="mb-8 border-green-200 bg-green-50">
+        <Card className="mb-8 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/30">
           <CardContent className="py-6 text-center">
-            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-green-100 flex items-center justify-center">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
+              <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-lg font-bold text-stone-900 mb-2">{t('wishThanks')}</h2>
-            <p className="text-sm text-stone-600 mb-4">{t('wishConfirmation')}</p>
+            <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100 mb-2">{t('wishThanks')}</h2>
+            <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">{t('wishConfirmation')}</p>
             <Button variant="secondary" onClick={handleCloseSuccess}>
               {t('wishClose')}
             </Button>
@@ -309,7 +309,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
       {/* Under review section (if there are items) */}
       {review.length > 0 && (
         <div className="mb-8">
-          <h3 className="text-sm font-medium text-stone-500 uppercase tracking-wide mb-3">
+          <h3 className="text-sm font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-3">
             Under review ({review.length})
           </h3>
           {renderItems(review)}
@@ -317,7 +317,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
       )}
 
       {/* Tab navigation */}
-      <div className="flex gap-1 p-1 bg-stone-100 rounded-xl mb-6">
+      <div className="flex gap-1 p-1 bg-stone-100 dark:bg-stone-800 rounded-xl mb-6">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -325,14 +325,14 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
             className={`
               flex-1 py-2.5 px-3 rounded-lg text-sm font-medium transition-all
               ${activeTab === tab.id
-                ? 'bg-white text-stone-900 shadow-sm'
-                : 'text-stone-600 hover:text-stone-900'
+                ? 'bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-sm'
+                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
               }
             `}
           >
             {tab.label}
             {tab.count > 0 && (
-              <span className="ml-1.5 text-xs text-stone-400">({tab.count})</span>
+              <span className="ml-1.5 text-xs text-stone-400 dark:text-stone-500">({tab.count})</span>
             )}
           </button>
         ))}
@@ -341,7 +341,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
       {/* Tab content */}
       {activeTab === 'exploring' && (
         <div>
-          <p className="text-sm text-stone-500 mb-4">
+          <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">
             Ideas and features we&apos;re actively considering. Feedback welcome!
           </p>
           {renderItems(exploring)}
@@ -350,7 +350,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
 
       {activeTab === 'building' && (
         <div>
-          <p className="text-sm text-stone-500 mb-4">
+          <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">
             Decided to build. Coming soon to Pulse.
           </p>
           {renderItems(building)}
@@ -359,7 +359,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
 
       {activeTab === 'not_doing' && (
         <div>
-          <p className="text-sm text-stone-500 mb-4">
+          <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">
             We considered these but decided against them. Here&apos;s why.
           </p>
           {renderItems(notDoing)}
@@ -368,7 +368,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
 
       {activeTab === 'releases' && (
         <div>
-          <p className="text-sm text-stone-500 mb-4">
+          <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">
             Recent updates and new features.
           </p>
           {renderReleases()}

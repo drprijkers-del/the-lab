@@ -62,7 +62,7 @@ export function AlreadyCheckedIn({ teamName }: AlreadyCheckedInProps) {
   const isLegendaryStreak = streak >= 14
 
   return (
-    <div className="min-h-screen flex flex-col bg-stone-50 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-stone-50 dark:bg-stone-900 relative overflow-hidden">
       {/* Easter egg: The Fly - Breaking Bad S03E10 */}
       <div
         className="absolute top-1/2 text-lg opacity-25 pointer-events-none z-50"
@@ -122,7 +122,7 @@ export function AlreadyCheckedIn({ teamName }: AlreadyCheckedInProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-xl">⚗️</span>
-            <span className="text-sm text-stone-400">{t('pulse')}</span>
+            <span className="text-sm text-stone-400 dark:text-stone-500">{t('pulse')}</span>
           </div>
           <LanguageToggle />
         </div>
@@ -133,10 +133,10 @@ export function AlreadyCheckedIn({ teamName }: AlreadyCheckedInProps) {
         <div className="text-center max-w-md">
           {/* Already checked in */}
           <div className="text-6xl mb-6">🧪</div>
-          <h1 className="text-2xl font-bold text-stone-900 mb-2">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2">
             {t('alreadyTitle')}
           </h1>
-          <p className="text-stone-500 mb-8">
+          <p className="text-stone-500 dark:text-stone-400 mb-8">
             {t('alreadyMessage')}
           </p>
 
@@ -150,22 +150,22 @@ export function AlreadyCheckedIn({ teamName }: AlreadyCheckedInProps) {
                   ? 'bg-gradient-to-br from-cyan-500 to-cyan-600 text-white shadow-md'
                   : isGoodStreak
                     ? 'bg-gradient-to-br from-stone-600 to-stone-700 text-white shadow-md'
-                    : 'bg-stone-100'
+                    : 'bg-stone-100 dark:bg-stone-800'
               }
             `}>
               <div className="flex items-center justify-center gap-2 mb-1">
                 <span className={`text-2xl ${streak > 2 ? 'animate-pulse' : ''}`}>
                   {isLegendaryStreak ? '👨‍🔬' : isGreatStreak ? '🔥' : streak > 1 ? '⚗️' : '✨'}
                 </span>
-                <span className={`text-3xl font-bold ${isGoodStreak ? 'text-white' : 'text-stone-900'}`}>
+                <span className={`text-3xl font-bold ${isGoodStreak ? 'text-white' : 'text-stone-900 dark:text-stone-100'}`}>
                   {streak}
                 </span>
-                <span className={`text-sm ${isGoodStreak ? 'text-white/90' : 'text-stone-500'}`}>
+                <span className={`text-sm ${isGoodStreak ? 'text-white/90' : 'text-stone-500 dark:text-stone-400'}`}>
                   {streak === 1 ? t('successStreakSingular') : t('successStreak')}
                 </span>
               </div>
               {streak > 1 && (
-                <p className={`text-xs ${isGoodStreak ? 'text-white/80' : 'text-stone-400'}`}>
+                <p className={`text-xs ${isGoodStreak ? 'text-white/80' : 'text-stone-400 dark:text-stone-500'}`}>
                   {getStreakMessage(streak, language)}
                 </p>
               )}
@@ -174,22 +174,22 @@ export function AlreadyCheckedIn({ teamName }: AlreadyCheckedInProps) {
 
           {/* Team stats */}
           {stats && stats.total_entries > 0 && (
-            <div className="bg-white rounded-2xl p-5 border border-stone-200">
-              <p className="text-xs text-stone-400 uppercase tracking-wide mb-4">{t('successTeamToday')}</p>
+            <div className="bg-white dark:bg-stone-800 rounded-2xl p-5 border border-stone-200 dark:border-stone-700">
+              <p className="text-xs text-stone-400 dark:text-stone-500 uppercase tracking-wide mb-4">{t('successTeamToday')}</p>
               <div className="flex justify-center gap-8">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-stone-900">
+                  <div className="text-2xl font-bold text-stone-900 dark:text-stone-100">
                     {stats.average_mood.toFixed(1)}
                   </div>
-                  <div className="text-xs text-cyan-500 font-mono">
+                  <div className="text-xs text-cyan-500 dark:text-cyan-400 font-mono">
                     {avgPurity} pure
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-stone-900">
+                  <div className="text-2xl font-bold text-stone-900 dark:text-stone-100">
                     {stats.total_entries}
                   </div>
-                  <div className="text-xs text-stone-400">
+                  <div className="text-xs text-stone-400 dark:text-stone-500">
                     {t('alreadyCheckedToday')}
                   </div>
                 </div>
@@ -200,7 +200,7 @@ export function AlreadyCheckedIn({ teamName }: AlreadyCheckedInProps) {
       </main>
 
       {/* Footer */}
-      <footer className="p-6 text-center text-xs text-stone-400">
+      <footer className="p-6 text-center text-xs text-stone-400 dark:text-stone-500">
         {teamName}
       </footer>
     </div>
