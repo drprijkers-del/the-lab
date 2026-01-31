@@ -135,6 +135,7 @@ export const translations = {
     statsAvgMood: 'Gem. purity',
     statsCheckins: 'Samples',
     statsParticipation: 'Deelname',
+    statsTodayParticipation: 'Deelname vandaag',
     statsNoData: 'Nog geen samples',
 
     // Share link
@@ -596,6 +597,7 @@ export const translations = {
     statsAvgMood: 'Avg. purity',
     statsCheckins: 'Samples',
     statsParticipation: 'Participation',
+    statsTodayParticipation: 'Today\'s participation',
     statsNoData: 'No samples yet',
 
     // Share link

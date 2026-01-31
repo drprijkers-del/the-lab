@@ -196,6 +196,44 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
                   )}
                 </div>
 
+                {/* Participation progress (Pulse only) */}
+                {team.pulse && (
+                  <div className="mb-3">
+                    {(() => {
+                      const effectiveSize = team.expected_team_size || team.pulse.participant_count || 1
+                      const todayCount = team.pulse.today_entries
+                      const percentage = effectiveSize > 0 ? Math.round((todayCount / effectiveSize) * 100) : 0
+                      const isComplete = percentage >= 80
+                      const isLow = percentage < 50 && effectiveSize > 0
+
+                      return (
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-stone-500 dark:text-stone-400">{t('statsToday')}</span>
+                            <span className={`font-medium ${
+                              isComplete ? 'text-green-600 dark:text-green-400' :
+                              isLow ? 'text-amber-600 dark:text-amber-400' :
+                              'text-stone-600 dark:text-stone-300'
+                            }`}>
+                              {todayCount}/{effectiveSize}
+                            </span>
+                          </div>
+                          <div className="h-1 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all ${
+                                isComplete ? 'bg-green-500' :
+                                isLow ? 'bg-amber-500' :
+                                'bg-cyan-500'
+                              }`}
+                              style={{ width: `${Math.min(100, percentage)}%` }}
+                            />
+                          </div>
+                        </div>
+                      )
+                    })()}
+                  </div>
+                )}
+
                 {/* Footer: Last activity */}
                 <div className="text-xs text-stone-400 dark:text-stone-500 pt-2 border-t border-stone-100 dark:border-stone-700">
                   {formatDate(team.last_updated)}

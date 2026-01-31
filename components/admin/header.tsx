@@ -19,8 +19,11 @@ export function AdminHeader() {
   const isActive = pathname?.startsWith('/teams') || pathname?.startsWith('/session')
 
   async function handleLogout() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+    } catch {
+      // Continue with redirect even if API fails
+    }
     router.push('/')
     router.refresh()
   }

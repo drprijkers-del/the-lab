@@ -9,7 +9,8 @@ const EMAIL_ALIASES: Record<string, string> = {
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    const { email, password, redirect: redirectTo } = await request.json()
+    const finalRedirect = redirectTo || '/teams'
 
     if (!email || !password) {
       return NextResponse.json(
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     if (authError || !authData.properties?.hashed_token) {
       // Fallback: Create custom session cookie like super-admin
-      const response = NextResponse.json({ success: true, redirect: '/' })
+      const response = NextResponse.json({ success: true, redirect: finalRedirect })
 
       const sessionData = {
         userId: adminUser.id,
@@ -94,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     // If we got here, use the magic link token to create session
     // This is complex, so let's use the simpler cookie approach
-    const response = NextResponse.json({ success: true, redirect: '/' })
+    const response = NextResponse.json({ success: true, redirect: finalRedirect })
 
     const sessionData = {
       userId: adminUser.id,

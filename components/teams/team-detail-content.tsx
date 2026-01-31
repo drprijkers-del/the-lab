@@ -177,15 +177,62 @@ export function TeamDetailContent({ team, pulseMetrics, pulseInsights = [], delt
 
                 {/* Quick stats */}
                 <div className="grid grid-cols-2 gap-4">
+                  {/* Today's participation */}
                   <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4">
-                    <div className="text-2xl font-bold text-stone-900 dark:text-stone-100">{team.pulse.participant_count}</div>
-                    <div className="text-sm text-stone-500 dark:text-stone-400">{t('adminParticipants')}</div>
+                    {(() => {
+                      const effectiveSize = team.expected_team_size || team.pulse.participant_count || 1
+                      const todayCount = team.pulse.today_entries
+                      const percentage = effectiveSize > 0 ? Math.round((todayCount / effectiveSize) * 100) : 0
+                      const isComplete = percentage >= 80
+                      const isLow = percentage < 50 && effectiveSize > 0
+
+                      return (
+                        <>
+                          <div className="flex items-baseline gap-1">
+                            <span className={`text-2xl font-bold ${
+                              isComplete ? 'text-green-600 dark:text-green-400' :
+                              isLow ? 'text-amber-600 dark:text-amber-400' :
+                              'text-stone-900 dark:text-stone-100'
+                            }`}>
+                              {todayCount}/{effectiveSize}
+                            </span>
+                            <span className={`text-sm font-medium ${
+                              isComplete ? 'text-green-600 dark:text-green-400' :
+                              isLow ? 'text-amber-600 dark:text-amber-400' :
+                              'text-stone-500 dark:text-stone-400'
+                            }`}>
+                              ({percentage}%)
+                            </span>
+                          </div>
+                          <div className="text-sm text-stone-500 dark:text-stone-400">{t('statsTodayParticipation')}</div>
+                          {/* Progress bar */}
+                          <div className="mt-2 h-1.5 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all ${
+                                isComplete ? 'bg-green-500' :
+                                isLow ? 'bg-amber-500' :
+                                'bg-cyan-500'
+                              }`}
+                              style={{ width: `${Math.min(100, percentage)}%` }}
+                            />
+                          </div>
+                        </>
+                      )
+                    })()}
                   </div>
+                  {/* Total participants vs expected */}
                   <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4">
-                    <div className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-                      {pulseMetrics?.maturity?.daysOfData ?? 0}
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+                        {team.pulse.participant_count}
+                      </span>
+                      {team.expected_team_size && (
+                        <span className="text-sm text-stone-500 dark:text-stone-400">
+                          / {team.expected_team_size}
+                        </span>
+                      )}
                     </div>
-                    <div className="text-sm text-stone-500 dark:text-stone-400">Dagen data</div>
+                    <div className="text-sm text-stone-500 dark:text-stone-400">{t('adminParticipants')}</div>
                   </div>
                 </div>
 

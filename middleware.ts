@@ -54,6 +54,33 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse
   }
 
+  // Handle unified /teams routes - require authentication
+  if (pathname.startsWith('/teams')) {
+    // First check for password session cookie
+    const passwordSession = request.cookies.get('admin_password_session')?.value
+    if (passwordSession) {
+      try {
+        const session = JSON.parse(passwordSession)
+        if (session.exp > Date.now()) {
+          return NextResponse.next()
+        }
+      } catch {
+        // Invalid session, continue to check Supabase session
+      }
+    }
+
+    // Check Supabase session
+    const { user, supabaseResponse } = await updateSession(request)
+
+    if (!user) {
+      const loginUrl = new URL('/login', request.url)
+      loginUrl.searchParams.set('redirect', pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+
+    return supabaseResponse
+  }
+
   // Handle Delta routes - require authentication (except participation /d/)
   if (pathname.startsWith('/delta') && !pathname.startsWith('/d/')) {
     // First check for password session cookie

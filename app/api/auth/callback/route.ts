@@ -54,6 +54,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Redirect to home page (tool picker) on success
-  return NextResponse.redirect(new URL('/', request.url))
+  // Redirect to teams page on success
+  return NextResponse.redirect(new URL('/teams', request.url))
 }

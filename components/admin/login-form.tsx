@@ -20,6 +20,7 @@ export function LoginForm() {
   const [usePassword, setUsePassword] = useState(false)
 
   const unauthorized = searchParams.get('error') === 'unauthorized'
+  const redirectTo = searchParams.get('redirect') || '/teams'
 
   async function handleMagicLink(e: React.FormEvent) {
     e.preventDefault()
@@ -60,7 +61,7 @@ export function LoginForm() {
       const response = await fetch('/api/auth/login-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, redirect: redirectTo }),
       })
 
       const data = await response.json()
@@ -71,7 +72,7 @@ export function LoginForm() {
         return
       }
 
-      router.push(data.redirect || '/')
+      router.push(data.redirect || '/teams')
       router.refresh()
     } catch {
       setError('An error occurred')
