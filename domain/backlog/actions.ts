@@ -48,10 +48,11 @@ export interface ReleaseNote {
 // ============================================================================
 
 /**
- * Get all backlog items
+ * Get all backlog items (uses admin client to bypass RLS for public read access)
  */
 export async function getBacklogItems(): Promise<BacklogItem[]> {
-  const supabase = await createClient()
+  // Use admin client to bypass RLS - backlog is public information
+  const supabase = await createAdminClient()
 
   const { data, error } = await supabase
     .from('backlog_items')
@@ -197,10 +198,11 @@ export async function deleteBacklogItem(id: string): Promise<{ success: boolean;
 // ============================================================================
 
 /**
- * Get all release notes
+ * Get all release notes (uses admin client to bypass RLS for public read access)
  */
 export async function getReleaseNotes(): Promise<ReleaseNote[]> {
-  const supabase = await createClient()
+  // Use admin client to bypass RLS - release notes are public information
+  const supabase = await createAdminClient()
 
   const { data, error } = await supabase
     .from('release_notes')
