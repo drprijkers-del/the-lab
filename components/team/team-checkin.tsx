@@ -114,43 +114,42 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
             {t('checkinQuestion')} {t('checkinToday')}?
           </h2>
 
-          {/* Signal selector - cyan/teal like blue meth */}
+          {/* Signal selector with labels */}
           <div
-            className="flex justify-center gap-3 md:gap-4 mb-4"
+            className="flex justify-center gap-2 md:gap-3 mb-10"
             role="radiogroup"
             aria-label="Select your mood level from 1 to 5"
           >
             {SIGNAL_SCALE.map((signal) => (
-              <button
-                key={signal.value}
-                onClick={() => setSelectedSignal(signal.value)}
-                role="radio"
-                aria-checked={selectedSignal === signal.value}
-                aria-label={`Mood level ${signal.value}, ${t(signal.labelKey)}`}
-                className={`
-                  relative w-14 h-14 md:w-16 md:h-16
-                  rounded-xl
-                  flex items-center justify-center
-                  text-xl md:text-2xl font-bold
-                  transition-all duration-200
-                  ${selectedSignal === signal.value
-                    ? `${signal.color} text-white shadow-lg shadow-cyan-500/30 scale-110 ring-4 ring-cyan-200 dark:ring-cyan-800`
-                    : 'bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 text-stone-400 dark:text-stone-500 hover:border-cyan-400 dark:hover:border-cyan-500 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 hover:shadow-md active:scale-95'
-                  }
-                `}
-              >
-                {signal.value}
-              </button>
+              <div key={signal.value} className="flex flex-col items-center gap-2">
+                <button
+                  onClick={() => setSelectedSignal(signal.value)}
+                  role="radio"
+                  aria-checked={selectedSignal === signal.value}
+                  aria-label={`Mood level ${signal.value}, ${t(signal.labelKey)}`}
+                  className={`
+                    relative w-14 h-14 md:w-16 md:h-16
+                    rounded-xl
+                    flex items-center justify-center
+                    text-xl md:text-2xl font-bold
+                    transition-all duration-200
+                    ${selectedSignal === signal.value
+                      ? `${signal.color} text-white shadow-lg shadow-cyan-500/30 scale-110 ring-4 ring-cyan-200 dark:ring-cyan-800`
+                      : 'bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 text-stone-400 dark:text-stone-500 hover:border-cyan-400 dark:hover:border-cyan-500 hover:text-cyan-600 dark:hover:text-cyan-400 hover:scale-105 hover:shadow-md active:scale-95'
+                    }
+                  `}
+                >
+                  {signal.value}
+                </button>
+                <span className={`text-xs font-medium transition-colors ${
+                  selectedSignal === signal.value
+                    ? 'text-cyan-600 dark:text-cyan-400'
+                    : 'text-stone-400 dark:text-stone-500'
+                }`}>
+                  {t(signal.labelKey)}
+                </span>
+              </div>
             ))}
-          </div>
-
-          {/* Semantic label hint */}
-          <div className="text-center mb-10 h-5">
-            {selectedSignal && (
-              <span className="text-xs text-stone-400 dark:text-stone-500">
-                {t(SIGNAL_SCALE.find(s => s.value === selectedSignal)?.labelKey || 'moodOkay')}
-              </span>
-            )}
           </div>
 
           {/* Optional fields */}
