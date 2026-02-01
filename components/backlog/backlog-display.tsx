@@ -12,12 +12,12 @@ interface BacklogDisplayProps {
   releases: ReleaseNote[]
 }
 
-type Tab = 'exploring' | 'building' | 'not_doing' | 'releases'
+type Tab = 'review' | 'exploring' | 'building' | 'releases' | 'not_doing'
 type WishState = 'browsing' | 'form' | 'submitting' | 'success'
 
 export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
   const t = useTranslation()
-  const [activeTab, setActiveTab] = useState<Tab>('exploring')
+  const [activeTab, setActiveTab] = useState<Tab>('review')
 
   // Wish form state
   const [wishState, setWishState] = useState<WishState>('browsing')
@@ -40,10 +40,11 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
   }
 
   const tabs: { id: Tab; label: string; count: number }[] = [
+    { id: 'review', label: 'Under Review', count: review.length },
     { id: 'exploring', label: 'Exploring', count: exploring.length },
     { id: 'building', label: 'Building', count: building.length },
-    { id: 'not_doing', label: 'Not doing', count: notDoing.length },
-    { id: 'releases', label: 'Releases', count: releases.length },
+    { id: 'releases', label: 'Releases', count: releases.length + done.length },
+    { id: 'not_doing', label: 'Not Doing', count: notDoing.length },
   ]
 
   const handleSubmitWish = async () => {
@@ -272,8 +273,8 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
         ))}
       </div>
 
-      {/* Wish submission section */}
-      {wishState === 'browsing' && activeTab !== 'releases' && (
+      {/* Wish submission section - only on active tabs */}
+      {wishState === 'browsing' && (activeTab === 'review' || activeTab === 'exploring' || activeTab === 'building') && (
         <Card className="mb-8 border-cyan-200 dark:border-cyan-800 bg-cyan-50/50 dark:bg-cyan-900/20">
           <CardContent className="py-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -292,7 +293,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
       )}
 
       {/* Wish form */}
-      {(wishState === 'form' || wishState === 'submitting') && activeTab !== 'releases' && (
+      {(wishState === 'form' || wishState === 'submitting') && (activeTab === 'review' || activeTab === 'exploring' || activeTab === 'building') && (
         <Card className="mb-8 border-cyan-200 dark:border-cyan-800">
           <CardContent className="py-6">
             <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100 mb-4">{t('wishTitle')}</h2>
@@ -356,7 +357,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
       )}
 
       {/* Success message */}
-      {wishState === 'success' && activeTab !== 'releases' && (
+      {wishState === 'success' && (activeTab === 'review' || activeTab === 'exploring' || activeTab === 'building') && (
         <Card className="mb-8 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/30">
           <CardContent className="py-6 text-center">
             <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
@@ -373,21 +374,20 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
         </Card>
       )}
 
-      {/* Under review section (if there are items) */}
-      {review.length > 0 && activeTab !== 'releases' && (
-        <div className="mb-8">
-          <h3 className="text-sm font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-3">
-            Under review ({review.length})
-          </h3>
+      {/* Tab content - matches admin kanban columns */}
+      {activeTab === 'review' && (
+        <div>
+          <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">
+            New requests we&apos;re evaluating. Your input helps us prioritize!
+          </p>
           {renderItems(review)}
         </div>
       )}
 
-      {/* Tab content */}
       {activeTab === 'exploring' && (
         <div>
           <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">
-            Ideas and features we&apos;re actively considering. Feedback welcome!
+            Ideas and features we&apos;re actively researching and designing.
           </p>
           {renderItems(exploring)}
         </div>
@@ -396,9 +396,18 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
       {activeTab === 'building' && (
         <div>
           <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">
-            Decided to build. Coming soon to Pulse.
+            Decided to build. Coming soon!
           </p>
           {renderItems(building)}
+        </div>
+      )}
+
+      {activeTab === 'releases' && (
+        <div>
+          <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">
+            Completed and shipped. See what we&apos;ve released.
+          </p>
+          {renderReleases()}
         </div>
       )}
 
@@ -408,15 +417,6 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
             We considered these but decided against them. Here&apos;s why.
           </p>
           {renderItems(notDoing)}
-        </div>
-      )}
-
-      {activeTab === 'releases' && (
-        <div>
-          <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">
-            Recent updates and new features.
-          </p>
-          {renderReleases()}
         </div>
       )}
     </div>
