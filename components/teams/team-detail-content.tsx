@@ -595,7 +595,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
           <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl border border-amber-200 dark:border-amber-800 p-6 text-center">
             <h4 className="font-semibold text-amber-900 dark:text-amber-300 mb-2">Interesse in Premium?</h4>
             <p className="text-sm text-amber-700 dark:text-amber-400 mb-4">Neem contact op voor early access en korting.</p>
-            <a href="mailto:expert@pinkpollos.nl?subject=Team Lab Premium Interest">
+            <a href="mailto:expert@pinkpollos.nl?subject=Pulse Premium Interest">
               <Button variant="secondary" className="border-amber-300 text-amber-700 hover:bg-amber-100">
                 {t('contactExpertButton')}
               </Button>
@@ -844,7 +844,7 @@ function TeamMaturityBadge({
           {/* Upgrade hint */}
           {level !== 'mature' && (
             <a
-              href="mailto:expert@pinkpollos.nl?subject=Team Lab Premium"
+              href="mailto:expert@pinkpollos.nl?subject=Pulse Premium"
               className="block mt-2 py-2 text-center text-xs font-medium text-cyan-400 hover:text-cyan-300 transition-colors"
             >
               {t('maturityUpgrade')} →

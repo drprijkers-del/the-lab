@@ -113,14 +113,14 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 </div>
-                <div className="text-sm font-medium text-stone-900 dark:text-stone-100">Pulse</div>
+                <div className="text-sm font-medium text-stone-900 dark:text-stone-100">Vibe</div>
                 <div className="text-xs text-stone-500 dark:text-stone-400">{t('emptyStateVibeDesc')}</div>
               </div>
               <div className="bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700">
                 <div className="w-8 h-8 rounded-lg bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center mb-2">
                   <span className="text-cyan-600 dark:text-cyan-400 font-bold text-sm">Δ</span>
                 </div>
-                <div className="text-sm font-medium text-stone-900 dark:text-stone-100">Delta</div>
+                <div className="text-sm font-medium text-stone-900 dark:text-stone-100">Ceremonies</div>
                 <div className="text-xs text-stone-500 dark:text-stone-400">{t('emptyStateCeremoniesDesc')}</div>
               </div>
               <div className="bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700">
@@ -176,12 +176,12 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
                     <div className="hidden sm:flex flex-wrap gap-1 mt-1">
                       {team.tools_enabled.includes('vibe') && (
                         <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 rounded">
-                          Pulse
+                          Vibe
                         </span>
                       )}
                       {team.tools_enabled.includes('ceremonies') && (
                         <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 rounded">
-                          Delta
+                          Ceremonies
                         </span>
                       )}
                     </div>
@@ -230,7 +230,7 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
                           )}
                         </div>
                       )}
-                      <span className="hidden sm:inline text-xs text-stone-400 dark:text-stone-500">Pulse</span>
+                      <span className="hidden sm:inline text-xs text-stone-400 dark:text-stone-500">Vibe</span>
                     </div>
                   )}
                   {team.ceremonies?.average_score && (
@@ -267,7 +267,7 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
                           )}
                         </div>
                       )}
-                      <span className="hidden sm:inline text-xs text-stone-400 dark:text-stone-500">Delta</span>
+                      <span className="hidden sm:inline text-xs text-stone-400 dark:text-stone-500">Ceremonies</span>
                     </div>
                   )}
                   {!team.vibe?.average_score && !team.ceremonies?.average_score && (
@@ -388,7 +388,7 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
               {/* Upgrade CTA */}
               <div className="pt-4 border-t border-stone-200 dark:border-stone-600">
                 <a
-                  href="mailto:expert@pinkpollos.nl?subject=Team Lab Premium Interest"
+                  href="mailto:expert@pinkpollos.nl?subject=Pulse Premium Interest"
                   className="block w-full py-3 px-4 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold rounded-xl text-center transition-colors"
                 >
                   {t('maturityUpgradeTitle')} →

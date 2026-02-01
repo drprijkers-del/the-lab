@@ -43,8 +43,8 @@ export function AdminHeader() {
         <nav className="max-w-4xl mx-auto px-4" aria-label="Main navigation">
           <div className="flex items-center justify-between h-14">
             {/* Brand - text only, no emoji */}
-            <Link href="/teams" className="font-bold text-lg text-stone-900 dark:text-stone-100" aria-label="Team Lab - Home">
-              Team Lab
+            <Link href="/teams" className="font-bold text-lg text-stone-900 dark:text-stone-100" aria-label="Pulse - Home">
+              Pulse
             </Link>
 
             {/* Desktop Navigation */}
@@ -269,7 +269,7 @@ export function AdminHeader() {
                 {t('cancel')}
               </Button>
               <a
-                href={`mailto:${t('contactExpertEmail')}?subject=Team Lab - Coaching Request`}
+                href={`mailto:${t('contactExpertEmail')}?subject=Pulse - Coaching Request`}
                 className="flex-1"
               >
                 <Button className="w-full">

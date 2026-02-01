@@ -34,7 +34,7 @@ export function HomeContent() {
       <header className="p-6 flex justify-between items-center relative z-10">
         <div className="flex items-center gap-2">
           <span className="text-2xl drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]">🧪</span>
-          <span className="text-lg font-bold text-stone-100">Team Lab</span>
+          <span className="text-lg font-bold text-stone-100">Pulse</span>
         </div>
         <div className="flex items-center gap-4">
           <LanguageToggle />

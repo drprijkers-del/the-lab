@@ -15,7 +15,7 @@ export function LoginPageContent() {
       <header className="p-6 flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2">
           <span className="text-xl">🧪</span>
-          <span className="text-sm font-medium text-stone-700 dark:text-stone-300">Team Lab</span>
+          <span className="text-sm font-medium text-stone-700 dark:text-stone-300">Pulse</span>
         </Link>
         <LanguageToggle />
       </header>
@@ -26,7 +26,7 @@ export function LoginPageContent() {
           {/* Logo / Title */}
           <div className="text-center mb-8">
             <div className="text-5xl mb-4">🧪</div>
-            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-1">Team Lab</h1>
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-1">Pulse</h1>
             <p className="text-sm text-stone-400 dark:text-stone-500">{t('loginAdminAccess')}</p>
           </div>
 

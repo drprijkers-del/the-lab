@@ -90,7 +90,7 @@ export function NewTeamForm() {
           </div>
           <div className="text-sm text-stone-600 dark:text-stone-400">
             <p className="font-medium text-stone-700 dark:text-stone-300 mb-1">{t('teamsToolsEnabled')}</p>
-            <p>Pulse en Delta worden automatisch geactiveerd voor dit team. Je kunt dit later aanpassen in de team instellingen.</p>
+            <p>Vibe en Ceremonies worden automatisch geactiveerd voor dit team. Je kunt dit later aanpassen in de team instellingen.</p>
           </div>
         </div>
       </div>

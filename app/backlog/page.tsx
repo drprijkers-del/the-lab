@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 
 export const metadata = {
-  title: 'Backlog | Team Lab',
+  title: 'Backlog | Pulse',
   description: 'What we\'re building and what we\'ve decided',
 }
 
