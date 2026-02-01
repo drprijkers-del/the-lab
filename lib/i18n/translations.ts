@@ -363,10 +363,10 @@ export const translations = {
     teamsToolDisabled: 'Niet actief',
     teamsVibeNotEnabled: 'Vibe is niet actief voor dit team',
     teamsCeremoniesNotEnabled: 'Ceremonies is niet actief voor dit team',
-    teamsEnableVibe: 'Activeer Pulse',
-    teamsEnableCeremonies: 'Activeer Delta',
-    teamsGoToVibe: 'Open Pulse',
-    teamsGoToCeremonies: 'Open Delta',
+    teamsEnableVibe: 'Activeer Vibe',
+    teamsEnableCeremonies: 'Activeer Ceremonies',
+    teamsGoToVibe: 'Open Vibe',
+    teamsGoToCeremonies: 'Open Ceremonies',
     teamsAvgScore: 'Gem. score',
     teamsNoScore: 'Geen data',
 
@@ -495,8 +495,8 @@ export const translations = {
     signalAttention: 'Aandacht',
     signalCritical: 'Kritiek',
     signalCollectData: 'Start met data verzamelen',
-    signalAddCeremonies: 'Voeg Delta toe voor completer beeld',
-    signalAddVibe: 'Voeg Pulse toe voor dagelijkse signalen',
+    signalAddCeremonies: 'Voeg Ceremonies toe voor completer beeld',
+    signalAddVibe: 'Voeg Vibe toe voor dagelijkse signalen',
     signalParticipation: 'Deelname',
 
     // Export
@@ -869,10 +869,10 @@ export const translations = {
     teamsToolDisabled: 'Not active',
     teamsVibeNotEnabled: 'Vibe is not enabled for this team',
     teamsCeremoniesNotEnabled: 'Ceremonies is not enabled for this team',
-    teamsEnableVibe: 'Enable Pulse',
-    teamsEnableCeremonies: 'Enable Delta',
-    teamsGoToVibe: 'Open Pulse',
-    teamsGoToCeremonies: 'Open Delta',
+    teamsEnableVibe: 'Enable Vibe',
+    teamsEnableCeremonies: 'Enable Ceremonies',
+    teamsGoToVibe: 'Open Vibe',
+    teamsGoToCeremonies: 'Open Ceremonies',
     teamsAvgScore: 'Avg. score',
     teamsNoScore: 'No data',
 
@@ -1001,8 +1001,8 @@ export const translations = {
     signalAttention: 'Attention',
     signalCritical: 'Critical',
     signalCollectData: 'Start collecting data',
-    signalAddCeremonies: 'Add Delta for a more complete picture',
-    signalAddVibe: 'Add Pulse for daily signals',
+    signalAddCeremonies: 'Add Ceremonies for a more complete picture',
+    signalAddVibe: 'Add Vibe for daily signals',
     signalParticipation: 'Participation',
 
     // Export
