@@ -180,21 +180,49 @@ function AdminHeaderInner({ currentTeam, allTeams = [] }: AdminHeaderProps) {
               </div>
             )}
 
+            {/* Desktop: Global Navigation (when not on team page) */}
+            {!isOnTeamPage && (
+              <div className="hidden md:flex items-center gap-1 ml-4 border-l border-stone-200 dark:border-stone-700 pl-4">
+                <Link
+                  href="/teams"
+                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                    pathname === '/teams'
+                      ? 'bg-cyan-100 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-400'
+                      : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+                  }`}
+                >
+                  {t('teamsTitle')}
+                </Link>
+                <Link
+                  href="/backlog"
+                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                    pathname === '/backlog'
+                      ? 'bg-cyan-100 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-400'
+                      : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800'
+                  }`}
+                >
+                  {t('backlogTab')}
+                </Link>
+              </div>
+            )}
+
             {/* Spacer */}
             <div className="flex-1" />
 
             {/* Desktop: Right Side Actions */}
             <div className="hidden md:flex items-center gap-2">
-              {/* Backlog (Global Access) */}
-              <Link
-                href="/backlog"
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                {t('backlogTab')}
-              </Link>
+              {/* Backlog link - only show when on team page (global nav handles it otherwise) */}
+              {isOnTeamPage && (
+                <Link
+                  href="/backlog"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  {t('backlogTab')}
+                </Link>
+              )}
 
               {/* Settings Dropdown */}
               <div className="relative">
