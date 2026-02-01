@@ -414,6 +414,9 @@ export const translations = {
     darkMode: 'Donkere modus',
     lightMode: 'Lichte modus',
     systemMode: 'Systeeminstelling',
+    language: 'Taal',
+    theme: 'Thema',
+    comingNext: 'Binnenkort',
 
     // Team maturity & gamification
     maturityBasic: 'Starter',
@@ -917,6 +920,9 @@ export const translations = {
     darkMode: 'Dark mode',
     lightMode: 'Light mode',
     systemMode: 'System setting',
+    language: 'Language',
+    theme: 'Theme',
+    comingNext: 'Coming Next',
 
     // Team maturity & gamification
     maturityBasic: 'Starter',

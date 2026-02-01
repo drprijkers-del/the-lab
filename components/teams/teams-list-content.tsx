@@ -51,9 +51,9 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
   }
 
   const maturityConfig = {
-    basic: { label: t('maturityBasic'), icon: '🌱', color: 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300' },
-    medium: { label: t('maturityMedium'), icon: '🌿', color: 'bg-cyan-100 dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300' },
-    mature: { label: t('maturityMature'), icon: '🌳', color: 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300' },
+    basic: { label: t('maturityBasic'), color: 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300' },
+    medium: { label: t('maturityMedium'), color: 'bg-cyan-100 dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300' },
+    mature: { label: t('maturityMature'), color: 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300' },
   }
 
   return (
@@ -64,7 +64,7 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
           <button
             key={key}
             onClick={() => setFilter(key)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               filter === key
                 ? 'bg-cyan-500 text-white'
                 : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
@@ -78,12 +78,11 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
             )}
           </button>
         ))}
-        {/* Levels info button */}
+        {/* Levels info button - hidden on mobile, visible in Coming Next menu */}
         <button
           onClick={() => setShowLevelsModal(true)}
-          className="ml-auto px-3 py-2 rounded-lg text-xs font-medium bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-700 dark:text-amber-300 hover:from-amber-200 hover:to-orange-200 dark:hover:from-amber-900/50 dark:hover:to-orange-900/50 transition-colors flex items-center gap-1.5"
+          className="hidden sm:flex ml-auto px-3 py-2 rounded-lg text-xs font-medium bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors items-center gap-1.5"
         >
-          <span>🏆</span>
           {t('maturityViewLevels')}
         </button>
       </div>
@@ -92,8 +91,12 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
       {filteredTeams.length === 0 ? (
         <div className="bg-gradient-to-br from-stone-50 to-cyan-50/30 dark:from-stone-800 dark:to-cyan-900/20 rounded-2xl border border-stone-200 dark:border-stone-700 p-8 sm:p-12">
           <div className="max-w-md mx-auto text-center">
-            {/* Lab flask icon */}
-            <div className="text-6xl mb-6 animate-pulse" style={{ animationDuration: '3s' }}>🧪</div>
+            {/* Lab flask icon - professional icon instead of emoji */}
+            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center">
+              <svg className="w-8 h-8 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              </svg>
+            </div>
 
             <h3 className="text-xl font-bold text-stone-900 dark:text-stone-100 mb-2">
               {t('teamsNoTeams')}
@@ -102,20 +105,30 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
               {t('teamsNoTeamsMessage')}
             </p>
 
-            {/* Feature highlights */}
+            {/* Feature highlights - professional icons */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 text-left">
               <div className="bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700">
-                <div className="text-pink-500 text-lg mb-2">💗</div>
+                <div className="w-8 h-8 rounded-lg bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center mb-2">
+                  <svg className="w-4 h-4 text-pink-600 dark:text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                </div>
                 <div className="text-sm font-medium text-stone-900 dark:text-stone-100">Pulse</div>
                 <div className="text-xs text-stone-500 dark:text-stone-400">{t('emptyStatePulseDesc')}</div>
               </div>
               <div className="bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700">
-                <div className="text-cyan-500 text-lg font-bold mb-2">Δ</div>
+                <div className="w-8 h-8 rounded-lg bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center mb-2">
+                  <span className="text-cyan-600 dark:text-cyan-400 font-bold text-sm">Δ</span>
+                </div>
                 <div className="text-sm font-medium text-stone-900 dark:text-stone-100">Delta</div>
                 <div className="text-xs text-stone-500 dark:text-stone-400">{t('emptyStateDeltaDesc')}</div>
               </div>
               <div className="bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700">
-                <div className="text-green-500 text-lg mb-2">📊</div>
+                <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-2">
+                  <svg className="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
                 <div className="text-sm font-medium text-stone-900 dark:text-stone-100">{t('emptyStateInsightsTitle')}</div>
                 <div className="text-xs text-stone-500 dark:text-stone-400">{t('emptyStateInsightsDesc')}</div>
               </div>
@@ -147,49 +160,45 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
                 href={`/teams/${team.id}`}
                 className="block bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-sm transition-all group"
               >
-                {/* Header: Name + badges */}
+                {/* Header: Name + attention indicator */}
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-stone-900 dark:text-stone-100 truncate group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
-                      {team.name}
-                    </h3>
-                    {/* Tool labels */}
-                    <div className="flex flex-wrap gap-1 mt-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-stone-900 dark:text-stone-100 truncate group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+                        {team.name}
+                      </h3>
+                      {/* Attention indicator - simple dot on mobile */}
+                      {team.needs_attention && (
+                        <span className="w-2 h-2 rounded-full bg-red-500 shrink-0 animate-pulse" />
+                      )}
+                    </div>
+                    {/* Tool labels - hidden on mobile for cleaner look */}
+                    <div className="hidden sm:flex flex-wrap gap-1 mt-1">
                       {team.tools_enabled.includes('pulse') && (
                         <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 rounded">
-                          <span className="text-pink-500">♥</span> Pulse
+                          Pulse
                         </span>
                       )}
                       {team.tools_enabled.includes('delta') && (
                         <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 rounded">
-                          <span className="font-bold">Δ</span> Delta
+                          Delta
                         </span>
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    {/* Maturity badge */}
+                  {/* Maturity badge - hidden on mobile */}
+                  <div className="hidden sm:flex items-center gap-1.5 shrink-0">
                     <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium rounded ${config.color}`}>
-                      {config.icon}
+                      {config.label}
                     </span>
-                    {/* Attention indicator with clear explanation */}
-                    {team.needs_attention && (
-                      <span className="relative group/attention">
-                        <span className="w-2 h-2 rounded-full bg-red-500 block animate-pulse" />
-                        <span className="absolute bottom-full right-0 mb-2 px-3 py-2 text-xs bg-stone-900 text-white rounded-lg shadow-lg opacity-0 group-hover/attention:opacity-100 transition-opacity whitespace-nowrap z-10 max-w-[200px]">
-                          <span className="font-medium block mb-1">{t('teamsNeedsAttention')}</span>
-                          <span className="text-stone-300">{t('teamsAttentionExplain')}</span>
-                        </span>
-                      </span>
-                    )}
                   </div>
                 </div>
 
-                {/* Score indicators with explanation */}
+                {/* Score indicators - simplified for mobile */}
                 <div className="flex items-center gap-3 mb-3">
                   {team.pulse?.average_score && (
-                    <div className="flex items-center gap-1.5 group/score relative">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm ${
+                    <div className="flex items-center gap-1">
+                      <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs sm:text-sm ${
                         team.pulse.average_score >= 4 ? 'bg-green-500' :
                         team.pulse.average_score >= 3 ? 'bg-cyan-500' :
                         team.pulse.average_score >= 2 ? 'bg-amber-500' :
@@ -199,45 +208,34 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
                       </div>
                       {/* Trend indicator */}
                       {team.pulse.trend && (
-                        <div className={`flex items-center justify-center w-5 h-5 rounded ${
+                        <div className={`flex items-center justify-center w-4 h-4 ${
                           team.pulse.trend === 'up' ? 'text-green-500' :
                           team.pulse.trend === 'down' ? 'text-red-500' :
                           'text-stone-400 dark:text-stone-500'
                         }`}>
                           {team.pulse.trend === 'up' && (
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                             </svg>
                           )}
                           {team.pulse.trend === 'down' && (
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
                           )}
                           {team.pulse.trend === 'stable' && (
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14" />
                             </svg>
                           )}
                         </div>
                       )}
-                      <span className="text-xs text-stone-400 dark:text-stone-500">Pulse</span>
-                      <span className="absolute bottom-full left-0 mb-2 px-2 py-1 text-xs bg-stone-900 text-white rounded shadow-lg opacity-0 group-hover/score:opacity-100 transition-opacity whitespace-nowrap z-10">
-                        {team.pulse.average_score >= 4 ? t('scoreExcellent') :
-                         team.pulse.average_score >= 3 ? t('scoreGood') :
-                         team.pulse.average_score >= 2 ? t('scoreAverage') :
-                         t('scoreLow')}
-                        {team.pulse.trend && ` • ${
-                          team.pulse.trend === 'up' ? t('trendUp') :
-                          team.pulse.trend === 'down' ? t('trendDown') :
-                          t('trendStable')
-                        }`}
-                      </span>
+                      <span className="hidden sm:inline text-xs text-stone-400 dark:text-stone-500">Pulse</span>
                     </div>
                   )}
                   {team.delta?.average_score && (
-                    <div className="flex items-center gap-1.5 group/score relative">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm ${
+                    <div className="flex items-center gap-1">
+                      <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs sm:text-sm ${
                         team.delta.average_score >= 4 ? 'bg-green-500' :
                         team.delta.average_score >= 3 ? 'bg-cyan-500' :
                         team.delta.average_score >= 2 ? 'bg-amber-500' :
@@ -245,42 +243,31 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
                       }`}>
                         {team.delta.average_score}
                       </div>
-                      {/* Delta Trend indicator */}
+                      {/* Trend indicator */}
                       {team.delta.trend && (
-                        <div className={`flex items-center justify-center w-5 h-5 rounded ${
+                        <div className={`flex items-center justify-center w-4 h-4 ${
                           team.delta.trend === 'up' ? 'text-green-500' :
                           team.delta.trend === 'down' ? 'text-red-500' :
                           'text-stone-400 dark:text-stone-500'
                         }`}>
                           {team.delta.trend === 'up' && (
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                             </svg>
                           )}
                           {team.delta.trend === 'down' && (
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
                           )}
                           {team.delta.trend === 'stable' && (
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14" />
                             </svg>
                           )}
                         </div>
                       )}
-                      <span className="text-xs text-stone-400 dark:text-stone-500">Delta</span>
-                      <span className="absolute bottom-full left-0 mb-2 px-2 py-1 text-xs bg-stone-900 text-white rounded shadow-lg opacity-0 group-hover/score:opacity-100 transition-opacity whitespace-nowrap z-10">
-                        {team.delta.average_score >= 4 ? t('scoreExcellent') :
-                         team.delta.average_score >= 3 ? t('scoreGood') :
-                         team.delta.average_score >= 2 ? t('scoreAverage') :
-                         t('scoreLow')}
-                        {team.delta.trend && ` • ${
-                          team.delta.trend === 'up' ? t('trendUp') :
-                          team.delta.trend === 'down' ? t('trendDown') :
-                          t('trendStable')
-                        }`}
-                      </span>
+                      <span className="hidden sm:inline text-xs text-stone-400 dark:text-stone-500">Delta</span>
                     </div>
                   )}
                   {!team.pulse?.average_score && !team.delta?.average_score && (
@@ -326,8 +313,8 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
                   </div>
                 )}
 
-                {/* Footer: Last activity */}
-                <div className="text-xs text-stone-400 dark:text-stone-500 pt-2 border-t border-stone-100 dark:border-stone-700">
+                {/* Footer: Last activity - hidden on mobile */}
+                <div className="hidden sm:block text-xs text-stone-400 dark:text-stone-500 pt-2 border-t border-stone-100 dark:border-stone-700">
                   {formatDate(team.last_updated)}
                 </div>
               </Link>
@@ -341,7 +328,7 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowLevelsModal(false)}>
           <div className="bg-white dark:bg-stone-800 rounded-2xl shadow-xl max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">🏆 Team Niveaus</h2>
+              <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">{t('maturityLevel')}</h2>
               <button onClick={() => setShowLevelsModal(false)} className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg transition-colors">
                 <svg className="w-5 h-5 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -353,10 +340,7 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
               {/* Starter Level */}
               <div className="p-4 rounded-xl border-2 border-stone-200 dark:border-stone-600 bg-stone-50 dark:bg-stone-700/50">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">🌱</span>
-                    <span className="font-bold text-stone-900 dark:text-stone-100">{t('maturityBasic')}</span>
-                  </div>
+                  <span className="font-bold text-stone-900 dark:text-stone-100">{t('maturityBasic')}</span>
                   <span className="px-2 py-0.5 text-xs font-bold bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 rounded-full">
                     {t('maturityFree')}
                   </span>
@@ -368,10 +352,7 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
               {/* Intermediate Level */}
               <div className="p-4 rounded-xl border-2 border-cyan-300 dark:border-cyan-600 bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">🌿</span>
-                    <span className="font-bold text-stone-900 dark:text-stone-100">{t('maturityMedium')}</span>
-                  </div>
+                  <span className="font-bold text-stone-900 dark:text-stone-100">{t('maturityMedium')}</span>
                   <span className="px-2 py-0.5 text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-full">
                     {t('maturityPaid')}
                   </span>
@@ -389,10 +370,7 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
               {/* Expert Level */}
               <div className="p-4 rounded-xl border-2 border-amber-300 dark:border-amber-600 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">🌳</span>
-                    <span className="font-bold text-stone-900 dark:text-stone-100">{t('maturityMature')}</span>
-                  </div>
+                  <span className="font-bold text-stone-900 dark:text-stone-100">{t('maturityMature')}</span>
                   <span className="px-2 py-0.5 text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-full">
                     {t('maturityPaid')}
                   </span>
