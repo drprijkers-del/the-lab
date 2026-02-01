@@ -205,8 +205,30 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
 
   return (
     <div>
+      {/* Tab navigation - at top for visibility */}
+      <div className="flex gap-1 p-1 bg-stone-100 dark:bg-stone-800 rounded-xl mb-8">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`
+              flex-1 py-2.5 px-3 rounded-lg text-sm font-medium transition-all
+              ${activeTab === tab.id
+                ? 'bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-sm'
+                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
+              }
+            `}
+          >
+            {tab.label}
+            {tab.count > 0 && (
+              <span className="ml-1.5 text-xs text-stone-400 dark:text-stone-500">({tab.count})</span>
+            )}
+          </button>
+        ))}
+      </div>
+
       {/* Wish submission section */}
-      {wishState === 'browsing' && (
+      {wishState === 'browsing' && activeTab !== 'releases' && (
         <Card className="mb-8 border-cyan-200 dark:border-cyan-800 bg-cyan-50/50 dark:bg-cyan-900/20">
           <CardContent className="py-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -225,7 +247,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
       )}
 
       {/* Wish form */}
-      {(wishState === 'form' || wishState === 'submitting') && (
+      {(wishState === 'form' || wishState === 'submitting') && activeTab !== 'releases' && (
         <Card className="mb-8 border-cyan-200 dark:border-cyan-800">
           <CardContent className="py-6">
             <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100 mb-4">{t('wishTitle')}</h2>
@@ -289,7 +311,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
       )}
 
       {/* Success message */}
-      {wishState === 'success' && (
+      {wishState === 'success' && activeTab !== 'releases' && (
         <Card className="mb-8 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/30">
           <CardContent className="py-6 text-center">
             <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
@@ -307,7 +329,7 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
       )}
 
       {/* Under review section (if there are items) */}
-      {review.length > 0 && (
+      {review.length > 0 && activeTab !== 'releases' && (
         <div className="mb-8">
           <h3 className="text-sm font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wide mb-3">
             Under review ({review.length})
@@ -315,28 +337,6 @@ export function BacklogDisplay({ items, releases }: BacklogDisplayProps) {
           {renderItems(review)}
         </div>
       )}
-
-      {/* Tab navigation */}
-      <div className="flex gap-1 p-1 bg-stone-100 dark:bg-stone-800 rounded-xl mb-6">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`
-              flex-1 py-2.5 px-3 rounded-lg text-sm font-medium transition-all
-              ${activeTab === tab.id
-                ? 'bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-sm'
-                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
-              }
-            `}
-          >
-            {tab.label}
-            {tab.count > 0 && (
-              <span className="ml-1.5 text-xs text-stone-400 dark:text-stone-500">({tab.count})</span>
-            )}
-          </button>
-        ))}
-      </div>
 
       {/* Tab content */}
       {activeTab === 'exploring' && (
