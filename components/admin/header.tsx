@@ -27,10 +27,6 @@ export function AdminHeader() {
     setMobileMenuOpen(false)
   }, [pathname])
 
-  // Active state: /teams or /session (both are admin areas)
-  const isTeamsActive = pathname?.startsWith('/teams') || pathname?.startsWith('/session')
-  const isBacklogActive = pathname?.startsWith('/backlog')
-
   async function handleLogout() {
     try {
       await fetch('/api/auth/logout', { method: 'POST' })
@@ -53,28 +49,7 @@ export function AdminHeader() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6">
-              <div className="flex items-center gap-1">
-                <Link
-                  href="/teams"
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                    isTeamsActive
-                      ? 'bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
-                      : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100 dark:text-stone-400 dark:hover:text-stone-100 dark:hover:bg-stone-800'
-                  }`}
-                >
-                  Teams
-                </Link>
-                <Link
-                  href="/backlog"
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                    isBacklogActive
-                      ? 'bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
-                      : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100 dark:text-stone-400 dark:hover:text-stone-100 dark:hover:bg-stone-800'
-                  }`}
-                >
-                  Backlog
-                </Link>
-              </div>
+              {/* Navigation removed - Teams/Backlog are tabs within the page */}
 
               <div className="flex items-center gap-2">
                 <button
@@ -161,28 +136,11 @@ export function AdminHeader() {
             <div className="p-2">
               <Link
                 href="/teams"
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                  isTeamsActive
-                    ? 'bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
-                    : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
-                }`}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400"
               >
                 Teams
               </Link>
-              <Link
-                href="/backlog"
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                  isBacklogActive
-                    ? 'bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
-                    : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
-                }`}
-              >
-                Backlog
-              </Link>
             </div>
-
-            {/* Divider */}
-            <div className="border-t border-stone-200 dark:border-stone-700 my-2" />
 
             {/* Settings */}
             <div className="p-2">
