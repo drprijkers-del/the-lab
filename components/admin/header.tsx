@@ -185,7 +185,7 @@ function AdminHeaderInner({ currentTeam, allTeams = [] }: AdminHeaderProps) {
             <div className="hidden md:flex items-center gap-2">
               {/* Backlog (Global Access) */}
               <Link
-                href="/teams?view=backlog"
+                href="/backlog"
                 className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -369,7 +369,7 @@ function AdminHeaderInner({ currentTeam, allTeams = [] }: AdminHeaderProps) {
                 {t('teamsTitle')}
               </Link>
               <Link
-                href="/teams?view=backlog"
+                href="/backlog"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800"
                 onClick={() => setMobileMenuOpen(false)}
               >
