@@ -321,8 +321,8 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
                 }
 
                 const unlockRequirements = {
-                  ha: '3 sessions (30 days) • Score ≥ 3.2 • 60% participation',
-                  ri: '6 sessions total • 3 types • Score ≥ 3.5 • 70% participation',
+                  ha: 'Run 3 sessions in 30 days with a team score of 3.2+ and 60%+ participation',
+                  ri: 'Complete 6 sessions across 3 different types, with scores above 3.5 and 70%+ participation',
                 }
 
                 return (

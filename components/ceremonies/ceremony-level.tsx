@@ -61,15 +61,15 @@ export function CeremonyLevelDisplay({
   // Static requirements for each level (shown when no progress data)
   const staticRequirements = {
     shu: [
-      { key: 'sessions', label: '3+ sessions in 30 days', required: 3 },
-      { key: 'score', label: 'Average score ≥ 3.2', required: 3.2 },
-      { key: 'participation', label: 'Participation ≥ 60%', required: 60 },
+      { key: 'sessions', label: 'Run 3 sessions in 30 days', required: 3 },
+      { key: 'score', label: 'Achieve a team score of 3.2 or higher', required: 3.2 },
+      { key: 'participation', label: 'Get 60% of your team to participate', required: 60 },
     ],
     ha: [
-      { key: 'total_sessions', label: '6+ total sessions', required: 6 },
-      { key: 'angles', label: '3+ different session types', required: 3 },
-      { key: 'score', label: 'Average score ≥ 3.5', required: 3.5 },
-      { key: 'participation', label: 'Participation ≥ 70%', required: 70 },
+      { key: 'total_sessions', label: 'Complete 6 sessions in total', required: 6 },
+      { key: 'angles', label: 'Try 3 different session types', required: 3 },
+      { key: 'score', label: 'Maintain a team score of 3.5 or higher', required: 3.5 },
+      { key: 'participation', label: 'Get 70% of your team to participate', required: 70 },
     ],
     ri: [], // Max level
   }
