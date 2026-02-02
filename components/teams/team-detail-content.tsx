@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { UnifiedTeam, enableTool, disableTool, deleteTeam, exportPulseData, getShareLink, deactivateShareLink } from '@/domain/teams/actions'
+import { UnifiedTeam, enableTool, disableTool, deleteTeam, exportPulseData, getShareLink, deactivateShareLink, updateTeam } from '@/domain/teams/actions'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/context'
 import { GettingStartedChecklist } from '@/components/teams/getting-started-checklist'
@@ -59,6 +59,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
   const [sessionsLevelTab, setSessionsLevelTab] = useState<CeremonyLevel>('shu')
   const [shareUrl, setShareUrl] = useState<string | null>(null)
   const [shareLoading, setShareLoading] = useState(false)
+  const [settingsSuccess, setSettingsSuccess] = useState(false)
 
   // Update tab when URL changes (e.g., browser back/forward)
   useEffect(() => {
@@ -169,6 +170,26 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
+  }
+
+  const handleSaveSettings = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading('save-settings')
+    setSettingsSuccess(false)
+
+    const formData = new FormData(e.currentTarget)
+    const result = await updateTeam(team.id, formData)
+
+    setLoading(null)
+
+    if (!result.success) {
+      alert(result.error || 'Er ging iets mis bij het opslaan')
+      return
+    }
+
+    setSettingsSuccess(true)
+    router.refresh()
+    setTimeout(() => setSettingsSuccess(false), 2000)
   }
 
   // Calculate vibe message for display in OverallSignal (only when on Vibe tab)
@@ -750,13 +771,71 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
 
       {activeTab === 'settings' && (
         <div className="space-y-6">
-          {/* Team info */}
+          {/* Editable Team Settings */}
           <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6">
             <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">{t('teamSettings')}</h3>
-            <div className="space-y-3 text-sm">
+
+            {settingsSuccess && (
+              <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-xl text-green-600 dark:text-green-400 text-sm">
+                {t('teamSettingsSaved')}
+              </div>
+            )}
+
+            <form onSubmit={handleSaveSettings} className="space-y-4">
+              <div className="space-y-1">
+                <label htmlFor="team-name" className="block text-sm font-medium text-stone-700 dark:text-stone-300">
+                  {t('newTeamName')}
+                </label>
+                <input
+                  id="team-name"
+                  name="name"
+                  type="text"
+                  defaultValue={team.name}
+                  required
+                  minLength={2}
+                  className="block w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label htmlFor="team-description" className="block text-sm font-medium text-stone-700 dark:text-stone-300">
+                  {t('newTeamDescription')}
+                </label>
+                <textarea
+                  id="team-description"
+                  name="description"
+                  rows={2}
+                  defaultValue={team.description || ''}
+                  className="block w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label htmlFor="team-size" className="block text-sm font-medium text-stone-700 dark:text-stone-300">
+                  {t('newTeamSize')}
+                </label>
+                <input
+                  id="team-size"
+                  name="expected_team_size"
+                  type="number"
+                  defaultValue={team.expected_team_size || ''}
+                  min={1}
+                  max={100}
+                  placeholder={t('newTeamSizePlaceholder')}
+                  className="block w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+
+              <Button type="submit" loading={loading === 'save-settings'} className="w-full">
+                {t('save')}
+              </Button>
+            </form>
+
+            {/* Read-only info */}
+            <div className="mt-6 pt-6 border-t border-stone-200 dark:border-stone-700 space-y-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-stone-500 dark:text-stone-400">ID</span>
-                <span className="text-stone-700 dark:text-stone-300 font-mono">{team.id}</span>
+                <span className="text-stone-700 dark:text-stone-300 font-mono text-xs">{team.id}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-stone-500 dark:text-stone-400">Slug</span>
@@ -766,12 +845,6 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
                 <span className="text-stone-500 dark:text-stone-400">{t('adminCreatedOn')}</span>
                 <span className="text-stone-700 dark:text-stone-300">{new Date(team.created_at).toLocaleDateString()}</span>
               </div>
-              {team.expected_team_size && (
-                <div className="flex justify-between">
-                  <span className="text-stone-500 dark:text-stone-400">{t('newTeamSize')}</span>
-                  <span className="text-stone-700 dark:text-stone-300">{team.expected_team_size}</span>
-                </div>
-              )}
             </div>
           </div>
 

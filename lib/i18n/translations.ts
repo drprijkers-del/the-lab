@@ -169,14 +169,14 @@ export const translations = {
 
     // Team actions
     teamDelete: 'Verwijderen',
-    teamDeleteConfirm: 'Weet je zeker dat je dit experiment wilt stoppen?',
+    teamDeleteConfirm: 'Weet je zeker dat je dit team permanent wilt verwijderen?',
     teamReset: 'Data wissen',
     teamResetTitle: 'Lab resetten',
     teamResetMessage: 'Alle samples en contributors worden verwijderd. De toegangslink blijft werken.',
     teamResetButton: 'Wissen',
-    teamDeleteTitle: 'Experiment stoppen',
-    teamDeleteMessage: 'Weet je zeker dat je dit experiment wilt stoppen? Dit kan niet ongedaan worden.',
-    teamDeleteButton: 'Stoppen',
+    teamDeleteTitle: 'Team permanent verwijderen',
+    teamDeleteMessage: 'Dit verwijdert het team en alle data permanent. Dit kan niet ongedaan worden.',
+    teamDeleteButton: 'Verwijder team',
     teamSettings: 'Instellingen',
     teamSettingsSaved: 'Opgeslagen',
 
@@ -746,14 +746,14 @@ export const translations = {
 
     // Team actions
     teamDelete: 'Delete',
-    teamDeleteConfirm: 'Are you sure you want to stop this experiment?',
+    teamDeleteConfirm: 'Are you sure you want to permanently delete this team?',
     teamReset: 'Clear data',
     teamResetTitle: 'Reset lab',
     teamResetMessage: 'All samples and contributors will be removed. The access link will keep working.',
     teamResetButton: 'Clear',
-    teamDeleteTitle: 'Stop experiment',
-    teamDeleteMessage: 'Are you sure you want to stop this experiment? This cannot be undone.',
-    teamDeleteButton: 'Stop',
+    teamDeleteTitle: 'Permanently delete team',
+    teamDeleteMessage: 'This will permanently delete the team and all its data. This cannot be undone.',
+    teamDeleteButton: 'Delete team',
     teamSettings: 'Settings',
     teamSettingsSaved: 'Saved',
 
