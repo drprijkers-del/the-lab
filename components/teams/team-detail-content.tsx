@@ -59,6 +59,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
   const [shareUrl, setShareUrl] = useState<string | null>(null)
   const [shareLoading, setShareLoading] = useState(false)
   const [settingsSuccess, setSettingsSuccess] = useState(false)
+  const [resultsCopied, setResultsCopied] = useState(false)
 
   // Update tab when URL changes (e.g., browser back/forward)
   useEffect(() => {
@@ -536,10 +537,12 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
                   onClick={() => {
                     const resultsUrl = shareUrl.replace('/vibe/t/', '/results/')
                     navigator.clipboard.writeText(resultsUrl)
+                    setResultsCopied(true)
+                    setTimeout(() => setResultsCopied(false), 2000)
                   }}
                   className="flex-1"
                 >
-                  {t('shareCopy')}
+                  {resultsCopied ? t('shareCopied') : t('shareCopy')}
                 </Button>
                 <Button
                   variant="secondary"
@@ -669,10 +672,12 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
                           onClick={() => {
                             const resultsUrl = shareUrl.replace('/vibe/t/', '/results/')
                             navigator.clipboard.writeText(resultsUrl)
+                            setResultsCopied(true)
+                            setTimeout(() => setResultsCopied(false), 2000)
                           }}
                           className="flex-1"
                         >
-                          {t('shareCopy')}
+                          {resultsCopied ? t('shareCopied') : t('shareCopy')}
                         </Button>
                         <Button
                           variant="secondary"
