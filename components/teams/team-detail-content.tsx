@@ -488,13 +488,24 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
         <div className="space-y-6">
           {team.ceremonies ? (
             <>
-              {/* Stats */}
-              <div className="flex items-center gap-4 text-sm text-stone-500 dark:text-stone-400">
-                <span><strong>{team.ceremonies.total_sessions}</strong> sessions</span>
-                <span><strong>{team.ceremonies.active_sessions}</strong> active</span>
-                {team.ceremonies.average_score && (
-                  <span>Avg: <strong>{team.ceremonies.average_score.toFixed(1)}</strong></span>
-                )}
+              {/* Stats + New Session Button */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4 text-sm text-stone-500 dark:text-stone-400">
+                  <span><strong>{team.ceremonies.total_sessions}</strong> sessions</span>
+                  <span><strong>{team.ceremonies.active_sessions}</strong> active</span>
+                  {team.ceremonies.average_score && (
+                    <span>Avg: <strong>{team.ceremonies.average_score.toFixed(1)}</strong></span>
+                  )}
+                </div>
+                <Link
+                  href={`/teams/${team.id}/ceremonies/new`}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-medium rounded-lg transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  {t('newSession')}
+                </Link>
               </div>
 
               {/* Sessions with Level Tabs */}

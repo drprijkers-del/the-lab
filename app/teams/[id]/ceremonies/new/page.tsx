@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createSession, getTeamCeremonyLevel } from '@/domain/ceremonies/actions'
-import { ANGLES, CeremonyAngle, CeremonyLevel, CEREMONY_LEVELS, getAnglesGroupedByLevel, isAngleUnlocked } from '@/domain/ceremonies/types'
+import { ANGLES, CeremonyAngle, CeremonyLevel, CEREMONY_LEVELS } from '@/domain/ceremonies/types'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/context'
 import { AdminHeader } from '@/components/admin/header'
@@ -85,32 +85,36 @@ export default function NewCeremonySessionPage() {
     return descMap[angleId] || ''
   }
 
-  const anglesGrouped = getAnglesGroupedByLevel()
-
-  // Level colors
-  const levelColors = {
+  // Level colors and info
+  const levelConfig = {
     shu: {
-      bg: 'bg-amber-100 dark:bg-amber-900/30',
-      border: 'border-amber-300 dark:border-amber-700',
+      bg: 'bg-amber-50 dark:bg-amber-900/20',
+      border: 'border-amber-200 dark:border-amber-800',
       text: 'text-amber-700 dark:text-amber-400',
       accent: 'bg-amber-500',
+      selectedBg: 'bg-amber-100 dark:bg-amber-900/30',
+      selectedBorder: 'border-amber-400 dark:border-amber-600',
     },
     ha: {
-      bg: 'bg-cyan-100 dark:bg-cyan-900/30',
-      border: 'border-cyan-300 dark:border-cyan-700',
+      bg: 'bg-cyan-50 dark:bg-cyan-900/20',
+      border: 'border-cyan-200 dark:border-cyan-800',
       text: 'text-cyan-700 dark:text-cyan-400',
       accent: 'bg-cyan-500',
+      selectedBg: 'bg-cyan-100 dark:bg-cyan-900/30',
+      selectedBorder: 'border-cyan-400 dark:border-cyan-600',
     },
     ri: {
-      bg: 'bg-purple-100 dark:bg-purple-900/30',
-      border: 'border-purple-300 dark:border-purple-700',
+      bg: 'bg-purple-50 dark:bg-purple-900/20',
+      border: 'border-purple-200 dark:border-purple-800',
       text: 'text-purple-700 dark:text-purple-400',
       accent: 'bg-purple-500',
+      selectedBg: 'bg-purple-100 dark:bg-purple-900/30',
+      selectedBorder: 'border-purple-400 dark:border-purple-600',
     },
   }
 
-  const levelOrder: CeremonyLevel[] = ['shu', 'ha', 'ri']
-  const currentLevelIndex = levelOrder.indexOf(teamLevel)
+  const currentLevelInfo = CEREMONY_LEVELS.find(l => l.id === teamLevel)
+  const colors = levelConfig[teamLevel]
 
   return (
     <>
@@ -128,20 +132,39 @@ export default function NewCeremonySessionPage() {
         </Link>
 
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">{t('pickAngle')}</h1>
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">{t('startCeremoniesSession')}</h1>
           <p className="text-stone-600 dark:text-stone-400 mt-1">{t('justOne')}</p>
         </div>
 
-        {/* Current Level Badge */}
-        {!loadingLevel && (
-          <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${levelColors[teamLevel].bg} ${levelColors[teamLevel].border} border mb-6`}>
-            <span className={`text-lg font-bold ${levelColors[teamLevel].text}`}>
-              {CEREMONY_LEVELS.find(l => l.id === teamLevel)?.kanji}
-            </span>
-            <span className={`text-sm font-medium ${levelColors[teamLevel].text}`}>
-              {CEREMONY_LEVELS.find(l => l.id === teamLevel)?.label} Level
-            </span>
+        {/* Current Level Card */}
+        {!loadingLevel && currentLevelInfo && (
+          <div className={`${colors.bg} ${colors.border} border rounded-xl p-4 mb-6`}>
+            <div className="flex items-center gap-3">
+              <div className={`w-12 h-12 rounded-lg ${colors.accent} flex items-center justify-center`}>
+                <span className="text-2xl font-bold text-white">{currentLevelInfo.kanji}</span>
+              </div>
+              <div className="flex-1">
+                <div className={`font-semibold ${colors.text}`}>
+                  {currentLevelInfo.label} Level
+                </div>
+                <div className="text-sm text-stone-600 dark:text-stone-400">
+                  {currentLevelInfo.description}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {loadingLevel && (
+          <div className="bg-stone-100 dark:bg-stone-800 rounded-xl p-4 mb-6 animate-pulse">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-stone-300 dark:bg-stone-600" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 bg-stone-300 dark:bg-stone-600 rounded w-24" />
+                <div className="h-3 bg-stone-200 dark:bg-stone-700 rounded w-48" />
+              </div>
+            </div>
           </div>
         )}
 
@@ -151,94 +174,67 @@ export default function NewCeremonySessionPage() {
           </div>
         )}
 
-        {/* Angles organized by level */}
-        <div className="space-y-8 mb-8">
-          {levelOrder.map((level, levelIndex) => {
-            const levelInfo = CEREMONY_LEVELS.find(l => l.id === level)!
-            const angles = anglesGrouped[level]
-            const isLevelUnlocked = levelIndex <= currentLevelIndex
-            const colors = levelColors[level]
+        {/* Angle Selection Label */}
+        <div className="mb-4">
+          <h2 className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('pickAngle')}</h2>
+        </div>
 
+        {/* Angles Grid - 3x3 */}
+        <div className="grid grid-cols-3 gap-3 mb-8">
+          {ANGLES.map(angle => {
+            const isSelected = selectedAngle === angle.id
             return (
-              <div key={level}>
-                {/* Level Header */}
-                <div className={`flex items-center gap-3 mb-3 ${!isLevelUnlocked ? 'opacity-50' : ''}`}>
-                  <div className={`w-10 h-10 rounded-lg ${colors.bg} ${colors.border} border flex items-center justify-center`}>
-                    <span className={`text-xl font-bold ${colors.text}`}>{levelInfo.kanji}</span>
-                  </div>
-                  <div className="flex-1">
-                    <div className={`font-semibold ${colors.text}`}>
-                      {levelInfo.label}
-                      {!isLevelUnlocked && (
-                        <span className="ml-2 text-xs font-normal text-stone-400 dark:text-stone-500">
-                          🔒 Locked
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-xs text-stone-500 dark:text-stone-400">
-                      {levelInfo.subtitle}
-                    </div>
-                  </div>
+              <button
+                key={angle.id}
+                onClick={() => setSelectedAngle(angle.id)}
+                disabled={loading}
+                className={`relative p-4 rounded-xl border-2 transition-all text-center ${
+                  isSelected
+                    ? `${colors.selectedBg} ${colors.selectedBorder}`
+                    : 'border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600 bg-white dark:bg-stone-800'
+                }`}
+              >
+                {/* Icon/Initial */}
+                <div className={`w-10 h-10 mx-auto rounded-lg flex items-center justify-center text-white font-bold mb-2 ${
+                  isSelected ? colors.accent : 'bg-stone-400 dark:bg-stone-600'
+                }`}>
+                  {getAngleLabel(angle.id).charAt(0)}
                 </div>
-
-                {/* Angles for this level */}
-                <div className="space-y-2 pl-2">
-                  {angles.map(angle => {
-                    const isUnlocked = isAngleUnlocked(angle.id, teamLevel)
-
-                    return (
-                      <button
-                        key={angle.id}
-                        onClick={() => isUnlocked && setSelectedAngle(angle.id)}
-                        disabled={!isUnlocked || loading}
-                        className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
-                          !isUnlocked
-                            ? 'border-stone-200 dark:border-stone-700 bg-stone-100 dark:bg-stone-800/50 opacity-50 cursor-not-allowed'
-                            : selectedAngle === angle.id
-                            ? `${colors.border} ${colors.bg}`
-                            : 'border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600 bg-white dark:bg-stone-800'
-                        }`}
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold ${
-                            !isUnlocked
-                              ? 'bg-stone-300 dark:bg-stone-600'
-                              : selectedAngle === angle.id
-                              ? colors.accent
-                              : 'bg-stone-300 dark:bg-stone-600'
-                          }`}>
-                            {isUnlocked ? getAngleLabel(angle.id).charAt(0) : '🔒'}
-                          </div>
-                          <div className="flex-1">
-                            <div className={`font-semibold ${
-                              !isUnlocked
-                                ? 'text-stone-400 dark:text-stone-500'
-                                : 'text-stone-900 dark:text-stone-100'
-                            }`}>
-                              {getAngleLabel(angle.id)}
-                            </div>
-                            <div className={`text-sm ${
-                              !isUnlocked
-                                ? 'text-stone-400 dark:text-stone-500'
-                                : 'text-stone-500 dark:text-stone-400'
-                            }`}>
-                              {getAngleDesc(angle.id)}
-                            </div>
-                          </div>
-                          {!isUnlocked && (
-                            <div className="text-xs text-stone-400 dark:text-stone-500">
-                              Reach {levelInfo.label}
-                            </div>
-                          )}
-                        </div>
-                      </button>
-                    )
-                  })}
+                {/* Label */}
+                <div className={`font-medium text-sm ${
+                  isSelected ? colors.text : 'text-stone-900 dark:text-stone-100'
+                }`}>
+                  {getAngleLabel(angle.id)}
                 </div>
-              </div>
+                {/* Selected indicator */}
+                {isSelected && (
+                  <div className={`absolute top-2 right-2 w-5 h-5 rounded-full ${colors.accent} flex items-center justify-center`}>
+                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                )}
+              </button>
             )
           })}
         </div>
+
+        {/* Selected angle description */}
+        {selectedAngle && (
+          <div className={`${colors.bg} ${colors.border} border rounded-xl p-4 mb-6`}>
+            <div className="flex items-start gap-3">
+              <div className={`w-8 h-8 rounded-lg ${colors.accent} flex items-center justify-center shrink-0`}>
+                <span className="text-sm font-bold text-white">{getAngleLabel(selectedAngle).charAt(0)}</span>
+              </div>
+              <div>
+                <div className={`font-medium ${colors.text}`}>{getAngleLabel(selectedAngle)}</div>
+                <div className="text-sm text-stone-600 dark:text-stone-400 mt-0.5">
+                  {getAngleDesc(selectedAngle)}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Action buttons */}
         <div className="flex gap-3">

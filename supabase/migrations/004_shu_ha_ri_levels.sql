@@ -152,19 +152,20 @@ BEGIN
   WHERE team_id = p_team_id AND status = 'closed';
 
   -- Check Shu -> Ha unlock criteria
-  -- Evidence: 3+ sessions in 30d with follow-up
+  -- Evidence: 3+ sessions in 30d with follow-up, 5+ different angles (breadth)
   -- Stability: avg score >= 3.2, participation >= 60%
   IF v_sessions_30d >= 3
+     AND v_unique_angles >= 5
      AND COALESCE(v_last_2_avg_score, 0) >= 3.2
      AND COALESCE(v_last_2_participation, 0) >= 0.60 THEN
     v_can_unlock_ha := TRUE;
   END IF;
 
   -- Check Ha -> Ri unlock criteria
-  -- Evidence: 6+ total sessions, 3+ types, 4+ followups, 3+ in 45d
+  -- Evidence: 6+ total sessions, 7+ types (near-complete breadth), 4+ followups, 3+ in 45d
   -- Stability: avg score >= 3.5, participation >= 70%
   IF v_sessions_total >= 6
-     AND v_unique_angles >= 3
+     AND v_unique_angles >= 7
      AND v_followups_count >= 4
      AND v_sessions_45d >= 3
      AND COALESCE(v_last_3_avg_score, 0) >= 3.5

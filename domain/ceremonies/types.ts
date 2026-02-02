@@ -251,6 +251,13 @@ export function getUnlockRequirements(
         required: 3
       },
       {
+        key: 'diversity',
+        label: '5 different ceremony types',
+        met: progress.unique_angles >= 5,
+        current: progress.unique_angles,
+        required: 5
+      },
+      {
         key: 'score',
         label: 'Avg score ≥ 3.2',
         met: (progress.last_2_avg_score || 0) >= 3.2,
@@ -279,10 +286,10 @@ export function getUnlockRequirements(
       },
       {
         key: 'diversity',
-        label: '3 different ceremony types',
-        met: progress.unique_angles >= 3,
+        label: '7 different ceremony types',
+        met: progress.unique_angles >= 7,
         current: progress.unique_angles,
-        required: 3
+        required: 7
       },
       {
         key: 'followups',
