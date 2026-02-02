@@ -19,7 +19,7 @@ export default async function BacklogPage() {
   return (
     <>
       <AdminHeader />
-      <main className="max-w-4xl mx-auto px-4 pt-8 pb-24">
+      <main className="max-w-6xl mx-auto px-4 pt-8 pb-24">
         <BacklogPageContent items={backlogItems} releases={releases} />
       </main>
     </>
