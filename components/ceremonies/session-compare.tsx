@@ -5,16 +5,17 @@ import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/context'
 import { getComparableSessions, compareSessions, SessionComparison } from '@/domain/ceremonies/actions'
 
-const ANGLE_LABELS: Record<string, string> = {
-  scrum: 'Scrum',
-  flow: 'Flow',
-  ownership: 'Ownership',
-  collaboration: 'Collaboration',
-  technical_excellence: 'Technical Excellence',
-  refinement: 'Refinement',
-  planning: 'Planning',
-  retro: 'Retro',
-  demo: 'Demo',
+// Map angle IDs to translation keys
+const ANGLE_TRANSLATION_KEYS: Record<string, string> = {
+  scrum: 'angleScrum',
+  flow: 'angleFlow',
+  ownership: 'angleOwnership',
+  collaboration: 'angleCollaboration',
+  technical_excellence: 'angleTechnicalExcellence',
+  refinement: 'angleRefinement',
+  planning: 'anglePlanning',
+  retro: 'angleRetro',
+  demo: 'angleDemo',
 }
 
 interface SessionCompareProps {
@@ -137,7 +138,7 @@ export function SessionCompare({ teamId, onClose }: SessionCompareProps) {
                           : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                       }`}
                     >
-                      {ANGLE_LABELS[angle] || angle}
+                      {t(ANGLE_TRANSLATION_KEYS[angle] as any) || angle}
                     </button>
                   ))}
                 </div>

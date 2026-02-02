@@ -188,7 +188,7 @@ export default function NewCeremonySessionPage() {
                 key={angle.id}
                 onClick={() => setSelectedAngle(angle.id)}
                 disabled={loading}
-                className={`relative p-4 rounded-xl border-2 transition-all text-center ${
+                className={`relative p-3 sm:p-4 rounded-xl border-2 transition-all ${
                   isSelected
                     ? `${colors.selectedBg} ${colors.selectedBorder}`
                     : 'border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600 bg-white dark:bg-stone-800'
@@ -200,8 +200,8 @@ export default function NewCeremonySessionPage() {
                 }`}>
                   {getAngleLabel(angle.id).charAt(0)}
                 </div>
-                {/* Label */}
-                <div className={`font-medium text-sm ${
+                {/* Label - centered with proper word handling */}
+                <div className={`font-medium text-xs sm:text-sm text-center leading-tight min-h-[2.5em] flex items-center justify-center ${
                   isSelected ? colors.text : 'text-stone-900 dark:text-stone-100'
                 }`}>
                   {getAngleLabel(angle.id)}
