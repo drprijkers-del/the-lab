@@ -186,8 +186,8 @@ export const translations = {
     statsMoodScale: 'Purity schaal',
 
     // Backlog
-    backlogCTA: 'Backlog',
-    backlogCTAMobile: 'Backlog',
+    backlogCTA: 'PulseLabs Backlog',
+    backlogCTAMobile: 'PulseLabs Backlog',
     wishTitle: 'Deel je idee',
     wishLabel: 'Wat zou je willen zien?',
     wishPlaceholder: 'Beschrijf je idee of suggestie...',
@@ -368,7 +368,7 @@ export const translations = {
     teamDetailContext: 'Bekijk de huidige signalen en participatie van dit team. Gebruik deze informatie om te bepalen of en waar je wilt bijsturen.',
     switchTeam: 'Wissel van team',
     viewAllTeams: 'Alle teams bekijken',
-    backlogTab: 'Backlog',
+    backlogTab: 'PulseLabs Backlog',
 
     // Section explanations (customer journey)
     vibeTitle: 'Vibe',
@@ -872,8 +872,8 @@ export const translations = {
     statsMoodScale: 'Purity scale',
 
     // Backlog
-    backlogCTA: 'Backlog',
-    backlogCTAMobile: 'Backlog',
+    backlogCTA: 'PulseLabs Backlog',
+    backlogCTAMobile: 'PulseLabs Backlog',
     wishTitle: 'Share your idea',
     wishLabel: 'What would you like to see?',
     wishPlaceholder: 'Describe your idea or suggestion...',
@@ -1054,7 +1054,7 @@ export const translations = {
     teamDetailContext: 'Monitor current signals and participation for this team. Use this view to decide whether and where to intervene.',
     switchTeam: 'Switch team',
     viewAllTeams: 'View all teams',
-    backlogTab: 'Backlog',
+    backlogTab: 'PulseLabs Backlog',
 
     // Section explanations (customer journey)
     vibeTitle: 'Vibe',
