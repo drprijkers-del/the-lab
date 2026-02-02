@@ -24,7 +24,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
       session={session}
       synthesis={synthesis}
       shareLink={shareLink}
-      backPath={`/teams/${session.team_id}?tab=delta`}
+      backPath={`/teams/${session.team_id}?tab=ceremonies`}
     />
   )
 }

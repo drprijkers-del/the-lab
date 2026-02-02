@@ -71,12 +71,12 @@ export function SessionDetailContent({ session, synthesis, shareLink, backPath }
     setDeleting(true)
     const result = await deleteSession(session.id)
     if (result.success) {
-      router.push(backPath || `/teams/${session.team_id}?tab=delta`)
+      router.push(backPath || `/teams/${session.team_id}?tab=ceremonies`)
     }
     setDeleting(false)
   }
 
-  const resolvedBackPath = backPath || `/teams/${session.team_id}?tab=delta`
+  const resolvedBackPath = backPath || `/teams/${session.team_id}?tab=ceremonies`
 
   return (
     <>
