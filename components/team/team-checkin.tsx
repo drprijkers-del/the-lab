@@ -92,9 +92,9 @@ export function TeamCheckin({ teamName }: TeamCheckinProps) {
       {/* Header */}
       <header className="p-6 relative z-10">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-semibold text-stone-700 dark:text-stone-300">P</span>
-            <span className="text-sm text-stone-400 dark:text-stone-500">{t('vibe')}</span>
+          <div className="leading-none">
+            <span className="text-lg font-semibold text-stone-900 dark:text-stone-100">Pulse</span>
+            <span className="block text-[10px] font-medium text-stone-400 dark:text-stone-500 tracking-widest uppercase">labs</span>
           </div>
           <LanguageToggle />
         </div>
