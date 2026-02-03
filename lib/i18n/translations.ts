@@ -701,6 +701,8 @@ export const translations = {
     modulePortfolioDesc: 'Voor organisaties die meerdere teams willen overzien',
     moduleTransition: 'Transitie Ondersteuning',
     moduleTransitionDesc: 'Op maat gemaakte begeleidingstool voor teams en organisaties in transitiefases. Gebaseerd op Systemisch Transitie Management.',
+    moduleWhiteLabel: 'White Label',
+    moduleWhiteLabelDesc: 'Deze tools onder jouw eigen merk. Voor Agile consultancies en coaches.',
 
     // Onboarding checklist
     onboardingTitle: 'Aan de slag',
@@ -1467,6 +1469,8 @@ export const translations = {
     modulePortfolioDesc: 'For organizations overseeing multiple teams',
     moduleTransition: 'Transition Support',
     moduleTransitionDesc: 'Custom guidance tool for teams and organizations in transition phases. Based on Systemic Transition Management.',
+    moduleWhiteLabel: 'White Label',
+    moduleWhiteLabelDesc: 'These tools under your own brand. For Agile consultancies and coaches.',
 
     // Onboarding checklist
     onboardingTitle: 'Getting Started',

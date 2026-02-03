@@ -1032,6 +1032,20 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
               <h4 className="font-medium text-stone-700 dark:text-stone-300 text-sm mb-1">{t('moduleTransition')}</h4>
               <p className="text-xs text-stone-500 dark:text-stone-400">{t('moduleTransitionDesc')}</p>
             </div>
+
+            {/* White Label Module */}
+            <div className="bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 p-5 relative overflow-hidden">
+              <div className="absolute top-3 right-3">
+                <span className="px-2 py-0.5 text-xs text-stone-400 dark:text-stone-500">{t('moduleComingSoon')}</span>
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-stone-200 dark:bg-stone-700 flex items-center justify-center mb-3">
+                <svg className="w-5 h-5 text-stone-400 dark:text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+              </div>
+              <h4 className="font-medium text-stone-700 dark:text-stone-300 text-sm mb-1">{t('moduleWhiteLabel')}</h4>
+              <p className="text-xs text-stone-500 dark:text-stone-400">{t('moduleWhiteLabelDesc')}</p>
+            </div>
           </div>
 
           {/* Backlog feedback CTA */}
