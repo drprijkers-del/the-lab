@@ -184,11 +184,11 @@ function AdminHeaderInner({ currentTeam, allTeams = [] }: AdminHeaderProps) {
               </div>
             )}
 
-            {/* Desktop: Mode Navigation (only on team pages, hidden on dashboard) */}
-            {isOnTeamPage && currentTeam && activeMode !== 'home' && (
+            {/* Desktop: Mode Navigation (only on team pages) */}
+            {isOnTeamPage && currentTeam && (
               <div className="hidden md:flex items-center gap-1 ml-4 border-l border-stone-200 dark:border-stone-700 pl-4">
-                {/* Primary tabs */}
-                {primaryModes.map(({ key, label }) => (
+                {/* Primary tabs - hidden on Overview */}
+                {activeMode !== 'home' && primaryModes.map(({ key, label }) => (
                   <button
                     key={key}
                     onClick={() => navigateToMode(key)}
@@ -202,7 +202,7 @@ function AdminHeaderInner({ currentTeam, allTeams = [] }: AdminHeaderProps) {
                   </button>
                 ))}
 
-                {/* More dropdown for secondary tabs */}
+                {/* More dropdown for secondary tabs - always visible */}
                 <div className="relative">
                   <button
                     onClick={(e) => {
