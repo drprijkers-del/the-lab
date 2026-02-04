@@ -20,7 +20,7 @@ interface TeamDetailContentProps {
   ceremoniesSessions?: CeremonySessionWithStats[]
 }
 
-type TabType = 'home' | 'vibe' | 'ceremonies' | 'feedback' | 'coach' | 'modules' | 'settings'
+type TabType = 'home' | 'vibe' | 'ceremonies' | 'feedback' | 'coach' | 'settings'
 
 const ANGLE_LABELS: Record<string, string> = {
   scrum: 'Scrum',
@@ -42,7 +42,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
   // Get initial tab from URL or default to home dashboard
   const getInitialTab = (): TabType => {
     const urlTab = searchParams.get('tab') as TabType | null
-    const validTabs = ['home', 'vibe', 'ceremonies', 'feedback', 'coach', 'modules', 'settings']
+    const validTabs = ['home', 'vibe', 'ceremonies', 'feedback', 'coach', 'settings']
     // Always respect URL tab - content handles disabled state
     if (urlTab && validTabs.includes(urlTab)) {
       return urlTab
@@ -63,7 +63,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
   // Update tab when URL changes (e.g., browser back/forward)
   useEffect(() => {
     const urlTab = searchParams.get('tab') as TabType | null
-    const validTabs = ['home', 'vibe', 'ceremonies', 'feedback', 'coach', 'modules', 'settings']
+    const validTabs = ['home', 'vibe', 'ceremonies', 'feedback', 'coach', 'settings']
     // Always respect URL tab - content handles disabled state
     if (urlTab && validTabs.includes(urlTab)) {
       setActiveTab(urlTab)
@@ -282,7 +282,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             )}
-            {(activeTab === 'settings' || activeTab === 'modules' || !activeTab) && (
+            {(activeTab === 'settings' || !activeTab) && (
               <svg className="w-5 h-5 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -295,7 +295,6 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
               {activeTab === 'feedback' && t('feedbackTitle')}
               {activeTab === 'coach' && t('coachQuestionsTitle')}
               {activeTab === 'settings' && t('teamSettings')}
-              {activeTab === 'modules' && 'Premium Modules'}
               {!activeTab && t('teamDetailContext')}
             </h3>
             <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
@@ -304,7 +303,6 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
               {activeTab === 'feedback' && t('feedbackExplanation')}
               {activeTab === 'coach' && t('coachExplanation')}
               {activeTab === 'settings' && t('settingsExplanation')}
-              {activeTab === 'modules' && t('modulesExplanation')}
               {!activeTab && t('teamDetailContext')}
             </p>
             {/* Vibe steps - clarify what this signal means */}
@@ -581,12 +579,6 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
               className="text-xs px-3 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
             >
               {t('coachQuestionsTab')}
-            </button>
-            <button
-              onClick={() => router.push(`/teams/${team.id}?tab=modules`)}
-              className="text-xs px-3 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
-            >
-              {t('teamsDetailModules')}
             </button>
             <button
               onClick={() => router.push(`/teams/${team.id}?tab=settings`)}
@@ -1032,109 +1024,6 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
               teamName={team.name}
             />
           </div>
-        </div>
-      )}
-
-      {/* Modules Tab */}
-      {activeTab === 'modules' && (
-        <div className="space-y-6">
-          {/* Calm intro - positioning vs core flow */}
-          <div className="text-center">
-            <h3 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-1">{t('modulesTitle')}</h3>
-            <p className="text-xs text-stone-400 dark:text-stone-500 italic">{t('modulesIntro')}</p>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {/* Obeya Module */}
-            <div className="bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 p-5 relative overflow-hidden">
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 text-xs text-stone-400 dark:text-stone-500">{t('moduleComingSoon')}</span>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-stone-200 dark:bg-stone-700 flex items-center justify-center mb-3">
-                <svg className="w-5 h-5 text-stone-400 dark:text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
-                </svg>
-              </div>
-              <h4 className="font-medium text-stone-700 dark:text-stone-300 text-sm mb-1">{t('moduleObeya')}</h4>
-              <p className="text-xs text-stone-500 dark:text-stone-400">{t('moduleObeyaDesc')}</p>
-            </div>
-
-            {/* Leadership Module */}
-            <div className="bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 p-5 relative overflow-hidden">
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 text-xs text-stone-400 dark:text-stone-500">{t('moduleComingSoon')}</span>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-stone-200 dark:bg-stone-700 flex items-center justify-center mb-3">
-                <svg className="w-5 h-5 text-stone-400 dark:text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-              <h4 className="font-medium text-stone-700 dark:text-stone-300 text-sm mb-1">{t('moduleLeadership')}</h4>
-              <p className="text-xs text-stone-500 dark:text-stone-400">{t('moduleLeadershipDesc')}</p>
-            </div>
-
-            {/* Portfolio Module */}
-            <div className="bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 p-5 relative overflow-hidden">
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 text-xs text-stone-400 dark:text-stone-500">{t('moduleComingSoon')}</span>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-stone-200 dark:bg-stone-700 flex items-center justify-center mb-3">
-                <svg className="w-5 h-5 text-stone-400 dark:text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-              </div>
-              <h4 className="font-medium text-stone-700 dark:text-stone-300 text-sm mb-1">{t('modulePortfolio')}</h4>
-              <p className="text-xs text-stone-500 dark:text-stone-400">{t('modulePortfolioDesc')}</p>
-            </div>
-
-            {/* Transition Support Module */}
-            <div className="bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 p-5 relative overflow-hidden">
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 text-xs text-stone-400 dark:text-stone-500">{t('moduleComingSoon')}</span>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-stone-200 dark:bg-stone-700 flex items-center justify-center mb-3">
-                <svg className="w-5 h-5 text-stone-400 dark:text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-              </div>
-              <h4 className="font-medium text-stone-700 dark:text-stone-300 text-sm mb-1">{t('moduleTransition')}</h4>
-              <p className="text-xs text-stone-500 dark:text-stone-400">{t('moduleTransitionDesc')}</p>
-            </div>
-
-            {/* White Label Module */}
-            <div className="bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 p-5 relative overflow-hidden">
-              <div className="absolute top-3 right-3">
-                <span className="px-2 py-0.5 text-xs text-stone-400 dark:text-stone-500">{t('moduleComingSoon')}</span>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-stone-200 dark:bg-stone-700 flex items-center justify-center mb-3">
-                <svg className="w-5 h-5 text-stone-400 dark:text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
-              </div>
-              <h4 className="font-medium text-stone-700 dark:text-stone-300 text-sm mb-1">{t('moduleWhiteLabel')}</h4>
-              <p className="text-xs text-stone-500 dark:text-stone-400">{t('moduleWhiteLabelDesc')}</p>
-            </div>
-          </div>
-
-          {/* Backlog feedback CTA */}
-          <div className="mt-8 p-6 bg-gradient-to-r from-amber-500/10 to-orange-500/10 dark:from-amber-500/10 dark:to-orange-500/10 rounded-2xl border border-amber-500/20">
-            <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-200 mb-2">{t('homeWhatNext')}</h3>
-            <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">{t('homeWhatNextDesc')}</p>
-            <a
-              href="/backlog"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-700 dark:text-amber-300 rounded-lg text-sm font-medium transition-colors"
-            >
-              {t('homeLetUsKnow')}
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </a>
-          </div>
-
-          {/* Subtle optionality note */}
-          <p className="text-xs text-stone-400 dark:text-stone-500 text-center italic pt-4">
-            {t('modulesOptionalNote')}
-          </p>
         </div>
       )}
 

@@ -20,7 +20,7 @@ interface AdminHeaderProps {
   userRole?: 'super_admin' | 'scrum_master'
 }
 
-type NavMode = 'home' | 'vibe' | 'ceremonies' | 'feedback' | 'coach' | 'modules' | 'settings'
+type NavMode = 'home' | 'vibe' | 'ceremonies' | 'feedback' | 'coach' | 'settings'
 
 // Inner component that uses useSearchParams
 function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: AdminHeaderProps) {
@@ -109,7 +109,6 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: A
   // Secondary tabs shown in "More" dropdown
   const secondaryModes: { key: NavMode; label: string }[] = [
     { key: 'coach', label: t('coachQuestionsTab') },
-    { key: 'modules', label: t('teamsDetailModules') },
     { key: 'settings', label: t('teamsDetailSettings') },
   ]
 
@@ -259,18 +258,39 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: A
                         </div>
                       )}
 
-                      {/* Team Reminders (coming soon) */}
+                      {/* Coming soon */}
                       <div className="border-t border-stone-200 dark:border-stone-700 mt-1 pt-1">
-                        <button
-                          onClick={() => {
-                            setShowRemindersInfo(true)
-                            setShowMoreMenu(false)
-                          }}
-                          className="w-full text-left px-3 py-2 text-sm text-stone-500 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
-                        >
-                          <span>{t('teamRemindersSoon')}</span>
-                          <span className="text-xs text-stone-400 dark:text-stone-500 hidden sm:inline ml-1">· {t('teamRemindersSubtitle')}</span>
-                        </button>
+                        <div className="mx-3 my-2 p-3 bg-stone-50 dark:bg-stone-700/50 rounded-lg">
+                          <div className="text-xs font-medium text-cyan-600 dark:text-cyan-400 mb-2">
+                            Coming soon
+                          </div>
+                          <button
+                            onClick={() => {
+                              setShowRemindersInfo(true)
+                              setShowMoreMenu(false)
+                            }}
+                            className="w-full text-left py-1 text-sm text-stone-600 dark:text-stone-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                          >
+                            Reminders
+                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">automatische check-ins</p>
+                          </button>
+                          <div className="py-1 text-sm text-stone-600 dark:text-stone-300">
+                            Obeya
+                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">visueel sturen</p>
+                          </div>
+                          <div className="py-1 text-sm text-stone-600 dark:text-stone-300">
+                            Leadership
+                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">leiderschapsontwikkeling</p>
+                          </div>
+                          <div className="py-1 text-sm text-stone-600 dark:text-stone-300">
+                            Portfolio
+                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">multi-team overzicht</p>
+                          </div>
+                          <div className="py-1 text-sm text-stone-600 dark:text-stone-300">
+                            White Label
+                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">eigen merk</p>
+                          </div>
+                        </div>
                       </div>
 
                       {/* Social Share */}
