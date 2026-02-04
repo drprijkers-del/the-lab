@@ -114,7 +114,7 @@ export const ANGLES: AngleInfo[] = [
   { id: 'refinement', label: 'Refinement', description: 'Are stories ready? Is the backlog actionable?' },
   { id: 'ownership', label: 'Ownership', description: 'Does the team own it? Can we act without asking?' },
   { id: 'technical_excellence', label: 'Technical Excellence', description: 'Is the code getting better? Are we building quality in?' },
-  { id: 'demo', label: 'Demo', description: 'Are stakeholders engaged? Is feedback valuable?' },
+  { id: 'demo', label: 'Review', description: 'Are stakeholders engaged? Is feedback valuable?' },
 ]
 
 // Get all angles (all angles are available at all levels now)
@@ -252,7 +252,7 @@ export function getUnlockRequirements(
       },
       {
         key: 'diversity',
-        label: '5 different ceremony types',
+        label: '5 sessions each with a different angle',
         met: progress.unique_angles >= 5,
         current: progress.unique_angles,
         required: 5
@@ -286,7 +286,7 @@ export function getUnlockRequirements(
       },
       {
         key: 'diversity',
-        label: '7 different ceremony types',
+        label: '7 sessions each with a different angle',
         met: progress.unique_angles >= 7,
         current: progress.unique_angles,
         required: 7

@@ -299,49 +299,41 @@ export async function getTeamsUnified(filter?: 'all' | 'vibe' | 'ceremonies' | '
       const hasCeremonies = tools_enabled.includes('ceremonies')
       const useFastPath = hasDenormalizedStats(team)
 
-      // Vibe stats
+      // Vibe stats - always populated (tools are always enabled)
       let vibeStats: UnifiedTeam['vibe'] = null
-      if (hasVibe) {
-        if (useFastPath) {
-          // Fast path: use denormalized columns
-          const avgScore = team.pulse_avg_score ? parseFloat(String(team.pulse_avg_score)) : null
-          const prevAvgScore = team.pulse_prev_avg_score ? parseFloat(String(team.pulse_prev_avg_score)) : null
-          vibeStats = {
-            enabled: true,
-            participant_count: (team.pulse_participant_count as number) || 0,
-            today_entries: (team.pulse_today_entries as number) || 0,
-            average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
-            trend: calculateTrend(avgScore, prevAvgScore),
-            share_link: teamsWithActiveLink.has(team.id) ? team.slug : null,
-          }
-        } else {
-          // Fallback: compute on the fly (slow)
-          vibeStats = await computeVibeStatsFallback(supabase, team.id, team.slug, teamsWithActiveLink.has(team.id))
+      if (useFastPath) {
+        const avgScore = team.pulse_avg_score ? parseFloat(String(team.pulse_avg_score)) : null
+        const prevAvgScore = team.pulse_prev_avg_score ? parseFloat(String(team.pulse_prev_avg_score)) : null
+        vibeStats = {
+          enabled: true,
+          participant_count: (team.pulse_participant_count as number) || 0,
+          today_entries: (team.pulse_today_entries as number) || 0,
+          average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
+          trend: calculateTrend(avgScore, prevAvgScore),
+          share_link: teamsWithActiveLink.has(team.id) ? team.slug : null,
         }
+      } else {
+        vibeStats = await computeVibeStatsFallback(supabase, team.id, team.slug, teamsWithActiveLink.has(team.id))
       }
 
-      // Ceremonies stats
+      // Ceremonies stats - always populated (tools are always enabled)
       let ceremoniesStats: UnifiedTeam['ceremonies'] = null
-      if (hasCeremonies) {
-        if (useFastPath) {
-          // Fast path: use denormalized columns
-          const avgScore = team.delta_avg_score ? parseFloat(String(team.delta_avg_score)) : null
-          const prevAvgScore = team.delta_prev_avg_score ? parseFloat(String(team.delta_prev_avg_score)) : null
-          ceremoniesStats = {
-            enabled: true,
-            total_sessions: (team.delta_total_sessions as number) || 0,
-            active_sessions: (team.delta_active_sessions as number) || 0,
-            closed_sessions: (team.delta_closed_sessions as number) || 0,
-            average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
-            trend: calculateTrend(avgScore, prevAvgScore),
-            last_session_date: (team.delta_last_session_at as string) || null,
-            level: ((team as Record<string, unknown>).ceremony_level as 'shu' | 'ha' | 'ri') || 'shu',
-            level_updated_at: ((team as Record<string, unknown>).ceremony_level_updated_at as string) || null,
-          }
-        } else {
-          // Fallback: compute on the fly (slow)
-          ceremoniesStats = await computeCeremoniesStatsFallback(team.id)
+      if (useFastPath) {
+        const avgScore = team.delta_avg_score ? parseFloat(String(team.delta_avg_score)) : null
+        const prevAvgScore = team.delta_prev_avg_score ? parseFloat(String(team.delta_prev_avg_score)) : null
+        ceremoniesStats = {
+          enabled: true,
+          total_sessions: (team.delta_total_sessions as number) || 0,
+          active_sessions: (team.delta_active_sessions as number) || 0,
+          closed_sessions: (team.delta_closed_sessions as number) || 0,
+          average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
+          trend: calculateTrend(avgScore, prevAvgScore),
+          last_session_date: (team.delta_last_session_at as string) || null,
+          level: ((team as Record<string, unknown>).ceremony_level as 'shu' | 'ha' | 'ri') || 'shu',
+          level_updated_at: ((team as Record<string, unknown>).ceremony_level_updated_at as string) || null,
         }
+      } else {
+        ceremoniesStats = await computeCeremoniesStatsFallback(team.id)
       }
 
       // Compute needs_attention
@@ -451,49 +443,41 @@ export async function getTeamUnified(id: string): Promise<UnifiedTeam | null> {
   const hasActiveLink = !!linkResult.data
   const useFastPath = hasDenormalizedStats(team)
 
-  // Vibe stats
+  // Vibe stats - always populated (tools are always enabled)
   let vibeStats: UnifiedTeam['vibe'] = null
-  if (hasVibe) {
-    if (useFastPath) {
-      // Fast path: use denormalized columns
-      const avgScore = team.pulse_avg_score ? parseFloat(String(team.pulse_avg_score)) : null
-      const prevAvgScore = team.pulse_prev_avg_score ? parseFloat(String(team.pulse_prev_avg_score)) : null
-      vibeStats = {
-        enabled: true,
-        participant_count: (team.pulse_participant_count as number) || 0,
-        today_entries: (team.pulse_today_entries as number) || 0,
-        average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
-        trend: calculateTrend(avgScore, prevAvgScore),
-        share_link: hasActiveLink ? team.slug : null,
-      }
-    } else {
-      // Fallback: compute on the fly (slow)
-      vibeStats = await computeVibeStatsFallback(supabase, team.id, team.slug, hasActiveLink)
+  if (useFastPath) {
+    const avgScore = team.pulse_avg_score ? parseFloat(String(team.pulse_avg_score)) : null
+    const prevAvgScore = team.pulse_prev_avg_score ? parseFloat(String(team.pulse_prev_avg_score)) : null
+    vibeStats = {
+      enabled: true,
+      participant_count: (team.pulse_participant_count as number) || 0,
+      today_entries: (team.pulse_today_entries as number) || 0,
+      average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
+      trend: calculateTrend(avgScore, prevAvgScore),
+      share_link: hasActiveLink ? team.slug : null,
     }
+  } else {
+    vibeStats = await computeVibeStatsFallback(supabase, team.id, team.slug, hasActiveLink)
   }
 
-  // Ceremonies stats
+  // Ceremonies stats - always populated (tools are always enabled)
   let ceremoniesStats: UnifiedTeam['ceremonies'] = null
-  if (hasCeremonies) {
-    if (useFastPath) {
-      // Fast path: use denormalized columns
-      const avgScore = team.delta_avg_score ? parseFloat(String(team.delta_avg_score)) : null
-      const prevAvgScore = team.delta_prev_avg_score ? parseFloat(String(team.delta_prev_avg_score)) : null
-      ceremoniesStats = {
-        enabled: true,
-        total_sessions: (team.delta_total_sessions as number) || 0,
-        active_sessions: (team.delta_active_sessions as number) || 0,
-        closed_sessions: (team.delta_closed_sessions as number) || 0,
-        average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
-        trend: calculateTrend(avgScore, prevAvgScore),
-        last_session_date: (team.delta_last_session_at as string) || null,
-        level: ((team as Record<string, unknown>).ceremony_level as 'shu' | 'ha' | 'ri') || 'shu',
-        level_updated_at: ((team as Record<string, unknown>).ceremony_level_updated_at as string) || null,
-      }
-    } else {
-      // Fallback: compute on the fly (slow)
-      ceremoniesStats = await computeCeremoniesStatsFallback(team.id)
+  if (useFastPath) {
+    const avgScore = team.delta_avg_score ? parseFloat(String(team.delta_avg_score)) : null
+    const prevAvgScore = team.delta_prev_avg_score ? parseFloat(String(team.delta_prev_avg_score)) : null
+    ceremoniesStats = {
+      enabled: true,
+      total_sessions: (team.delta_total_sessions as number) || 0,
+      active_sessions: (team.delta_active_sessions as number) || 0,
+      closed_sessions: (team.delta_closed_sessions as number) || 0,
+      average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
+      trend: calculateTrend(avgScore, prevAvgScore),
+      last_session_date: (team.delta_last_session_at as string) || null,
+      level: ((team as Record<string, unknown>).ceremony_level as 'shu' | 'ha' | 'ri') || 'shu',
+      level_updated_at: ((team as Record<string, unknown>).ceremony_level_updated_at as string) || null,
     }
+  } else {
+    ceremoniesStats = await computeCeremoniesStatsFallback(team.id)
   }
 
   const needsAttention =

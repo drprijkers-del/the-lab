@@ -409,7 +409,64 @@ export async function closeSession(
     return { success: false, error: 'Access denied' }
   }
 
-  // Update session
+  // Get session info (need team_id for level evaluation)
+  const { data: session } = await supabase
+    .from('delta_sessions')
+    .select('team_id')
+    .eq('id', sessionId)
+    .single()
+
+  if (!session) {
+    return { success: false, error: 'Session not found' }
+  }
+
+  // Calculate overall_score and participation_rate for level evaluation
+  let overallScore: number | null = null
+  let participationRate: number | null = null
+
+  const { count: responseCount } = await supabase
+    .from('delta_responses')
+    .select('*', { count: 'exact', head: true })
+    .eq('session_id', sessionId)
+
+  const numResponses = responseCount || 0
+
+  // Calculate overall score if we have responses
+  if (numResponses >= 3) {
+    const { data: responses } = await supabase.rpc('get_delta_responses', {
+      p_session_id: sessionId,
+    })
+
+    if (responses && responses.length >= 3) {
+      let totalScore = 0
+      let scoreCount = 0
+      for (const response of responses as { answers: Record<string, number> }[]) {
+        for (const score of Object.values(response.answers)) {
+          if (typeof score === 'number' && score >= 1 && score <= 5) {
+            totalScore += score
+            scoreCount++
+          }
+        }
+      }
+      if (scoreCount > 0) {
+        overallScore = Math.round((totalScore / scoreCount) * 100) / 100
+      }
+    }
+  }
+
+  // Calculate participation rate (responses / expected team size)
+  const { data: team } = await supabase
+    .from('teams')
+    .select('expected_team_size')
+    .eq('id', session.team_id)
+    .single()
+
+  if (team?.expected_team_size && team.expected_team_size > 0) {
+    participationRate = Math.min(numResponses / team.expected_team_size, 1.0)
+    participationRate = Math.round(participationRate * 100) / 100
+  }
+
+  // Update session with computed fields for level evaluation
   const { error } = await supabase
     .from('delta_sessions')
     .update({
@@ -419,6 +476,9 @@ export async function closeSession(
       experiment_owner: experimentOwner,
       followup_date: followupDate,
       closed_at: new Date().toISOString(),
+      overall_score: overallScore,
+      participation_rate: participationRate,
+      follow_up_recorded: !!followupDate,
     })
     .eq('id', sessionId)
 
@@ -426,7 +486,11 @@ export async function closeSession(
     return { success: false, error: error.message }
   }
 
+  // Evaluate ceremony level (may upgrade Shu->Ha->Ri)
+  await supabase.rpc('evaluate_ceremony_level', { p_team_id: session.team_id })
+
   revalidatePath(`/delta/session/${sessionId}`)
+  revalidatePath(`/teams/${session.team_id}`)
 
   return { success: true }
 }

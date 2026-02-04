@@ -369,41 +369,94 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
           </div>
         </div>
 
-        {/* Shu-Ha-Ri explanation - only on ceremonies tab */}
-        {activeTab === 'ceremonies' && (
+        {/* Shu-Ha-Ri progression - only on ceremonies tab */}
+        {activeTab === 'ceremonies' && (() => {
+          const currentLevel = team.ceremonies?.level || 'shu'
+          const levelIndex = currentLevel === 'shu' ? 0 : currentLevel === 'ha' ? 1 : 2
+          return (
           <div className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700">
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wide">{t('shuHaRiTitle')}</h4>
             </div>
-            <p className="text-xs text-stone-400 dark:text-stone-500 mb-3">{t('shuHaRiIntro')}</p>
-            <div className="grid grid-cols-3 gap-2">
+            <p className="text-xs text-stone-400 dark:text-stone-500 mb-3">{t('levelExplainer')}</p>
+
+            {/* Level progression steps */}
+            <div className="space-y-2">
               {/* Shu */}
-              <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className="text-sm font-bold text-amber-600 dark:text-amber-400">守</span>
-                  <span className="text-xs font-medium text-amber-700 dark:text-amber-300">{t('shuLabel')}</span>
+              <div className={`p-2.5 rounded-lg border ${currentLevel === 'shu' ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700 ring-1 ring-amber-200 dark:ring-amber-800' : 'bg-amber-50/50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800'}`}>
+                <div className="flex items-center gap-2">
+                  <span className="text-base font-bold text-amber-600 dark:text-amber-400">守</span>
+                  <span className="text-xs font-semibold text-amber-700 dark:text-amber-300">{t('shuLabel')}</span>
+                  <span className="text-[10px] text-amber-600/70 dark:text-amber-400/70">— {t('shuDescription')}</span>
+                  {currentLevel === 'shu' && (
+                    <span className="ml-auto px-1.5 py-0.5 text-[10px] font-medium bg-amber-200 dark:bg-amber-800 text-amber-700 dark:text-amber-300 rounded">{t('currentLevel')}</span>
+                  )}
+                  {levelIndex > 0 && (
+                    <span className="ml-auto text-green-500">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                    </span>
+                  )}
                 </div>
-                <p className="text-[10px] text-amber-600/80 dark:text-amber-400/80">{t('shuDescription')}</p>
               </div>
+
+              {/* Arrow + unlock requirements for Ha */}
+              {currentLevel === 'shu' && (
+                <div className="pl-4 py-1">
+                  <p className="text-[10px] font-medium text-stone-500 dark:text-stone-400 mb-1">{t('unlockHaTitle')}:</p>
+                  <p className="text-[10px] text-stone-400 dark:text-stone-500">{t('unlockHaCriteria')}</p>
+                </div>
+              )}
+
               {/* Ha */}
-              <div className={`p-2 rounded-lg border ${(team.ceremonies?.level || 'shu') === 'shu' ? 'bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700 opacity-60' : 'bg-cyan-50 dark:bg-cyan-900/20 border-cyan-200 dark:border-cyan-800'}`}>
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className={`text-sm font-bold ${(team.ceremonies?.level || 'shu') === 'shu' ? 'text-stone-400 dark:text-stone-500' : 'text-cyan-600 dark:text-cyan-400'}`}>破</span>
-                  <span className={`text-xs font-medium ${(team.ceremonies?.level || 'shu') === 'shu' ? 'text-stone-500 dark:text-stone-400' : 'text-cyan-700 dark:text-cyan-300'}`}>{t('haLabel')}</span>
+              <div className={`p-2.5 rounded-lg border ${currentLevel === 'ha' ? 'bg-cyan-50 dark:bg-cyan-900/20 border-cyan-300 dark:border-cyan-700 ring-1 ring-cyan-200 dark:ring-cyan-800' : levelIndex > 1 ? 'bg-cyan-50/50 dark:bg-cyan-900/10 border-cyan-200 dark:border-cyan-800' : 'bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700 opacity-60'}`}>
+                <div className="flex items-center gap-2">
+                  <span className={`text-base font-bold ${levelIndex >= 1 ? 'text-cyan-600 dark:text-cyan-400' : 'text-stone-400 dark:text-stone-500'}`}>破</span>
+                  <span className={`text-xs font-semibold ${levelIndex >= 1 ? 'text-cyan-700 dark:text-cyan-300' : 'text-stone-500 dark:text-stone-400'}`}>{t('haLabel')}</span>
+                  <span className={`text-[10px] ${levelIndex >= 1 ? 'text-cyan-600/70 dark:text-cyan-400/70' : 'text-stone-400 dark:text-stone-500'}`}>— {t('haDescription')}</span>
+                  {currentLevel === 'ha' && (
+                    <span className="ml-auto px-1.5 py-0.5 text-[10px] font-medium bg-cyan-200 dark:bg-cyan-800 text-cyan-700 dark:text-cyan-300 rounded">{t('currentLevel')}</span>
+                  )}
+                  {levelIndex > 1 && (
+                    <span className="ml-auto text-green-500">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                    </span>
+                  )}
+                  {levelIndex < 1 && (
+                    <span className="ml-auto">
+                      <svg className="w-3.5 h-3.5 text-stone-400 dark:text-stone-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" /></svg>
+                    </span>
+                  )}
                 </div>
-                <p className={`text-[10px] ${(team.ceremonies?.level || 'shu') === 'shu' ? 'text-stone-400 dark:text-stone-500' : 'text-cyan-600/80 dark:text-cyan-400/80'}`}>{t('haDescription')}</p>
               </div>
-              {/* Ri */}
-              <div className={`p-2 rounded-lg border ${(team.ceremonies?.level || 'shu') === 'ri' ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800' : 'bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700 opacity-60'}`}>
-                <div className="flex items-center gap-1.5 mb-0.5">
-                  <span className={`text-sm font-bold ${(team.ceremonies?.level || 'shu') === 'ri' ? 'text-purple-600 dark:text-purple-400' : 'text-stone-400 dark:text-stone-500'}`}>離</span>
-                  <span className={`text-xs font-medium ${(team.ceremonies?.level || 'shu') === 'ri' ? 'text-purple-700 dark:text-purple-300' : 'text-stone-500 dark:text-stone-400'}`}>{t('riLabel')}</span>
+
+              {/* Arrow + unlock requirements for Ri */}
+              {currentLevel === 'ha' && (
+                <div className="pl-4 py-1">
+                  <p className="text-[10px] font-medium text-stone-500 dark:text-stone-400 mb-1">{t('unlockRiTitle')}:</p>
+                  <p className="text-[10px] text-stone-400 dark:text-stone-500">{t('unlockRiCriteria')}</p>
                 </div>
-                <p className={`text-[10px] ${(team.ceremonies?.level || 'shu') === 'ri' ? 'text-purple-600/80 dark:text-purple-400/80' : 'text-stone-400 dark:text-stone-500'}`}>{t('riDescription')}</p>
+              )}
+
+              {/* Ri */}
+              <div className={`p-2.5 rounded-lg border ${currentLevel === 'ri' ? 'bg-purple-50 dark:bg-purple-900/20 border-purple-300 dark:border-purple-700 ring-1 ring-purple-200 dark:ring-purple-800' : 'bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700 opacity-60'}`}>
+                <div className="flex items-center gap-2">
+                  <span className={`text-base font-bold ${currentLevel === 'ri' ? 'text-purple-600 dark:text-purple-400' : 'text-stone-400 dark:text-stone-500'}`}>離</span>
+                  <span className={`text-xs font-semibold ${currentLevel === 'ri' ? 'text-purple-700 dark:text-purple-300' : 'text-stone-500 dark:text-stone-400'}`}>{t('riLabel')}</span>
+                  <span className={`text-[10px] ${currentLevel === 'ri' ? 'text-purple-600/70 dark:text-purple-400/70' : 'text-stone-400 dark:text-stone-500'}`}>— {t('riDescription')}</span>
+                  {currentLevel === 'ri' && (
+                    <span className="ml-auto px-1.5 py-0.5 text-[10px] font-medium bg-purple-200 dark:bg-purple-800 text-purple-700 dark:text-purple-300 rounded">{t('currentLevel')}</span>
+                  )}
+                  {currentLevel !== 'ri' && (
+                    <span className="ml-auto">
+                      <svg className="w-3.5 h-3.5 text-stone-400 dark:text-stone-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" /></svg>
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        )}
+          )
+        })()}
       </div>
       )}
 
@@ -443,7 +496,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
                   <h3 className="font-semibold text-stone-900 dark:text-stone-100">Vibe</h3>
                   <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{t('vibeCardDesc')}</p>
                   <div className="mt-auto pt-2">
-                    {team.vibe && vibeMetrics?.weekVibe?.value !== null && vibeMetrics?.weekVibe?.value !== undefined ? (
+                    {vibeMetrics?.weekVibe?.value !== null && vibeMetrics?.weekVibe?.value !== undefined ? (
                       <div className="flex items-center gap-2">
                         <span className={`text-lg font-bold ${
                           vibeMetrics.weekVibe.value >= 4 ? 'text-green-600' :
@@ -454,8 +507,6 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
                         </span>
                         <span className="text-xs text-stone-400">{t('teamHealth')}</span>
                       </div>
-                    ) : !team.vibe ? (
-                      <span className="inline-block text-xs bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400 px-2 py-0.5 rounded">{t('notEnabled')}</span>
                     ) : (
                       <span className="text-xs text-stone-400">&nbsp;</span>
                     )}
@@ -487,8 +538,6 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
                         </span>
                         <span className="text-xs text-stone-400">{t('sessionsCompleted')}</span>
                       </div>
-                    ) : !team.ceremonies ? (
-                      <span className="inline-block text-xs bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400 px-2 py-0.5 rounded">{t('notEnabled')}</span>
                     ) : (
                       <span className="text-xs text-stone-400">&nbsp;</span>
                     )}

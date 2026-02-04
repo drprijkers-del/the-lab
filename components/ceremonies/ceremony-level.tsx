@@ -59,17 +59,21 @@ export function CeremonyLevelDisplay({
   const isMaxLevel = level === 'ri'
 
   // Static requirements for each level (shown when no progress data)
+  // Must match getUnlockRequirements() in domain/ceremonies/types.ts
   const staticRequirements = {
     shu: [
-      { key: 'sessions', label: 'Run 3 sessions in 30 days', required: 3 },
-      { key: 'score', label: 'Achieve a team score of 3.2 or higher', required: 3.2 },
-      { key: 'participation', label: 'Get 60% of your team to participate', required: 60 },
+      { key: 'sessions', label: t('reqSessions30d'), required: 3 },
+      { key: 'diversity', label: t('reqAngles5'), required: 5 },
+      { key: 'score', label: t('reqScore32'), required: 3.2 },
+      { key: 'participation', label: t('reqParticipation60'), required: 60 },
     ],
     ha: [
-      { key: 'total_sessions', label: 'Complete 6 sessions in total', required: 6 },
-      { key: 'angles', label: 'Try 3 different session types', required: 3 },
-      { key: 'score', label: 'Maintain a team score of 3.5 or higher', required: 3.5 },
-      { key: 'participation', label: 'Get 70% of your team to participate', required: 70 },
+      { key: 'total_sessions', label: t('reqSessionsTotal6'), required: 6 },
+      { key: 'diversity', label: t('reqAngles7'), required: 7 },
+      { key: 'followups', label: t('reqFollowups4'), required: 4 },
+      { key: 'recency', label: t('reqSessions45d'), required: 3 },
+      { key: 'score', label: t('reqScore35'), required: 3.5 },
+      { key: 'participation', label: t('reqParticipation70'), required: 70 },
     ],
     ri: [], // Max level
   }
@@ -103,7 +107,7 @@ export function CeremonyLevelDisplay({
       <div className="p-4 sm:p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-            Ceremony Mastery
+            {t('ceremonyMastery')}
           </h3>
           {risk && risk.state !== 'none' && (
             <div className="flex items-center gap-1.5 text-sm text-amber-600 dark:text-amber-400">
@@ -175,7 +179,7 @@ export function CeremonyLevelDisplay({
                 {isNext && (
                   <div className="mt-2">
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-stone-200 dark:bg-stone-600 text-stone-600 dark:text-stone-300">
-                      Next
+                      {t('nextLevel')}
                     </span>
                   </div>
                 )}
@@ -215,11 +219,11 @@ export function CeremonyLevelDisplay({
                 {CEREMONY_LEVELS[currentLevelIndex + 1]?.kanji}
               </span>
               <span className="font-medium text-stone-900 dark:text-stone-100">
-                Unlock {CEREMONY_LEVELS[currentLevelIndex + 1]?.label}
+                {level === 'shu' ? t('unlockHaTitle') : t('unlockRiTitle')}
               </span>
             </div>
             <span className="text-sm font-medium text-stone-500 dark:text-stone-400">
-              {metRequirements}/{totalRequirements} complete
+              {metRequirements}/{totalRequirements}
             </span>
           </div>
 
@@ -258,7 +262,7 @@ export function CeremonyLevelDisplay({
                   </span>
                 )}
                 {req.met && (
-                  <span className="text-xs font-medium text-green-600 dark:text-green-400">Done</span>
+                  <span className="text-xs font-medium text-green-600 dark:text-green-400">✓</span>
                 )}
               </div>
             ))}
@@ -268,15 +272,15 @@ export function CeremonyLevelDisplay({
           <div className="mt-4 text-center">
             {progressPercent === 0 ? (
               <p className="text-sm text-stone-500 dark:text-stone-400">
-                Start running ceremonies to unlock the next level!
+                {t('levelStartHint')}
               </p>
             ) : progressPercent < 100 ? (
               <p className="text-sm text-stone-500 dark:text-stone-400">
-                Keep going! You&apos;re {progressPercent}% of the way there.
+                {t('levelProgressHint')} {progressPercent}%
               </p>
             ) : (
               <p className={`text-sm font-medium ${levelColors[CEREMONY_LEVELS[currentLevelIndex + 1]?.id || 'ha'].text}`}>
-                🎉 All requirements met! Level up coming soon...
+                {t('levelAllMet')}
               </p>
             )}
           </div>
@@ -289,7 +293,7 @@ export function CeremonyLevelDisplay({
           <div className="flex items-center gap-3 text-purple-700 dark:text-purple-300">
             <span className="text-2xl">✦</span>
             <div>
-              <div className="font-semibold">Mastery Achieved</div>
+              <div className="font-semibold">{t('levelMasteryAchieved')}</div>
               <div className="text-sm text-purple-600 dark:text-purple-400">
                 {t('levelMaxReached')}
               </div>
