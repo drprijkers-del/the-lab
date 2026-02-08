@@ -169,9 +169,9 @@ export async function getPublicVibeHistory(directTeamId?: string): Promise<Daily
 }
 
 /**
- * Public ceremonies stats - basic overview of ceremonies activity
+ * Public wow stats - basic overview of wow activity
  */
-export interface PublicCeremoniesStats {
+export interface PublicWowStats {
   totalSessions: number
   closedSessions: number
   averageScore: number | null
@@ -190,7 +190,7 @@ export interface PublicCeremoniesStats {
   scoresByAngle: Record<string, number | null>
 }
 
-export async function getPublicCeremoniesStats(directTeamId?: string): Promise<PublicCeremoniesStats | null> {
+export async function getPublicWowStats(directTeamId?: string): Promise<PublicWowStats | null> {
   let teamId = directTeamId
   if (!teamId) {
     const context = await getTeamContext()
@@ -201,14 +201,14 @@ export async function getPublicCeremoniesStats(directTeamId?: string): Promise<P
   // Use admin client when called with directTeamId (admin flow) to bypass RLS
   const supabase = directTeamId ? await createAdminClient() : await createClient()
 
-  // Get team ceremony level
+  // Get team wow level
   const { data: teamData } = await supabase
     .from('teams')
-    .select('ceremony_level')
+    .select('wow_level')
     .eq('id', teamId)
     .single()
 
-  const level = (teamData?.ceremony_level as 'shu' | 'ha' | 'ri') || 'shu'
+  const level = (teamData?.wow_level as 'shu' | 'ha' | 'ri') || 'shu'
 
   // Get all sessions for this team
   const { data: sessions } = await supabase

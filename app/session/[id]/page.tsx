@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
-import { getSession, synthesizeSession, getSessionShareLink } from '@/domain/ceremonies/actions'
-import { SessionDetailContent } from '@/components/ceremonies/session-detail-content'
+import { getSession, synthesizeSession, getSessionShareLink } from '@/domain/wow/actions'
+import { SessionDetailContent } from '@/components/wow/session-detail-content'
 
 interface SessionPageProps {
   params: Promise<{ id: string }>
@@ -24,7 +24,7 @@ export default async function SessionPage({ params }: SessionPageProps) {
       session={session}
       synthesis={synthesis}
       shareLink={shareLink}
-      backPath={`/teams/${session.team_id}?tab=ceremonies`}
+      backPath={`/teams/${session.team_id}?tab=wow`}
     />
   )
 }

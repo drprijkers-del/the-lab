@@ -16,7 +16,7 @@
  * 5. Present tense - About now, not aspirational
  */
 
-import { Statement, CeremonyAngle, CeremonyLevel } from './types'
+import { Statement, WowAngle, WowLevel } from './types'
 
 // ============================================
 // SHU LEVEL STATEMENTS (守) - Learn the basics
@@ -231,7 +231,7 @@ const ALL_STATEMENTS: Statement[] = [...shuStatements, ...haStatements, ...riSta
 /**
  * Get statements for a specific angle AND level
  */
-export function getStatements(angle: CeremonyAngle, level: CeremonyLevel = 'shu'): Statement[] {
+export function getStatements(angle: WowAngle, level: WowLevel = 'shu'): Statement[] {
   return ALL_STATEMENTS.filter(s => s.angle === angle && s.level === level)
 }
 
@@ -252,6 +252,6 @@ export function getAllStatements(): Statement[] {
 /**
  * Get all statements for a specific level
  */
-export function getStatementsForLevel(level: CeremonyLevel): Statement[] {
+export function getStatementsForLevel(level: WowLevel): Statement[] {
   return ALL_STATEMENTS.filter(s => s.level === level)
 }

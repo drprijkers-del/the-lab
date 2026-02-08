@@ -20,7 +20,7 @@ interface AdminHeaderProps {
   userRole?: 'super_admin' | 'scrum_master'
 }
 
-type NavMode = 'home' | 'vibe' | 'ceremonies' | 'feedback' | 'coach' | 'settings'
+type NavMode = 'home' | 'vibe' | 'wow' | 'feedback' | 'coach' | 'settings'
 
 // Inner component that uses useSearchParams
 function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: AdminHeaderProps) {
@@ -48,7 +48,7 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: A
 
   // Determine active mode from URL (default to 'home' on team pages)
   const currentTab = searchParams.get('tab') as NavMode | null
-  const activeMode: NavMode = currentTab && ['home', 'vibe', 'ceremonies', 'feedback', 'coach', 'modules', 'settings'].includes(currentTab)
+  const activeMode: NavMode = currentTab && ['home', 'vibe', 'wow', 'feedback', 'coach', 'modules', 'settings'].includes(currentTab)
     ? currentTab as NavMode
     : isOnTeamPage ? 'home' : 'home'
 
@@ -102,7 +102,7 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: A
   const primaryModes: { key: NavMode; label: string; icon?: boolean }[] = [
     { key: 'home', label: t('dashboardTab'), icon: true },
     { key: 'vibe', label: t('teamsDetailVibe') },
-    { key: 'ceremonies', label: t('teamsDetailCeremonies') },
+    { key: 'wow', label: t('teamsDetailWow') },
     { key: 'feedback', label: t('feedbackTitle') },
   ]
 

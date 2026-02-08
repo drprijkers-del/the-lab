@@ -226,7 +226,7 @@ export function BacklogManagementContent({ backlogItems, releaseNotes }: Backlog
 
   function getProductBadge(product: ProductType) {
     const config: Record<ProductType, { label: string; color: string }> = {
-      ceremonies: { label: 'Ceremonies', color: 'bg-cyan-900 text-cyan-300' },
+      wow: { label: 'Way of Work', color: 'bg-cyan-900 text-cyan-300' },
       vibe: { label: 'Vibe', color: 'bg-purple-900 text-purple-300' },
       shared: { label: 'Shared', color: 'bg-stone-700 text-stone-300' },
     }
@@ -321,7 +321,7 @@ export function BacklogManagementContent({ backlogItems, releaseNotes }: Backlog
                           className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
                         >
                           <option value="vibe">Vibe</option>
-                          <option value="ceremonies">Ceremonies</option>
+                          <option value="wow">Way of Work</option>
                           <option value="shared">Shared</option>
                         </select>
                       </div>
@@ -698,7 +698,7 @@ function ReleaseNoteForm({ editingRelease, loading, onSubmit, onCancel }: Releas
             className="w-full px-3 py-2 rounded-lg border border-stone-600 bg-stone-700 text-white"
           >
             <option value="vibe">Vibe</option>
-            <option value="ceremonies">Ceremonies</option>
+            <option value="wow">Way of Work</option>
             <option value="shared">Shared</option>
           </select>
         </div>

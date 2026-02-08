@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation, useLanguage } from '@/lib/i18n/context'
-import { getPublicTeamMetrics, getPublicVibeHistory, getPublicCeremoniesStats, getCoachQuestion, getResultsShareUrl, type PublicCeremoniesStats } from '@/domain/metrics/public-actions'
+import { getPublicTeamMetrics, getPublicVibeHistory, getPublicWowStats, getCoachQuestion, getResultsShareUrl, type PublicWowStats } from '@/domain/metrics/public-actions'
 import { RadarChart, type RadarAxis } from '@/components/ui/radar-chart'
 import type { TeamMetrics, DailyVibe } from '@/domain/metrics/types'
 
@@ -120,7 +120,7 @@ export function TeamResultsView({ teamName, teamSlug, teamId }: TeamResultsViewP
   const { language } = useLanguage()
   const [metrics, setMetrics] = useState<TeamMetrics | null>(null)
   const [history, setHistory] = useState<DailyVibe[]>([])
-  const [ceremonies, setCeremonies] = useState<PublicCeremoniesStats | null>(null)
+  const [wow, setWow] = useState<PublicWowStats | null>(null)
   const [coachQuestion, setCoachQuestion] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -130,10 +130,10 @@ export function TeamResultsView({ teamName, teamSlug, teamId }: TeamResultsViewP
   useEffect(() => {
     async function loadData() {
       try {
-        const [metricsResult, historyData, ceremoniesData, question] = await Promise.all([
+        const [metricsResult, historyData, wowData, question] = await Promise.all([
           getPublicTeamMetrics(teamId),
           getPublicVibeHistory(teamId),
-          getPublicCeremoniesStats(teamId),
+          getPublicWowStats(teamId),
           getCoachQuestion(language as 'nl' | 'en', teamId),
         ])
 
@@ -143,7 +143,7 @@ export function TeamResultsView({ teamName, teamSlug, teamId }: TeamResultsViewP
           setMetrics(metricsResult.metrics)
         }
         setHistory(historyData)
-        setCeremonies(ceremoniesData)
+        setWow(wowData)
         setCoachQuestion(question)
       } catch {
         setError('Failed to load data')
@@ -251,8 +251,8 @@ export function TeamResultsView({ teamName, teamSlug, teamId }: TeamResultsViewP
 
       <main className="max-w-lg mx-auto px-4 py-6 space-y-6">
         {/* Shu/Ha/Ri Level Banner */}
-        {ceremonies && (() => {
-          const level = LEVEL_INFO[ceremonies.level]
+        {wow && (() => {
+          const level = LEVEL_INFO[wow.level]
           if (!level) return null
           return (
             <div className={`relative overflow-hidden rounded-2xl bg-linear-to-br ${level.gradient} p-6 text-white shadow-lg`}>
@@ -422,8 +422,8 @@ export function TeamResultsView({ teamName, teamSlug, teamId }: TeamResultsViewP
         {/* Team Radar Chart */}
         {(() => {
           const radarAxes: RadarAxis[] = []
-          if (ceremonies?.scoresByAngle) {
-            for (const [angle, score] of Object.entries(ceremonies.scoresByAngle)) {
+          if (wow?.scoresByAngle) {
+            for (const [angle, score] of Object.entries(wow.scoresByAngle)) {
               if (score !== null) {
                 radarAxes.push({ key: angle, label: ANGLE_LABELS[angle] || angle, value: score })
               }
@@ -475,31 +475,31 @@ export function TeamResultsView({ teamName, teamSlug, teamId }: TeamResultsViewP
           )
         })()}
 
-        {/* Ceremonies Section */}
-        {ceremonies && (ceremonies.closedSessions > 0 || ceremonies.activeSessions.length > 0) && (
+        {/* Way of Work Section */}
+        {wow && (wow.closedSessions > 0 || wow.activeSessions.length > 0) && (
           <div className="bg-white dark:bg-stone-800 rounded-2xl p-5 shadow-sm border border-stone-200 dark:border-stone-700">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <h2 className="font-semibold text-stone-900 dark:text-stone-100">{t('resultsCeremonies')}</h2>
+                <h2 className="font-semibold text-stone-900 dark:text-stone-100">{t('resultsWow')}</h2>
                 {/* Shu-Ha-Ri Level Badge */}
-                <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full ${LEVEL_INFO[ceremonies.level].color} bg-opacity-20`}>
-                  <span className="text-sm font-bold">{LEVEL_INFO[ceremonies.level].kanji}</span>
-                  <span className="text-xs font-medium">{LEVEL_INFO[ceremonies.level].label}</span>
+                <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full ${LEVEL_INFO[wow.level].color} bg-opacity-20`}>
+                  <span className="text-sm font-bold">{LEVEL_INFO[wow.level].kanji}</span>
+                  <span className="text-xs font-medium">{LEVEL_INFO[wow.level].label}</span>
                 </div>
               </div>
-              {ceremonies.closedSessions > 0 && (
+              {wow.closedSessions > 0 && (
                 <span className="text-xs text-stone-500 dark:text-stone-400">
-                  {ceremonies.closedSessions} {t('resultsSessions')}
+                  {wow.closedSessions} {t('resultsSessions')}
                 </span>
               )}
             </div>
 
             {/* Active Sessions - Join CTA */}
-            {ceremonies.activeSessions.length > 0 && (
+            {wow.activeSessions.length > 0 && (
               <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800">
                 <div className="text-xs font-medium text-amber-700 dark:text-amber-400 mb-2">{t('resultsActiveSessions')}</div>
                 <div className="space-y-2">
-                  {ceremonies.activeSessions.map((session) => (
+                  {wow.activeSessions.map((session) => (
                     <a
                       key={session.id}
                       href={`/d/${session.sessionCode}`}
@@ -518,29 +518,29 @@ export function TeamResultsView({ teamName, teamSlug, teamId }: TeamResultsViewP
             )}
 
             {/* Average Score */}
-            {ceremonies.averageScore !== null && (
+            {wow.averageScore !== null && (
               <div className="flex items-center gap-3 mb-4">
                 <div className={`w-3 h-3 rounded-full ${
-                  ceremonies.averageScore >= 3.5 ? 'bg-green-500' :
-                  ceremonies.averageScore >= 2.5 ? 'bg-cyan-500' :
+                  wow.averageScore >= 3.5 ? 'bg-green-500' :
+                  wow.averageScore >= 2.5 ? 'bg-cyan-500' :
                   'bg-amber-500'
                 }`} />
                 <div>
                   <div className="text-2xl font-bold tabular-nums text-stone-900 dark:text-stone-100">
-                    {ceremonies.averageScore.toFixed(1)}
+                    {wow.averageScore.toFixed(1)}
                   </div>
                   <div className="text-sm text-stone-500 dark:text-stone-400">
-                    {t('resultsCeremoniesAvg')}
+                    {t('resultsWowAvg')}
                   </div>
                 </div>
               </div>
             )}
 
             {/* Recent Sessions */}
-            {ceremonies.recentSessions.length > 0 && (
+            {wow.recentSessions.length > 0 && (
               <div className="space-y-2 pt-3 border-t border-stone-100 dark:border-stone-700">
                 <div className="text-xs text-stone-400 mb-2">{t('resultsRecentSessions')}</div>
-                {ceremonies.recentSessions.map((session, i) => (
+                {wow.recentSessions.map((session, i) => (
                   <div key={i} className="flex items-center justify-between py-1.5">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-stone-700 dark:text-stone-300">

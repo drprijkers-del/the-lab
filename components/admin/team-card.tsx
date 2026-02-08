@@ -7,13 +7,13 @@ import { useTranslation } from '@/lib/i18n/context'
 
 interface TeamCardProps {
   team: TeamWithStats
-  appType?: 'vibe' | 'ceremonies'
+  appType?: 'vibe' | 'wow'
 }
 
 export function TeamCard({ team, appType = 'vibe' }: TeamCardProps) {
   const t = useTranslation()
 
-  const href = appType === 'ceremonies'
+  const href = appType === 'wow'
     ? `/teams/${team.id}`
     : `/vibe/admin/teams/${team.id}`
 

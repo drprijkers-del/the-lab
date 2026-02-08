@@ -44,3 +44,12 @@ next-env.d.ts
 
 # local scripts with credentials
 /scripts/
+!/scripts/pre-push-tests.sh
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

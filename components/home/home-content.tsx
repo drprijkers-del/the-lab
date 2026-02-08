@@ -98,8 +98,8 @@ export function HomeContent() {
                 <div className="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center mb-3">
                   <span className="text-cyan-400 font-bold">Δ</span>
                 </div>
-                <h3 className="font-semibold text-stone-200 mb-1">{t('homeCeremonies')}</h3>
-                <p className="text-sm text-stone-400">{t('homeCeremoniesDesc')}</p>
+                <h3 className="font-semibold text-stone-200 mb-1">{t('homeWow')}</h3>
+                <p className="text-sm text-stone-400">{t('homeWowDesc')}</p>
               </div>
               <div className="bg-stone-800/50 rounded-xl p-5 border border-stone-700/50 hover:border-purple-500/30 transition-colors">
                 <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center mb-3">

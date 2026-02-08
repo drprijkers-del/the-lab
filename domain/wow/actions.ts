@@ -4,10 +4,10 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { requireAdmin, AdminUser } from '@/lib/auth/admin'
 import { revalidatePath } from 'next/cache'
 import {
-  CeremonySession,
-  CeremonySessionWithStats,
-  CeremonyAngle,
-  CeremonyLevel,
+  WowSession,
+  WowSessionWithStats,
+  WowAngle,
+  WowLevel,
   ResponseAnswers,
   SynthesisResult,
   StatementScore,
@@ -38,7 +38,7 @@ async function verifySessionOwnership(sessionId: string, adminUser: AdminUser): 
 /**
  * Get all sessions for a team
  */
-export async function getTeamSessions(teamId: string): Promise<CeremonySessionWithStats[]> {
+export async function getTeamSessions(teamId: string): Promise<WowSessionWithStats[]> {
   const adminUser = await requireAdmin()
   const supabase = await createAdminClient()
 
@@ -62,7 +62,7 @@ export async function getTeamSessions(teamId: string): Promise<CeremonySessionWi
   if (error || !sessions) return []
 
   // Get response counts and scores for each session
-  const sessionsWithStats: CeremonySessionWithStats[] = await Promise.all(
+  const sessionsWithStats: WowSessionWithStats[] = await Promise.all(
     sessions.map(async (session) => {
       const { count } = await supabase
         .from('delta_responses')
@@ -101,7 +101,7 @@ export async function getTeamSessions(teamId: string): Promise<CeremonySessionWi
         ...session,
         response_count: responseCount,
         overall_score: overallScore,
-      } as CeremonySessionWithStats
+      } as WowSessionWithStats
     })
   )
 
@@ -301,7 +301,7 @@ export async function getTeamStats(teamId: string): Promise<TeamStats> {
 /**
  * Get a single session by ID
  */
-export async function getSession(sessionId: string): Promise<CeremonySessionWithStats | null> {
+export async function getSession(sessionId: string): Promise<WowSessionWithStats | null> {
   const adminUser = await requireAdmin()
   const supabase = await createAdminClient()
 
@@ -328,7 +328,7 @@ export async function getSession(sessionId: string): Promise<CeremonySessionWith
     ...session,
     response_count: count || 0,
     team_name: (session as { teams?: { name: string } }).teams?.name,
-  } as CeremonySessionWithStats
+  } as WowSessionWithStats
 }
 
 /**
@@ -336,16 +336,16 @@ export async function getSession(sessionId: string): Promise<CeremonySessionWith
  */
 export async function createSession(
   teamId: string,
-  angle: CeremonyAngle,
+  angle: WowAngle,
   title?: string
 ): Promise<{ success: boolean; sessionId?: string; error?: string }> {
   const adminUser = await requireAdmin()
   const supabase = await createAdminClient()
 
-  // Verify team ownership and get ceremony level
+  // Verify team ownership and get wow level
   const { data: team } = await supabase
     .from('teams')
-    .select('owner_id, ceremony_level')
+    .select('owner_id, wow_level')
     .eq('id', teamId)
     .single()
 
@@ -364,8 +364,8 @@ export async function createSession(
     return { success: false, error: 'Failed to generate session code' }
   }
 
-  // Get team's current ceremony level (default to 'shu')
-  const sessionLevel = (team.ceremony_level as CeremonyLevel) || 'shu'
+  // Get team's current wow level (default to 'shu')
+  const sessionLevel = (team.wow_level as WowLevel) || 'shu'
 
   // Create session with the team's current level
   const { data: session, error } = await supabase
@@ -486,8 +486,8 @@ export async function closeSession(
     return { success: false, error: error.message }
   }
 
-  // Evaluate ceremony level (may upgrade Shu->Ha->Ri)
-  await supabase.rpc('evaluate_ceremony_level', { p_team_id: session.team_id })
+  // Evaluate wow level (may upgrade Shu->Ha->Ri)
+  await supabase.rpc('evaluate_wow_level', { p_team_id: session.team_id })
 
   revalidatePath(`/delta/session/${sessionId}`)
   revalidatePath(`/teams/${session.team_id}`)
@@ -545,9 +545,9 @@ export async function validateSessionCode(sessionCode: string): Promise<{
   session?: {
     id: string
     team_name: string
-    angle: CeremonyAngle
+    angle: WowAngle
     title: string | null
-    ceremony_level: CeremonyLevel
+    wow_level: WowLevel
   }
 }> {
   const supabase = await createClient()
@@ -562,40 +562,40 @@ export async function validateSessionCode(sessionCode: string): Promise<{
 
   const row = data[0]
 
-  // Get ceremony level from session (stored when session was created)
+  // Get wow level from session (stored when session was created)
   const { data: sessionData } = await supabase
     .from('delta_sessions')
     .select('level')
     .eq('id', row.session_id)
     .single()
 
-  const ceremonyLevel: CeremonyLevel = (sessionData?.level as CeremonyLevel) || 'shu'
+  const wowLevel: WowLevel = (sessionData?.level as WowLevel) || 'shu'
 
   return {
     valid: true,
     session: {
       id: row.session_id,
       team_name: row.team_name,
-      angle: row.angle as CeremonyAngle,
+      angle: row.angle as WowAngle,
       title: row.title,
-      ceremony_level: ceremonyLevel,
+      wow_level: wowLevel,
     },
   }
 }
 
 /**
- * Get a team's ceremony level
+ * Get a team's wow level
  */
-export async function getTeamCeremonyLevel(teamId: string): Promise<CeremonyLevel> {
+export async function getTeamWowLevel(teamId: string): Promise<WowLevel> {
   const supabase = await createClient()
 
   const { data } = await supabase
     .from('teams')
-    .select('ceremony_level')
+    .select('wow_level')
     .eq('id', teamId)
     .single()
 
-  return (data?.ceremony_level as CeremonyLevel) || 'shu'
+  return (data?.wow_level as WowLevel) || 'shu'
 }
 
 /**
@@ -748,8 +748,8 @@ export async function synthesizeSession(sessionId: string): Promise<SynthesisRes
   }
 
   // Get statements for this angle and level
-  const sessionLevel = (session.level as CeremonyLevel) || 'shu'
-  const statements = getStatements(session.angle as CeremonyAngle, sessionLevel)
+  const sessionLevel = (session.level as WowLevel) || 'shu'
+  const statements = getStatements(session.angle as WowAngle, sessionLevel)
 
   // Track all scores for overall calculation
   let allScoresSum = 0

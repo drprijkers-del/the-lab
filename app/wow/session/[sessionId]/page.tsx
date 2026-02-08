@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
-import { getSession, synthesizeSession, getSessionShareLink } from '@/domain/ceremonies/actions'
-import { SessionDetailContent } from '@/components/ceremonies/session-detail-content'
+import { getSession, synthesizeSession, getSessionShareLink } from '@/domain/wow/actions'
+import { SessionDetailContent } from '@/components/wow/session-detail-content'
 
 interface SessionDetailPageProps {
   params: Promise<{ sessionId: string }>

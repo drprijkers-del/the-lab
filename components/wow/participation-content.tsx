@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { submitResponse, hasResponded, getPublicSessionOutcome, PublicSessionOutcome } from '@/domain/ceremonies/actions'
-import { getStatements } from '@/domain/ceremonies/statements'
-import { CeremonyAngle, CeremonyLevel, getAngleInfo, getLevelInfo, ResponseAnswers, Statement } from '@/domain/ceremonies/types'
+import { submitResponse, hasResponded, getPublicSessionOutcome, PublicSessionOutcome } from '@/domain/wow/actions'
+import { getStatements } from '@/domain/wow/statements'
+import { WowAngle, WowLevel, getAngleInfo, getLevelInfo, ResponseAnswers, Statement } from '@/domain/wow/types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/context'
@@ -12,9 +12,9 @@ import { v4 as uuidv4 } from 'uuid'
 interface ParticipationContentProps {
   sessionId: string
   teamName: string
-  angle: CeremonyAngle
+  angle: WowAngle
   title: string | null
-  ceremonyLevel: CeremonyLevel
+  wowLevel: WowLevel
 }
 
 type ViewState = 'loading' | 'intro' | 'statements' | 'submitting' | 'done' | 'already_responded' | 'closed_results'
@@ -24,7 +24,7 @@ export function ParticipationContent({
   teamName,
   angle,
   title,
-  ceremonyLevel,
+  wowLevel,
 }: ParticipationContentProps) {
   const t = useTranslation()
   const [viewState, setViewState] = useState<ViewState>('loading')
@@ -35,7 +35,7 @@ export function ParticipationContent({
   const [sessionOutcome, setSessionOutcome] = useState<PublicSessionOutcome | null>(null)
 
   const angleInfo = getAngleInfo(angle)
-  const levelInfo = getLevelInfo(ceremonyLevel)
+  const levelInfo = getLevelInfo(wowLevel)
 
   // Level colors for display
   const levelColors = {
@@ -240,12 +240,12 @@ export function ParticipationContent({
         <Card className="max-w-md w-full">
           <CardContent className="py-8 text-center">
             {/* Shu-Ha-Ri Level Badge */}
-            <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${levelColors[ceremonyLevel].light} mb-4`}>
-              <span className={`text-xl font-bold ${levelColors[ceremonyLevel].text}`}>{levelInfo.kanji}</span>
-              <span className={`text-sm font-medium ${levelColors[ceremonyLevel].text}`}>{levelInfo.subtitle}</span>
+            <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${levelColors[wowLevel].light} mb-4`}>
+              <span className={`text-xl font-bold ${levelColors[wowLevel].text}`}>{levelInfo.kanji}</span>
+              <span className={`text-sm font-medium ${levelColors[wowLevel].text}`}>{levelInfo.subtitle}</span>
             </div>
 
-            <div className="text-sm text-cyan-600 dark:text-cyan-400 font-medium mb-2">{t('ceremoniesSession')}</div>
+            <div className="text-sm text-cyan-600 dark:text-cyan-400 font-medium mb-2">{t('wowSession')}</div>
             <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-1">{teamName}</h1>
             <p className="text-stone-500 dark:text-stone-400 mb-6">{title || angleInfo.label}</p>
 
@@ -373,9 +373,9 @@ export function ParticipationContent({
             </p>
 
             {/* Level badge */}
-            <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${levelColors[ceremonyLevel].light} mb-4`}>
-              <span className={`text-lg font-bold ${levelColors[ceremonyLevel].text}`}>{levelInfo.kanji}</span>
-              <span className={`text-sm ${levelColors[ceremonyLevel].text}`}>{levelInfo.label} Level</span>
+            <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${levelColors[wowLevel].light} mb-4`}>
+              <span className={`text-lg font-bold ${levelColors[wowLevel].text}`}>{levelInfo.kanji}</span>
+              <span className={`text-sm ${levelColors[wowLevel].text}`}>{levelInfo.label} Level</span>
             </div>
 
             <p className="text-xs text-stone-500 dark:text-stone-400 mb-6">

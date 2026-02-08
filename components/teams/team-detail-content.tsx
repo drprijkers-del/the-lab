@@ -12,18 +12,18 @@ import { FeedbackTool } from '@/components/teams/feedback-tool'
 import { VibeMetrics } from '@/components/admin/vibe-metrics'
 import { RadarChart, type RadarAxis } from '@/components/ui/radar-chart'
 import type { TeamMetrics, VibeInsight } from '@/domain/metrics/types'
-import type { CeremonySessionWithStats, CeremonyLevel } from '@/domain/ceremonies/types'
-import type { PublicCeremoniesStats } from '@/domain/metrics/public-actions'
+import type { WowSessionWithStats, WowLevel } from '@/domain/wow/types'
+import type { PublicWowStats } from '@/domain/metrics/public-actions'
 
 interface TeamDetailContentProps {
   team: UnifiedTeam
   vibeMetrics?: TeamMetrics | null
   vibeInsights?: VibeInsight[]
-  ceremoniesSessions?: CeremonySessionWithStats[]
-  ceremonyStats?: PublicCeremoniesStats | null
+  wowSessions?: WowSessionWithStats[]
+  wowStats?: PublicWowStats | null
 }
 
-type TabType = 'home' | 'vibe' | 'ceremonies' | 'feedback' | 'coach' | 'settings'
+type TabType = 'home' | 'vibe' | 'wow' | 'feedback' | 'coach' | 'settings'
 
 const ANGLE_LABELS: Record<string, string> = {
   scrum: 'Scrum',
@@ -37,7 +37,7 @@ const ANGLE_LABELS: Record<string, string> = {
   demo: 'Demo',
 }
 
-export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremoniesSessions = [], ceremonyStats }: TeamDetailContentProps) {
+export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSessions = [], wowStats }: TeamDetailContentProps) {
   const t = useTranslation()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -45,7 +45,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
   // Get initial tab from URL or default to home dashboard
   const getInitialTab = (): TabType => {
     const urlTab = searchParams.get('tab') as TabType | null
-    const validTabs = ['home', 'vibe', 'ceremonies', 'feedback', 'coach', 'settings']
+    const validTabs = ['home', 'vibe', 'wow', 'feedback', 'coach', 'settings']
     // Always respect URL tab - content handles disabled state
     if (urlTab && validTabs.includes(urlTab)) {
       return urlTab
@@ -57,7 +57,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
   const [activeTab, setActiveTab] = useState<TabType>(getInitialTab)
   const [loading, setLoading] = useState<string | null>(null)
   const [showVibeAdvanced, setShowVibeAdvanced] = useState(false)
-  const [sessionsLevelTab, setSessionsLevelTab] = useState<CeremonyLevel>('shu')
+  const [sessionsLevelTab, setSessionsLevelTab] = useState<WowLevel>('shu')
   const [shareUrl, setShareUrl] = useState<string | null>(null)
   const [shareLoading, setShareLoading] = useState(false)
   const [settingsSuccess, setSettingsSuccess] = useState(false)
@@ -66,7 +66,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
   // Update tab when URL changes (e.g., browser back/forward)
   useEffect(() => {
     const urlTab = searchParams.get('tab') as TabType | null
-    const validTabs = ['home', 'vibe', 'ceremonies', 'feedback', 'coach', 'settings']
+    const validTabs = ['home', 'vibe', 'wow', 'feedback', 'coach', 'settings']
     // Always respect URL tab - content handles disabled state
     if (urlTab && validTabs.includes(urlTab)) {
       setActiveTab(urlTab)
@@ -98,7 +98,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [team.id])
 
-  const handleEnableTool = async (tool: 'vibe' | 'ceremonies') => {
+  const handleEnableTool = async (tool: 'vibe' | 'wow') => {
     setLoading(`enable-${tool}`)
     const result = await enableTool(team.id, tool)
     setLoading(null)
@@ -113,7 +113,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
     router.refresh()
   }
 
-  const handleDisableTool = async (tool: 'vibe' | 'ceremonies') => {
+  const handleDisableTool = async (tool: 'vibe' | 'wow') => {
     setLoading(`disable-${tool}`)
     const result = await disableTool(team.id, tool)
     setLoading(null)
@@ -199,36 +199,36 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
 
   // Calculate vibe message for display in OverallSignal (only when on Vibe tab)
   const getVibeContext = () => {
-    if (!team.vibe) return { message: null, suggestion: null, ceremoniesHint: null }
+    if (!team.vibe) return { message: null, suggestion: null, wowHint: null }
 
     const score = team.vibe.average_score
     const hasEnoughData = vibeMetrics?.hasEnoughData ?? false
-    const hasCeremonies = team.tools_enabled.includes('ceremonies')
+    const hasWow = team.tools_enabled.includes('wow')
 
     if (!hasEnoughData || !score) {
-      return { message: t('vibeNotEnoughData'), suggestion: t('vibeShareLinkSuggestion'), ceremoniesHint: null }
+      return { message: t('vibeNotEnoughData'), suggestion: t('vibeShareLinkSuggestion'), wowHint: null }
     } else if (score >= 4) {
-      return { message: t('vibeGreat'), suggestion: t('vibeGreatSuggestion'), ceremoniesHint: null }
+      return { message: t('vibeGreat'), suggestion: t('vibeGreatSuggestion'), wowHint: null }
     } else if (score >= 3.2) {
-      return { message: t('vibeGood'), suggestion: t('vibeGoodSuggestion'), ceremoniesHint: null }
+      return { message: t('vibeGood'), suggestion: t('vibeGoodSuggestion'), wowHint: null }
     } else if (score >= 2.5) {
-      // Show ceremonies hint when attention needed and ceremonies is enabled
+      // Show wow hint when attention needed and wow is enabled
       return {
         message: t('vibeAttention'),
         suggestion: t('vibeAttentionSuggestion'),
-        ceremoniesHint: hasCeremonies ? t('vibeCeremoniesHint') : null
+        wowHint: hasWow ? t('vibeWowHint') : null
       }
     } else {
-      // Show ceremonies hint when vibe is low and ceremonies is enabled
+      // Show wow hint when vibe is low and wow is enabled
       return {
         message: t('vibeConcern'),
         suggestion: t('vibeConcernSuggestion'),
-        ceremoniesHint: hasCeremonies ? t('vibeCeremoniesHint') : null
+        wowHint: hasWow ? t('vibeWowHint') : null
       }
     }
   }
 
-  const vibeContext = activeTab === 'vibe' ? getVibeContext() : { message: null, suggestion: null, ceremoniesHint: null }
+  const vibeContext = activeTab === 'vibe' ? getVibeContext() : { message: null, suggestion: null, wowHint: null }
 
   return (
     <div className="space-y-6">
@@ -237,20 +237,21 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
           Primary state indicator - visually dominant
           ═══════════════════════════════════════════════════════════════════ */}
       <OverallSignal
+        teamId={team.id}
         teamName={team.name}
         needsAttention={team.needs_attention}
         vibeScore={vibeMetrics?.weekVibe?.value ?? team.vibe?.average_score ?? null}
-        ceremoniesScore={ceremonyStats?.averageScore ?? team.ceremonies?.average_score ?? null}
+        wowScore={wowStats?.averageScore ?? team.wow?.average_score ?? null}
         vibeParticipation={(() => {
           const effectiveSize = team.expected_team_size || team.vibe?.participant_count || 1
           const todayCount = team.vibe?.today_entries || 0
           return effectiveSize > 0 ? Math.round((todayCount / effectiveSize) * 100) : 0
         })()}
-        ceremoniesSessions={team.ceremonies?.total_sessions || 0}
-        ceremonyLevel={team.ceremonies?.level as CeremonyLevel | undefined}
+        wowSessions={team.wow?.total_sessions || 0}
+        wowLevel={team.wow?.level as WowLevel | undefined}
         vibeMessage={vibeContext.message}
         vibeSuggestion={vibeContext.suggestion}
-        vibeCeremoniesHint={vibeContext.ceremoniesHint}
+        vibeWowHint={vibeContext.wowHint}
       />
 
       {/* Pulse Labs branding */}
@@ -288,7 +289,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
           {/* Icon per tab */}
           <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
             activeTab === 'vibe' ? 'bg-pink-100 dark:bg-pink-900/30' :
-            activeTab === 'ceremonies' ? 'bg-cyan-100 dark:bg-cyan-900/30' :
+            activeTab === 'wow' ? 'bg-cyan-100 dark:bg-cyan-900/30' :
             activeTab === 'feedback' ? 'bg-purple-100 dark:bg-purple-900/30' :
             activeTab === 'coach' ? 'bg-emerald-100 dark:bg-emerald-900/30' :
             'bg-stone-100 dark:bg-stone-700'
@@ -298,7 +299,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
                 <path d="M2 12h3l2-6 3 12 3-8 2 4h7" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="text-cyan-500" />
               </svg>
             )}
-            {activeTab === 'ceremonies' && <span className="text-cyan-500 font-bold text-lg">Δ</span>}
+            {activeTab === 'wow' && <span className="text-cyan-500 font-bold text-lg">Δ</span>}
             {activeTab === 'feedback' && (
               <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -318,7 +319,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">
               {activeTab === 'vibe' && t('vibeTitle')}
-              {activeTab === 'ceremonies' && t('ceremoniesTitle')}
+              {activeTab === 'wow' && t('wowTitle')}
               {activeTab === 'feedback' && t('feedbackTitle')}
               {activeTab === 'coach' && t('coachQuestionsTitle')}
               {activeTab === 'settings' && t('teamSettings')}
@@ -326,7 +327,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
             </h3>
             <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
               {activeTab === 'vibe' && t('vibeExplanation')}
-              {activeTab === 'ceremonies' && t('ceremoniesExplanation')}
+              {activeTab === 'wow' && t('wowExplanation')}
               {activeTab === 'feedback' && t('feedbackExplanation')}
               {activeTab === 'coach' && t('coachExplanation')}
               {activeTab === 'settings' && t('settingsExplanation')}
@@ -356,27 +357,27 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
                 </p>
               </div>
             )}
-            {/* Ceremonies steps - exploration focus */}
-            {activeTab === 'ceremonies' && (
+            {/* Way of Work steps - exploration focus */}
+            {activeTab === 'wow' && (
               <div className="mt-3 space-y-2">
                 <div className="flex items-center gap-2">
                   <span className="w-5 h-5 rounded-full bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 text-[10px] font-bold flex items-center justify-center shrink-0">1</span>
-                  <span className="text-xs text-stone-500 dark:text-stone-400">{t('ceremoniesStep1')}</span>
+                  <span className="text-xs text-stone-500 dark:text-stone-400">{t('wowStep1')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-5 h-5 rounded-full bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 text-[10px] font-bold flex items-center justify-center shrink-0">2</span>
-                  <span className="text-xs text-stone-500 dark:text-stone-400">{t('ceremoniesStep2')}</span>
+                  <span className="text-xs text-stone-500 dark:text-stone-400">{t('wowStep2')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-5 h-5 rounded-full bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 text-[10px] font-bold flex items-center justify-center shrink-0">3</span>
-                  <span className="text-xs text-stone-500 dark:text-stone-400">{t('ceremoniesStep3')}</span>
+                  <span className="text-xs text-stone-500 dark:text-stone-400">{t('wowStep3')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-5 h-5 rounded-full bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 text-[10px] font-bold flex items-center justify-center shrink-0">4</span>
-                  <span className="text-xs text-stone-500 dark:text-stone-400">{t('ceremoniesStep4')}</span>
+                  <span className="text-xs text-stone-500 dark:text-stone-400">{t('wowStep4')}</span>
                 </div>
                 <p className="text-xs text-stone-400 dark:text-stone-500 italic pt-1">
-                  {t('ceremoniesGuidance')}
+                  {t('wowGuidance')}
                 </p>
               </div>
             )}
@@ -394,9 +395,9 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
           </div>
         </div>
 
-        {/* Shu-Ha-Ri progression - only on ceremonies tab */}
-        {activeTab === 'ceremonies' && (() => {
-          const currentLevel = team.ceremonies?.level || 'shu'
+        {/* Shu-Ha-Ri progression - only on wow tab */}
+        {activeTab === 'wow' && (() => {
+          const currentLevel = team.wow?.level || 'shu'
           const levelIndex = currentLevel === 'shu' ? 0 : currentLevel === 'ha' ? 1 : 2
           return (
           <div className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700">
@@ -543,9 +544,9 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
               </div>
             </button>
 
-            {/* Ceremonies Card */}
+            {/* Way of Work Card */}
             <button
-              onClick={() => router.push(`/teams/${team.id}?tab=ceremonies`)}
+              onClick={() => router.push(`/teams/${team.id}?tab=wow`)}
               className="h-full bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4 text-left hover:border-amber-300 dark:hover:border-amber-700 hover:shadow-md transition-all group"
             >
               <div className="h-full flex items-start gap-3">
@@ -553,13 +554,13 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
                   <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">Δ</span>
                 </div>
                 <div className="flex-1 min-w-0 flex flex-col">
-                  <h3 className="font-semibold text-stone-900 dark:text-stone-100">Ceremonies</h3>
-                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{t('ceremoniesCardDesc')}</p>
+                  <h3 className="font-semibold text-stone-900 dark:text-stone-100">Way of Work</h3>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{t('wowCardDesc')}</p>
                   <div className="mt-auto pt-2">
-                    {team.ceremonies && (team.ceremonies.total_sessions || 0) > 0 ? (
+                    {team.wow && (team.wow.total_sessions || 0) > 0 ? (
                       <div className="flex items-center gap-2">
                         <span className="text-lg font-bold text-amber-600 dark:text-amber-400">
-                          {team.ceremonies.closed_sessions || 0}
+                          {team.wow.closed_sessions || 0}
                         </span>
                         <span className="text-xs text-stone-400">{t('sessionsCompleted')}</span>
                       </div>
@@ -618,8 +619,8 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
           {/* Team Radar Chart */}
           {(() => {
             const radarAxes: RadarAxis[] = []
-            if (ceremonyStats?.scoresByAngle) {
-              for (const [angle, score] of Object.entries(ceremonyStats.scoresByAngle)) {
+            if (wowStats?.scoresByAngle) {
+              for (const [angle, score] of Object.entries(wowStats.scoresByAngle)) {
                 if (score !== null) {
                   radarAxes.push({ key: angle, label: ANGLE_LABELS[angle] || angle, value: score })
                 }
@@ -947,20 +948,20 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
         </div>
       )}
 
-      {activeTab === 'ceremonies' && (
+      {activeTab === 'wow' && (
         <div className="space-y-6">
           <>
               {/* Stats + New Session Button */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4 text-sm text-stone-500 dark:text-stone-400">
-                  <span><strong>{team.ceremonies?.total_sessions || 0}</strong> sessions</span>
-                  <span><strong>{team.ceremonies?.active_sessions || 0}</strong> active</span>
-                  {team.ceremonies?.average_score && (
-                    <span>Avg: <strong>{team.ceremonies.average_score.toFixed(1)}</strong></span>
+                  <span><strong>{team.wow?.total_sessions || 0}</strong> sessions</span>
+                  <span><strong>{team.wow?.active_sessions || 0}</strong> active</span>
+                  {team.wow?.average_score && (
+                    <span>Avg: <strong>{team.wow.average_score.toFixed(1)}</strong></span>
                   )}
                 </div>
                 <Link
-                  href={`/teams/${team.id}/ceremonies/new`}
+                  href={`/teams/${team.id}/wow/new`}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-medium rounded-lg transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -972,14 +973,14 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
 
               {/* Sessions with Level Tabs */}
               {(() => {
-                const currentTeamLevel = (team.ceremonies?.level as CeremonyLevel) || 'shu'
-                const levelOrder: CeremonyLevel[] = ['shu', 'ha', 'ri']
+                const currentTeamLevel = (team.wow?.level as WowLevel) || 'shu'
+                const levelOrder: WowLevel[] = ['shu', 'ha', 'ri']
                 const currentLevelIndex = levelOrder.indexOf(currentTeamLevel)
 
                 // Filter sessions by their stored level (defaults to 'shu' for old sessions)
-                const filteredSessions = ceremoniesSessions.filter(s => (s.level || 'shu') === sessionsLevelTab)
+                const filteredSessions = wowSessions.filter(s => (s.level || 'shu') === sessionsLevelTab)
 
-                const levelTabs: { id: CeremonyLevel; kanji: string; label: string; locked: boolean; color: string }[] = [
+                const levelTabs: { id: WowLevel; kanji: string; label: string; locked: boolean; color: string }[] = [
                   { id: 'shu', kanji: '守', label: 'Shu', locked: false, color: 'amber' },
                   { id: 'ha', kanji: '破', label: 'Ha', locked: currentLevelIndex < 1, color: 'cyan' },
                   { id: 'ri', kanji: '離', label: 'Ri', locked: currentLevelIndex < 2, color: 'purple' },
@@ -1023,7 +1024,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
                         {filteredSessions.map(session => (
                           <Link
                             key={session.id}
-                            href={`/ceremonies/session/${session.id}`}
+                            href={`/wow/session/${session.id}`}
                             className="flex items-center justify-between p-4 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
                           >
                             <div className="flex items-center gap-3">
@@ -1107,8 +1108,8 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
                 return effectiveSize > 0 ? Math.round((todayCount / effectiveSize) * 100) : 0
               })()}
               deltaTensions={
-                // Extract tensions from closed ceremonies sessions with low scores
-                ceremoniesSessions
+                // Extract tensions from closed wow sessions with low scores
+                wowSessions
                   .filter(s => s.status === 'closed' && s.overall_score != null && s.overall_score < 3.5)
                   .map(s => ({ area: s.angle, score: s.overall_score as number }))
                   .sort((a, b) => a.score - b.score) // Lowest scores first
@@ -1252,22 +1253,22 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], ceremo
               <div className="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
                 <div className="flex items-center gap-3">
                   <span className="text-cyan-500 font-bold">Δ</span>
-                  <span className="font-medium text-stone-900 dark:text-stone-100">Ceremonies</span>
+                  <span className="font-medium text-stone-900 dark:text-stone-100">Way of Work</span>
                 </div>
-                {team.tools_enabled.includes('ceremonies') ? (
+                {team.tools_enabled.includes('wow') ? (
                   <Button
                     variant="secondary"
                     size="sm"
-                    onClick={() => handleDisableTool('ceremonies')}
-                    loading={loading === 'disable-ceremonies'}
+                    onClick={() => handleDisableTool('wow')}
+                    loading={loading === 'disable-wow'}
                   >
                     {t('teamsToolDisable')}
                   </Button>
                 ) : (
                   <Button
                     size="sm"
-                    onClick={() => handleEnableTool('ceremonies')}
-                    loading={loading === 'enable-ceremonies'}
+                    onClick={() => handleEnableTool('wow')}
+                    loading={loading === 'enable-wow'}
                   >
                     {t('teamsToolEnable')}
                   </Button>

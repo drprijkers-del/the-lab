@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { CeremonySessionWithStats, SynthesisResult, StatementScore, getAngleInfo, CeremonyAngle } from '@/domain/ceremonies/types'
-import { getStatements } from '@/domain/ceremonies/statements'
-import { closeSession, deleteSession } from '@/domain/ceremonies/actions'
+import { WowSessionWithStats, SynthesisResult, StatementScore, getAngleInfo, WowAngle } from '@/domain/wow/types'
+import { getStatements } from '@/domain/wow/statements'
+import { closeSession, deleteSession } from '@/domain/wow/actions'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
@@ -13,7 +13,7 @@ import { useTranslation, TranslationFunction } from '@/lib/i18n/context'
 import { AdminHeader } from '@/components/admin/header'
 
 interface SessionDetailContentProps {
-  session: CeremonySessionWithStats
+  session: WowSessionWithStats
   synthesis: SynthesisResult | null
   shareLink: string | null
   backPath?: string // Optional: defaults to /teams/[team_id]
@@ -71,12 +71,12 @@ export function SessionDetailContent({ session, synthesis, shareLink, backPath }
     setDeleting(true)
     const result = await deleteSession(session.id)
     if (result.success) {
-      router.push(backPath || `/teams/${session.team_id}?tab=ceremonies`)
+      router.push(backPath || `/teams/${session.team_id}?tab=wow`)
     }
     setDeleting(false)
   }
 
-  const resolvedBackPath = backPath || `/teams/${session.team_id}?tab=ceremonies`
+  const resolvedBackPath = backPath || `/teams/${session.team_id}?tab=wow`
 
   return (
     <>
@@ -236,15 +236,15 @@ export function SessionDetailContent({ session, synthesis, shareLink, backPath }
             <CardContent className="py-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <div className="flex-1">
-                  <h3 className="font-medium text-stone-900 dark:text-stone-100">{t('ceremoniesRepeat')}</h3>
-                  <p className="text-sm text-stone-600 dark:text-stone-400">{t('ceremoniesRepeatInfo')}</p>
+                  <h3 className="font-medium text-stone-900 dark:text-stone-100">{t('wowRepeat')}</h3>
+                  <p className="text-sm text-stone-600 dark:text-stone-400">{t('wowRepeatInfo')}</p>
                 </div>
                 <Link href={`/teams/${session.team_id}/delta/new?angle=${session.angle}`}>
                   <Button variant="secondary" className="shrink-0">
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
-                    {t('ceremoniesRepeat')}
+                    {t('wowRepeat')}
                   </Button>
                 </Link>
               </div>
@@ -474,13 +474,13 @@ function SessionSetupView({
   t
 }: {
   shareLink: string
-  session: CeremonySessionWithStats
+  session: WowSessionWithStats
   copied: boolean
   onCopy: () => void
   t: TranslationFunction
 }) {
   const [showStatements, setShowStatements] = useState(false)
-  const statements = getStatements(session.angle as CeremonyAngle)
+  const statements = getStatements(session.angle as WowAngle)
 
   return (
     <div className="space-y-6 mb-8">

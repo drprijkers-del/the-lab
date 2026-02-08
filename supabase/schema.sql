@@ -41,7 +41,7 @@ CREATE INDEX IF NOT EXISTS idx_teams_owner_id ON teams(owner_id);
 CREATE TABLE IF NOT EXISTS team_tools (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
-  tool TEXT NOT NULL CHECK (tool IN ('pulse', 'delta')),
+  tool TEXT NOT NULL CHECK (tool IN ('vibe', 'wow')),
   enabled_at TIMESTAMPTZ DEFAULT NOW(),
   config JSONB DEFAULT '{}',
   UNIQUE(team_id, tool)

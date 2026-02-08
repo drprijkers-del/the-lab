@@ -1,6 +1,6 @@
-import { validateSessionCode } from '@/domain/ceremonies/actions'
-import { ParticipationContent } from '@/components/ceremonies/participation-content'
-import { InvalidSession } from '@/components/ceremonies/invalid-session'
+import { validateSessionCode } from '@/domain/wow/actions'
+import { ParticipationContent } from '@/components/wow/participation-content'
+import { InvalidSession } from '@/components/wow/invalid-session'
 
 interface ParticipationPageProps {
   params: Promise<{ sessionCode: string }>
@@ -21,7 +21,7 @@ export default async function ParticipationPage({ params }: ParticipationPagePro
       teamName={validation.session.team_name}
       angle={validation.session.angle}
       title={validation.session.title}
-      ceremonyLevel={validation.session.ceremony_level}
+      wowLevel={validation.session.wow_level}
     />
   )
 }

@@ -1,11 +1,11 @@
 /**
- * Ceremonies Types
+ * Way of Work Types
  *
- * Core types for the Ceremonies intervention tool.
+ * Core types for the Way of Work intervention tool.
  */
 
-// Available angles for Ceremonies sessions
-export type CeremonyAngle =
+// Available angles for Way of Work sessions
+export type WowAngle =
   | 'scrum'
   | 'flow'
   | 'ownership'
@@ -17,31 +17,31 @@ export type CeremonyAngle =
   | 'demo'
 
 // Session lifecycle status
-export type CeremonyStatus = 'draft' | 'active' | 'closed'
+export type WowStatus = 'draft' | 'active' | 'closed'
 
-// Ceremony progression levels (守破離)
-export type CeremonyLevel = 'shu' | 'ha' | 'ri'
+// Way of Work progression levels (守破離)
+export type WowLevel = 'shu' | 'ha' | 'ri'
 
 // A single statement that team members respond to
 export interface Statement {
   id: string
   text: string
-  angle: CeremonyAngle
-  level: CeremonyLevel  // Which Shu-Ha-Ri level this statement belongs to
+  angle: WowAngle
+  level: WowLevel  // Which Shu-Ha-Ri level this statement belongs to
 }
 
 // Team member's answers: statement_id -> score (1-5)
 export type ResponseAnswers = Record<string, number>
 
-// Ceremony session entity
-export interface CeremonySession {
+// Way of Work session entity
+export interface WowSession {
   id: string
   team_id: string
   session_code: string
-  angle: CeremonyAngle
-  level: CeremonyLevel  // Which Shu-Ha-Ri level this session was run at
+  angle: WowAngle
+  level: WowLevel  // Which Shu-Ha-Ri level this session was run at
   title: string | null
-  status: CeremonyStatus
+  status: WowStatus
 
   // Outcome (populated when closed)
   focus_area: string | null
@@ -55,15 +55,15 @@ export interface CeremonySession {
   closed_at: string | null
 }
 
-// Ceremony session with additional computed fields
-export interface CeremonySessionWithStats extends CeremonySession {
+// Way of Work session with additional computed fields
+export interface WowSessionWithStats extends WowSession {
   response_count: number
   team_name?: string
   overall_score?: number | null  // Average score (1-5), null if < 3 responses
 }
 
 // Individual response (anonymous)
-export interface CeremonyResponse {
+export interface WowResponse {
   id: string
   session_id: string
   answers: ResponseAnswers
@@ -98,12 +98,12 @@ export interface SynthesisResult {
 // Angle metadata for UI
 // All angles are available at ALL levels - the level determines question depth, not angle availability
 export interface AngleInfo {
-  id: CeremonyAngle
+  id: WowAngle
   label: string
   description: string
 }
 
-// All ceremony angles - available at every Shu-Ha-Ri level
+// All wow angles - available at every Shu-Ha-Ri level
 // The statements for each angle vary by level (deeper questions as you progress)
 export const ANGLES: AngleInfo[] = [
   { id: 'retro', label: 'Retro', description: 'Are we improving? Do actions lead to change?' },
@@ -118,13 +118,13 @@ export const ANGLES: AngleInfo[] = [
 ]
 
 // Get all angles (all angles are available at all levels now)
-export function getAnglesForLevel(_level: CeremonyLevel): AngleInfo[] {
+export function getAnglesForLevel(_level: WowLevel): AngleInfo[] {
   // All angles are available at all levels - the statements vary by level, not the angles
   return ANGLES
 }
 
 // Get all angles (kept for backwards compatibility)
-export function getAnglesGroupedByLevel(): Record<CeremonyLevel, AngleInfo[]> {
+export function getAnglesGroupedByLevel(): Record<WowLevel, AngleInfo[]> {
   // All angles available at all levels now
   return {
     shu: ANGLES,
@@ -134,12 +134,12 @@ export function getAnglesGroupedByLevel(): Record<CeremonyLevel, AngleInfo[]> {
 }
 
 // Check if an angle is unlocked - always true now (all angles available at all levels)
-export function isAngleUnlocked(_angle: CeremonyAngle, _teamLevel: CeremonyLevel): boolean {
+export function isAngleUnlocked(_angle: WowAngle, _teamLevel: WowLevel): boolean {
   return true // All angles are available - the level determines question depth, not angle availability
 }
 
 // Helper to get angle info
-export function getAngleInfo(angle: CeremonyAngle): AngleInfo {
+export function getAngleInfo(angle: WowAngle): AngleInfo {
   return ANGLES.find(a => a.id === angle) || ANGLES[0]
 }
 
@@ -147,14 +147,14 @@ export function getAngleInfo(angle: CeremonyAngle): AngleInfo {
 // SHU-HA-RI LEVELS
 // ============================================
 
-// (CeremonyLevel type is defined at the top of the file)
+// (WowLevel type is defined at the top of the file)
 
 // Risk states (advisory only, no regression)
-export type CeremonyRiskState = 'none' | 'slipping' | 'low_participation' | 'stale'
+export type WowRiskState = 'none' | 'slipping' | 'low_participation' | 'stale'
 
 // Level metadata with Japanese characters
 export interface LevelInfo {
-  id: CeremonyLevel
+  id: WowLevel
   kanji: string
   label: string
   subtitle: string
@@ -163,7 +163,7 @@ export interface LevelInfo {
 }
 
 // Level configuration
-export const CEREMONY_LEVELS: LevelInfo[] = [
+export const WOW_LEVELS: LevelInfo[] = [
   {
     id: 'shu',
     kanji: '守',
@@ -191,8 +191,8 @@ export const CEREMONY_LEVELS: LevelInfo[] = [
 ]
 
 // Helper to get level info
-export function getLevelInfo(level: CeremonyLevel): LevelInfo {
-  return CEREMONY_LEVELS.find(l => l.id === level) || CEREMONY_LEVELS[0]
+export function getLevelInfo(level: WowLevel): LevelInfo {
+  return WOW_LEVELS.find(l => l.id === level) || WOW_LEVELS[0]
 }
 
 // Unlock requirements for UI display
@@ -222,14 +222,14 @@ export interface LevelProgress {
 
 // Risk information
 export interface LevelRisk {
-  state: CeremonyRiskState
+  state: WowRiskState
   reason: string | null
 }
 
 // Full level evaluation result
 export interface LevelEvaluation {
-  level: CeremonyLevel
-  previous_level: CeremonyLevel
+  level: WowLevel
+  previous_level: WowLevel
   level_changed: boolean
   risk: LevelRisk
   progress: LevelProgress
@@ -237,7 +237,7 @@ export interface LevelEvaluation {
 
 // Get unlock requirements for display
 export function getUnlockRequirements(
-  currentLevel: CeremonyLevel,
+  currentLevel: WowLevel,
   progress: LevelProgress
 ): UnlockRequirement[] {
   if (currentLevel === 'shu') {

@@ -10,18 +10,18 @@ import { useTranslation } from '@/lib/i18n/context'
 
 interface TeamsListContentProps {
   teams: TeamWithStats[]
-  appType?: 'vibe' | 'ceremonies'
+  appType?: 'vibe' | 'wow'
 }
 
 export function TeamsListContent({ teams, appType = 'vibe' }: TeamsListContentProps) {
   const t = useTranslation()
 
-  const newTeamHref = appType === 'ceremonies'
+  const newTeamHref = appType === 'wow'
     ? '/teams/new'
     : '/vibe/admin/teams/new'
 
-  const title = appType === 'ceremonies' ? 'Delta Teams' : t('adminTeams')
-  const subtitle = appType === 'ceremonies' ? 'Team coaching interventies' : t('adminTeamsSubtitle')
+  const title = appType === 'wow' ? 'Delta Teams' : t('adminTeams')
+  const subtitle = appType === 'wow' ? 'Team coaching interventies' : t('adminTeamsSubtitle')
 
   return (
     <div>
@@ -48,7 +48,7 @@ export function TeamsListContent({ teams, appType = 'vibe' }: TeamsListContentPr
         {teams.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <div className="text-6xl mb-4">{appType === 'ceremonies' ? 'Δ' : '🎯'}</div>
+              <div className="text-6xl mb-4">{appType === 'wow' ? 'Δ' : '🎯'}</div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">{t('adminNoTeams')}</h3>
               <p className="text-gray-500 mb-6">{t('adminNoTeamsMessage')}</p>
               <Link href={newTeamHref}>

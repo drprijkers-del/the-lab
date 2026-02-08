@@ -4,7 +4,7 @@ import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 // Types matching database schema
-export type ProductType = 'ceremonies' | 'vibe' | 'shared'
+export type ProductType = 'wow' | 'vibe' | 'shared'
 export type BacklogCategory = 'ux' | 'statements' | 'analytics' | 'integration' | 'features'
 export type BacklogStatus = 'review' | 'exploring' | 'decided'
 export type BacklogDecision = 'building' | 'not_doing' | 'done'

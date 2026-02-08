@@ -1,38 +1,41 @@
 'use client'
 
+import Link from 'next/link'
 import { useTranslation } from '@/lib/i18n/context'
-import { type CeremonyLevel, CEREMONY_LEVELS } from '@/domain/ceremonies/types'
+import { type WowLevel, WOW_LEVELS } from '@/domain/wow/types'
 
 interface OverallSignalProps {
+  teamId: string
   teamName: string
   needsAttention?: boolean
   vibeScore: number | null
-  ceremoniesScore: number | null
+  wowScore: number | null
   vibeParticipation: number // percentage 0-100
-  ceremoniesSessions: number
-  ceremonyLevel?: CeremonyLevel | null
+  wowSessions: number
+  wowLevel?: WowLevel | null
   // Optional vibe context (only shown when on Vibe tab)
   vibeMessage?: string | null
   vibeSuggestion?: string | null
-  vibeCeremoniesHint?: string | null
+  vibeWowHint?: string | null
 }
 
 export function OverallSignal({
+  teamId,
   teamName,
   needsAttention = false,
   vibeScore,
-  ceremoniesScore,
+  wowScore,
   vibeParticipation,
-  ceremoniesSessions,
-  ceremonyLevel,
+  wowSessions,
+  wowLevel,
   vibeMessage,
   vibeSuggestion,
-  vibeCeremoniesHint,
+  vibeWowHint,
 }: OverallSignalProps) {
   const t = useTranslation()
 
-  // Get ceremony level info
-  const levelInfo = ceremonyLevel ? CEREMONY_LEVELS.find(l => l.id === ceremonyLevel) : null
+  // Get wow level info
+  const levelInfo = wowLevel ? WOW_LEVELS.find(l => l.id === wowLevel) : null
   const levelColors = {
     shu: { bg: 'bg-amber-100 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-400', border: 'border-amber-300 dark:border-amber-700' },
     ha: { bg: 'bg-cyan-100 dark:bg-cyan-900/30', text: 'text-cyan-700 dark:text-cyan-400', border: 'border-cyan-300 dark:border-cyan-700' },
@@ -40,19 +43,19 @@ export function OverallSignal({
   }
 
   // Calculate combined score (weighted average)
-  // Vibe: 60% weight (daily signal), Ceremonies: 40% weight (periodic deep dive)
+  // Vibe: 60% weight (daily signal), Way of Work: 40% weight (periodic deep dive)
   let combinedScore: number | null = null
-  let scoreSource: 'both' | 'vibe' | 'ceremonies' | 'none' = 'none'
+  let scoreSource: 'both' | 'vibe' | 'wow' | 'none' = 'none'
 
-  if (vibeScore !== null && ceremoniesScore !== null) {
-    combinedScore = vibeScore * 0.6 + ceremoniesScore * 0.4
+  if (vibeScore !== null && wowScore !== null) {
+    combinedScore = vibeScore * 0.6 + wowScore * 0.4
     scoreSource = 'both'
   } else if (vibeScore !== null) {
     combinedScore = vibeScore
     scoreSource = 'vibe'
-  } else if (ceremoniesScore !== null) {
-    combinedScore = ceremoniesScore
-    scoreSource = 'ceremonies'
+  } else if (wowScore !== null) {
+    combinedScore = wowScore
+    scoreSource = 'wow'
   }
 
   // Determine health status
@@ -114,14 +117,37 @@ export function OverallSignal({
         <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-100">
           {teamName}
         </h1>
+        <Link
+          href={`/teams/${teamId}?tab=settings`}
+          className="p-1 text-stone-300 dark:text-stone-600 hover:text-stone-500 dark:hover:text-stone-400 transition-colors"
+          title={t('teamSettings')}
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+          </svg>
+        </Link>
         {needsAttention && (
           <span className="px-2.5 py-1 text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded-full">
             {t('teamsNeedsAttention')}
           </span>
         )}
         {/* Show Shu-Ha-Ri level with subtitle instead of generic status */}
-        {levelInfo && ceremonyLevel ? (
-          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full ${levelColors[ceremonyLevel].bg} ${levelColors[ceremonyLevel].text} ${levelColors[ceremonyLevel].border} border`}>
+        {/* Needs attention reason */}
+        {needsAttention && (vibeScore !== null || wowScore !== null) && (
+          <div className="w-full mt-1 p-2.5 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+            <p className="text-xs text-red-700 dark:text-red-400">
+              {vibeScore !== null && vibeScore < 2.5 && wowScore !== null && wowScore < 2.5
+                ? `${t('attentionReasonVibe')} (${vibeScore.toFixed(1)}) · ${t('attentionReasonWow')} (${wowScore.toFixed(1)})`
+                : vibeScore !== null && vibeScore < 2.5
+                ? `${t('attentionReasonVibe')} (${vibeScore.toFixed(1)})`
+                : wowScore !== null && wowScore < 2.5
+                ? `${t('attentionReasonWow')} (${wowScore.toFixed(1)})`
+                : null}
+            </p>
+          </div>
+        )}
+        {levelInfo && wowLevel ? (
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full ${levelColors[wowLevel].bg} ${levelColors[wowLevel].text} ${levelColors[wowLevel].border} border`}>
             <span className="text-base font-bold">{levelInfo.kanji}</span>
             <span>{levelInfo.subtitle}</span>
           </span>
@@ -176,11 +202,11 @@ export function OverallSignal({
                 </span>
               </div>
             )}
-            {ceremoniesScore !== null && (
+            {wowScore !== null && (
               <div className="flex items-center gap-1.5">
                 <span className="text-cyan-500 font-bold">Δ</span>
                 <span className="text-stone-600 dark:text-stone-400">
-                  Ceremonies: {ceremoniesScore.toFixed(1)}
+                  Way of Work: {wowScore.toFixed(1)}
                 </span>
               </div>
             )}
@@ -194,7 +220,7 @@ export function OverallSignal({
           {/* Data completeness hint */}
           {scoreSource !== 'both' && scoreSource !== 'none' && (
             <p className="text-xs text-stone-400 dark:text-stone-500 mt-1">
-              {scoreSource === 'vibe' ? t('signalAddCeremonies') : t('signalAddVibe')}
+              {scoreSource === 'vibe' ? t('signalAddWow') : t('signalAddVibe')}
             </p>
           )}
         </div>
@@ -210,19 +236,19 @@ export function OverallSignal({
           <div className="w-px h-8 bg-stone-200 dark:bg-stone-700" />
           <div>
             <div className="text-lg font-bold text-stone-900 dark:text-stone-100">
-              {ceremoniesSessions}
+              {wowSessions}
             </div>
             <div className="text-xs text-stone-500 dark:text-stone-400">{t('sessions')}</div>
           </div>
           {/* Shu-Ha-Ri Level */}
-          {levelInfo && ceremonyLevel && (
+          {levelInfo && wowLevel && (
             <>
               <div className="w-px h-8 bg-stone-200 dark:bg-stone-700" />
-              <div className={`px-3 py-1.5 rounded-lg border ${levelColors[ceremonyLevel].bg} ${levelColors[ceremonyLevel].border}`}>
-                <div className={`text-xl font-bold ${levelColors[ceremonyLevel].text}`}>
+              <div className={`px-3 py-1.5 rounded-lg border ${levelColors[wowLevel].bg} ${levelColors[wowLevel].border}`}>
+                <div className={`text-xl font-bold ${levelColors[wowLevel].text}`}>
                   {levelInfo.kanji}
                 </div>
-                <div className={`text-xs font-medium ${levelColors[ceremonyLevel].text}`}>
+                <div className={`text-xs font-medium ${levelColors[wowLevel].text}`}>
                   {levelInfo.label}
                 </div>
               </div>
@@ -238,11 +264,11 @@ export function OverallSignal({
           {vibeSuggestion && (
             <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">{vibeSuggestion}</p>
           )}
-          {/* Soft guidance to Ceremonies when vibe needs attention */}
-          {vibeCeremoniesHint && (
+          {/* Soft guidance to Way of Work when vibe needs attention */}
+          {vibeWowHint && (
             <p className="text-xs text-cyan-600 dark:text-cyan-400 mt-2 flex items-center gap-1.5">
               <span className="font-bold">Δ</span>
-              {vibeCeremoniesHint}
+              {vibeWowHint}
             </p>
           )}
         </div>

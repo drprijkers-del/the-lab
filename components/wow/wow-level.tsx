@@ -2,16 +2,16 @@
 
 import { useTranslation } from '@/lib/i18n/context'
 import {
-  type CeremonyLevel,
+  type WowLevel,
   type LevelProgress,
   type LevelRisk,
   getLevelInfo,
   getUnlockRequirements,
-  CEREMONY_LEVELS,
-} from '@/domain/ceremonies/types'
+  WOW_LEVELS,
+} from '@/domain/wow/types'
 
-interface CeremonyLevelProps {
-  level: CeremonyLevel
+interface WowLevelProps {
+  level: WowLevel
   progress?: LevelProgress | null
   risk?: LevelRisk | null
   compact?: boolean
@@ -48,18 +48,18 @@ const levelColors = {
   },
 }
 
-export function CeremonyLevelDisplay({
+export function WowLevelDisplay({
   level,
   progress,
   risk,
   compact = false,
-}: CeremonyLevelProps) {
+}: WowLevelProps) {
   const t = useTranslation()
-  const currentLevelIndex = CEREMONY_LEVELS.findIndex(l => l.id === level)
+  const currentLevelIndex = WOW_LEVELS.findIndex(l => l.id === level)
   const isMaxLevel = level === 'ri'
 
   // Static requirements for each level (shown when no progress data)
-  // Must match getUnlockRequirements() in domain/ceremonies/types.ts
+  // Must match getUnlockRequirements() in domain/wow/types.ts
   const staticRequirements = {
     shu: [
       { key: 'sessions', label: t('reqSessions30d'), required: 3 },
@@ -107,7 +107,7 @@ export function CeremonyLevelDisplay({
       <div className="p-4 sm:p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-            {t('ceremonyMastery')}
+            {t('wowMastery')}
           </h3>
           {risk && risk.state !== 'none' && (
             <div className="flex items-center gap-1.5 text-sm text-amber-600 dark:text-amber-400">
@@ -119,7 +119,7 @@ export function CeremonyLevelDisplay({
 
         {/* Three Level Cards */}
         <div className="grid grid-cols-3 gap-2 sm:gap-3">
-          {CEREMONY_LEVELS.map((levelInfo, index) => {
+          {WOW_LEVELS.map((levelInfo, index) => {
             const isUnlocked = index <= currentLevelIndex
             const isCurrent = levelInfo.id === level
             const isNext = index === currentLevelIndex + 1
@@ -215,8 +215,8 @@ export function CeremonyLevelDisplay({
         <div className="border-t border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50 p-4 sm:p-5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <span className={`text-lg font-bold ${levelColors[CEREMONY_LEVELS[currentLevelIndex + 1]?.id || 'ha'].kanji}`}>
-                {CEREMONY_LEVELS[currentLevelIndex + 1]?.kanji}
+              <span className={`text-lg font-bold ${levelColors[WOW_LEVELS[currentLevelIndex + 1]?.id || 'ha'].kanji}`}>
+                {WOW_LEVELS[currentLevelIndex + 1]?.kanji}
               </span>
               <span className="font-medium text-stone-900 dark:text-stone-100">
                 {level === 'shu' ? t('unlockHaTitle') : t('unlockRiTitle')}
@@ -279,7 +279,7 @@ export function CeremonyLevelDisplay({
                 {t('levelProgressHint')} {progressPercent}%
               </p>
             ) : (
-              <p className={`text-sm font-medium ${levelColors[CEREMONY_LEVELS[currentLevelIndex + 1]?.id || 'ha'].text}`}>
+              <p className={`text-sm font-medium ${levelColors[WOW_LEVELS[currentLevelIndex + 1]?.id || 'ha'].text}`}>
                 {t('levelAllMet')}
               </p>
             )}
@@ -305,8 +305,8 @@ export function CeremonyLevelDisplay({
   )
 }
 
-// Question depth badge for ceremony list
-export function QuestionDepthBadge({ level }: { level: CeremonyLevel }) {
+// Question depth badge for wow list
+export function QuestionDepthBadge({ level }: { level: WowLevel }) {
   const levelInfo = getLevelInfo(level)
 
   const badgeColors = {
@@ -329,7 +329,7 @@ export function SessionLevelHint({
   sessionScore,
   requiredScore,
 }: {
-  currentLevel: CeremonyLevel
+  currentLevel: WowLevel
   sessionScore?: number | null
   requiredScore: number
 }) {
@@ -347,10 +347,10 @@ export function SessionLevelHint({
           <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
           </svg>
-          Meets {CEREMONY_LEVELS.find(l => l.id === nextLevel)?.label} target
+          Meets {WOW_LEVELS.find(l => l.id === nextLevel)?.label} target
         </span>
       ) : (
-        <span>Need ≥{requiredScore} for {CEREMONY_LEVELS.find(l => l.id === nextLevel)?.label}</span>
+        <span>Need ≥{requiredScore} for {WOW_LEVELS.find(l => l.id === nextLevel)?.label}</span>
       )}
     </div>
   )

@@ -7,9 +7,9 @@ import { useTranslation } from '@/lib/i18n/context'
 interface GettingStartedChecklistProps {
   teamId: string
   teamSlug: string
-  activeTab: 'home' | 'vibe' | 'ceremonies' | 'feedback' | 'coach' | 'modules' | 'settings'
+  activeTab: 'home' | 'vibe' | 'wow' | 'feedback' | 'coach' | 'modules' | 'settings'
   hasPulseEntries: boolean
-  hasCeremonySessions: boolean
+  hasWowSessions: boolean
   hasClosedSessions: boolean
 }
 
@@ -18,7 +18,7 @@ export function GettingStartedChecklist({
   teamSlug,
   activeTab,
   hasPulseEntries,
-  hasCeremonySessions,
+  hasWowSessions,
   hasClosedSessions,
 }: GettingStartedChecklistProps) {
   const t = useTranslation()
@@ -37,8 +37,8 @@ export function GettingStartedChecklist({
     setDismissed(true)
   }
 
-  // Only show for vibe and ceremonies tabs
-  if (activeTab !== 'vibe' && activeTab !== 'ceremonies') return null
+  // Only show for vibe and wow tabs
+  if (activeTab !== 'vibe' && activeTab !== 'wow') return null
 
   // Vibe tab: show vibe onboarding
   if (activeTab === 'vibe') {
@@ -103,13 +103,13 @@ export function GettingStartedChecklist({
     )
   }
 
-  // Ceremonies tab: show ceremonies onboarding
-  if (activeTab === 'ceremonies') {
-    const allCeremoniesComplete = hasCeremonySessions && hasClosedSessions
-    if (dismissed || allCeremoniesComplete) return null
+  // Way of Work tab: show wow onboarding
+  if (activeTab === 'wow') {
+    const allWowComplete = hasWowSessions && hasClosedSessions
+    if (dismissed || allWowComplete) return null
 
     const steps = [
-      { id: 'session', done: hasCeremonySessions },
+      { id: 'session', done: hasWowSessions },
       { id: 'insights', done: hasClosedSessions },
     ]
     const completedCount = steps.filter(s => s.done).length
@@ -123,10 +123,10 @@ export function GettingStartedChecklist({
             </div>
             <div>
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                {t('ceremoniesOnboardingTitle')}
+                {t('wowOnboardingTitle')}
               </h3>
               <p className="text-sm text-stone-500 dark:text-stone-400">
-                {t('ceremoniesOnboardingSubtitle')}
+                {t('wowOnboardingSubtitle')}
               </p>
             </div>
           </div>
@@ -157,16 +157,16 @@ export function GettingStartedChecklist({
         <div className="space-y-3">
           {/* Step 1: Start a session */}
           <div className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
-            hasCeremonySessions
+            hasWowSessions
               ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
               : 'bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700'
           }`}>
             <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
-              hasCeremonySessions
+              hasWowSessions
                 ? 'bg-green-500 text-white'
                 : 'bg-stone-200 dark:bg-stone-600 text-stone-500 dark:text-stone-400'
             }`}>
-              {hasCeremonySessions ? (
+              {hasWowSessions ? (
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
@@ -175,18 +175,18 @@ export function GettingStartedChecklist({
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className={`text-sm font-medium ${hasCeremonySessions ? 'text-green-700 dark:text-green-400' : 'text-stone-700 dark:text-stone-300'}`}>
+              <p className={`text-sm font-medium ${hasWowSessions ? 'text-green-700 dark:text-green-400' : 'text-stone-700 dark:text-stone-300'}`}>
                 {t('onboardingStep2')}
               </p>
-              {!hasCeremonySessions && (
+              {!hasWowSessions && (
                 <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
                   {t('onboardingStep2Hint')}
                 </p>
               )}
             </div>
-            {!hasCeremonySessions && (
+            {!hasWowSessions && (
               <Link
-                href={`/teams/${teamId}/ceremonies/new`}
+                href={`/teams/${teamId}/wow/new`}
                 className="px-4 py-2.5 text-xs font-medium bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition-colors shrink-0 min-h-11 flex items-center"
               >
                 {t('onboardingStartSession')}

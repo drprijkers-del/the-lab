@@ -28,14 +28,14 @@ export interface TeamWithStats extends Team {
 }
 
 export interface TeamTool {
-  tool: 'vibe' | 'ceremonies'
+  tool: 'vibe' | 'wow'
   enabled_at: string
   config: Record<string, unknown>
 }
 
 export interface UnifiedTeam extends Team {
   // Tools enabled
-  tools_enabled: ('vibe' | 'ceremonies')[]
+  tools_enabled: ('vibe' | 'wow')[]
 
   // Vibe stats (null if not enabled)
   vibe: {
@@ -47,8 +47,8 @@ export interface UnifiedTeam extends Team {
     share_link: string | null
   } | null
 
-  // Ceremonies stats (null if not enabled)
-  ceremonies: {
+  // Way of Work stats (null if not enabled)
+  wow: {
     enabled: boolean
     total_sessions: number
     active_sessions: number
@@ -90,7 +90,7 @@ async function verifyTeamOwnership(teamId: string, adminUser: AdminUser): Promis
   return data?.owner_id === adminUser.id
 }
 
-export async function getTeams(appType?: 'vibe' | 'ceremonies'): Promise<TeamWithStats[]> {
+export async function getTeams(appType?: 'vibe' | 'wow'): Promise<TeamWithStats[]> {
   const adminUser = await requireAdmin()
   const supabase = await createClient()
 
@@ -197,8 +197,8 @@ async function computeVibeStatsFallback(
   }
 }
 
-// Helper: Compute Ceremonies stats the old way (fallback before migration)
-async function computeCeremoniesStatsFallback(teamId: string): Promise<NonNullable<UnifiedTeam['ceremonies']>> {
+// Helper: Compute Way of Work stats the old way (fallback before migration)
+async function computeWowStatsFallback(teamId: string): Promise<NonNullable<UnifiedTeam['wow']>> {
   const adminSupabase = await createAdminClient()
   const { data: sessions } = await adminSupabase
     .from('delta_sessions')
@@ -252,7 +252,7 @@ async function computeCeremoniesStatsFallback(teamId: string): Promise<NonNullab
 
 // Get all teams with unified stats for both tools
 // Uses denormalized stats if available (fast), falls back to computed stats (slow but works without migration)
-export async function getTeamsUnified(filter?: 'all' | 'vibe' | 'ceremonies' | 'needs_attention'): Promise<UnifiedTeam[]> {
+export async function getTeamsUnified(filter?: 'all' | 'vibe' | 'wow' | 'needs_attention'): Promise<UnifiedTeam[]> {
   const adminUser = await requireAdmin()
   const supabase = await createClient()
 
@@ -294,9 +294,9 @@ export async function getTeamsUnified(filter?: 'all' | 'vibe' | 'ceremonies' | '
   const unifiedTeams: UnifiedTeam[] = await Promise.all(
     (teams || []).map(async (team) => {
       const teamTools = toolsByTeam.get(team.id) || []
-      const tools_enabled = teamTools.map(t => t.tool) as ('vibe' | 'ceremonies')[]
+      const tools_enabled = teamTools.map(t => t.tool) as ('vibe' | 'wow')[]
       const hasVibe = tools_enabled.includes('vibe')
-      const hasCeremonies = tools_enabled.includes('ceremonies')
+      const hasWow = tools_enabled.includes('wow')
       const useFastPath = hasDenormalizedStats(team)
 
       // Vibe stats - always populated (tools are always enabled)
@@ -316,12 +316,12 @@ export async function getTeamsUnified(filter?: 'all' | 'vibe' | 'ceremonies' | '
         vibeStats = await computeVibeStatsFallback(supabase, team.id, team.slug, teamsWithActiveLink.has(team.id))
       }
 
-      // Ceremonies stats - always populated (tools are always enabled)
-      let ceremoniesStats: UnifiedTeam['ceremonies'] = null
+      // Way of Work stats - always populated (tools are always enabled)
+      let wowStats: UnifiedTeam['wow'] = null
       if (useFastPath) {
         const avgScore = team.delta_avg_score ? parseFloat(String(team.delta_avg_score)) : null
         const prevAvgScore = team.delta_prev_avg_score ? parseFloat(String(team.delta_prev_avg_score)) : null
-        ceremoniesStats = {
+        wowStats = {
           enabled: true,
           total_sessions: (team.delta_total_sessions as number) || 0,
           active_sessions: (team.delta_active_sessions as number) || 0,
@@ -329,27 +329,27 @@ export async function getTeamsUnified(filter?: 'all' | 'vibe' | 'ceremonies' | '
           average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
           trend: calculateTrend(avgScore, prevAvgScore),
           last_session_date: (team.delta_last_session_at as string) || null,
-          level: ((team as Record<string, unknown>).ceremony_level as 'shu' | 'ha' | 'ri') || 'shu',
-          level_updated_at: ((team as Record<string, unknown>).ceremony_level_updated_at as string) || null,
+          level: ((team as Record<string, unknown>).wow_level as 'shu' | 'ha' | 'ri') || 'shu',
+          level_updated_at: ((team as Record<string, unknown>).wow_level_updated_at as string) || null,
         }
       } else {
-        ceremoniesStats = await computeCeremoniesStatsFallback(team.id)
+        wowStats = await computeWowStatsFallback(team.id)
       }
 
       // Compute needs_attention
       const needsAttention =
         (vibeStats && vibeStats.average_score !== null && vibeStats.average_score < 2.5) ||
-        (ceremoniesStats && ceremoniesStats.average_score !== null && ceremoniesStats.average_score < 2.5) ||
+        (wowStats && wowStats.average_score !== null && wowStats.average_score < 2.5) ||
         false
 
       // Compute last_updated
-      const lastUpdated = ceremoniesStats?.last_session_date || team.updated_at
+      const lastUpdated = wowStats?.last_session_date || team.updated_at
 
       return {
         ...team,
         tools_enabled,
         vibe: vibeStats,
-        ceremonies: ceremoniesStats,
+        wow: wowStats,
         last_updated: lastUpdated,
         needs_attention: needsAttention,
       }
@@ -360,8 +360,8 @@ export async function getTeamsUnified(filter?: 'all' | 'vibe' | 'ceremonies' | '
   if (filter === 'vibe') {
     return unifiedTeams.filter(t => t.tools_enabled.includes('vibe'))
   }
-  if (filter === 'ceremonies') {
-    return unifiedTeams.filter(t => t.tools_enabled.includes('ceremonies'))
+  if (filter === 'wow') {
+    return unifiedTeams.filter(t => t.tools_enabled.includes('wow'))
   }
   if (filter === 'needs_attention') {
     return unifiedTeams.filter(t => t.needs_attention)
@@ -437,9 +437,9 @@ export async function getTeamUnified(id: string): Promise<UnifiedTeam | null> {
     return null
   }
 
-  const tools_enabled = (toolsResult.data || []).map(t => t.tool) as ('vibe' | 'ceremonies')[]
+  const tools_enabled = (toolsResult.data || []).map(t => t.tool) as ('vibe' | 'wow')[]
   const hasVibe = tools_enabled.includes('vibe')
-  const hasCeremonies = tools_enabled.includes('ceremonies')
+  const hasWow = tools_enabled.includes('wow')
   const hasActiveLink = !!linkResult.data
   const useFastPath = hasDenormalizedStats(team)
 
@@ -460,12 +460,12 @@ export async function getTeamUnified(id: string): Promise<UnifiedTeam | null> {
     vibeStats = await computeVibeStatsFallback(supabase, team.id, team.slug, hasActiveLink)
   }
 
-  // Ceremonies stats - always populated (tools are always enabled)
-  let ceremoniesStats: UnifiedTeam['ceremonies'] = null
+  // Way of Work stats - always populated (tools are always enabled)
+  let wowStats: UnifiedTeam['wow'] = null
   if (useFastPath) {
     const avgScore = team.delta_avg_score ? parseFloat(String(team.delta_avg_score)) : null
     const prevAvgScore = team.delta_prev_avg_score ? parseFloat(String(team.delta_prev_avg_score)) : null
-    ceremoniesStats = {
+    wowStats = {
       enabled: true,
       total_sessions: (team.delta_total_sessions as number) || 0,
       active_sessions: (team.delta_active_sessions as number) || 0,
@@ -473,32 +473,32 @@ export async function getTeamUnified(id: string): Promise<UnifiedTeam | null> {
       average_score: avgScore ? Math.round(avgScore * 10) / 10 : null,
       trend: calculateTrend(avgScore, prevAvgScore),
       last_session_date: (team.delta_last_session_at as string) || null,
-      level: ((team as Record<string, unknown>).ceremony_level as 'shu' | 'ha' | 'ri') || 'shu',
-      level_updated_at: ((team as Record<string, unknown>).ceremony_level_updated_at as string) || null,
+      level: ((team as Record<string, unknown>).wow_level as 'shu' | 'ha' | 'ri') || 'shu',
+      level_updated_at: ((team as Record<string, unknown>).wow_level_updated_at as string) || null,
     }
   } else {
-    ceremoniesStats = await computeCeremoniesStatsFallback(team.id)
+    wowStats = await computeWowStatsFallback(team.id)
   }
 
   const needsAttention =
     (vibeStats && vibeStats.average_score !== null && vibeStats.average_score < 2.5) ||
-    (ceremoniesStats && ceremoniesStats.average_score !== null && ceremoniesStats.average_score < 2.5) ||
+    (wowStats && wowStats.average_score !== null && wowStats.average_score < 2.5) ||
     false
 
-  const lastUpdated = ceremoniesStats?.last_session_date || team.updated_at
+  const lastUpdated = wowStats?.last_session_date || team.updated_at
 
   return {
     ...team,
     tools_enabled,
     vibe: vibeStats,
-    ceremonies: ceremoniesStats,
+    wow: wowStats,
     last_updated: lastUpdated,
     needs_attention: needsAttention,
   }
 }
 
 // Get tools enabled for a team
-export async function getTeamTools(teamId: string): Promise<('vibe' | 'ceremonies')[]> {
+export async function getTeamTools(teamId: string): Promise<('vibe' | 'wow')[]> {
   const supabase = await createClient()
 
   const { data } = await supabase
@@ -506,11 +506,11 @@ export async function getTeamTools(teamId: string): Promise<('vibe' | 'ceremonie
     .select('tool')
     .eq('team_id', teamId)
 
-  return (data || []).map(t => t.tool as 'vibe' | 'ceremonies')
+  return (data || []).map(t => t.tool as 'vibe' | 'wow')
 }
 
 // Enable a tool for a team
-export async function enableTool(teamId: string, tool: 'vibe' | 'ceremonies'): Promise<{ success: boolean; error?: string }> {
+export async function enableTool(teamId: string, tool: 'vibe' | 'wow'): Promise<{ success: boolean; error?: string }> {
   const adminUser = await requireAdmin()
   const supabase = await createAdminClient()
 
@@ -554,7 +554,7 @@ export async function enableTool(teamId: string, tool: 'vibe' | 'ceremonies'): P
 }
 
 // Disable a tool for a team
-export async function disableTool(teamId: string, tool: 'vibe' | 'ceremonies'): Promise<{ success: boolean; error?: string }> {
+export async function disableTool(teamId: string, tool: 'vibe' | 'wow'): Promise<{ success: boolean; error?: string }> {
   const adminUser = await requireAdmin()
   const supabase = await createAdminClient()
 
@@ -631,7 +631,7 @@ export async function createTeam(formData: FormData): Promise<{ success: boolean
     .from('team_tools')
     .insert([
       { team_id: team.id, tool: 'vibe' },
-      { team_id: team.id, tool: 'ceremonies' },
+      { team_id: team.id, tool: 'wow' },
     ])
 
   // Create initial invite link for Pulse

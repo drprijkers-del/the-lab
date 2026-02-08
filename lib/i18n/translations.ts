@@ -27,8 +27,8 @@ export const translations = {
     homeComingSoon: 'Binnenkort',
     homeVibeCheck: 'Vibe Check',
     homeVibeCheckDesc: 'Dagelijkse mood tracking met anonieme check-ins. Zie trends over tijd.',
-    homeCeremonies: 'Ceremonies',
-    homeCeremoniesDesc: 'Diepgaande team health assessments. Shu-Ha-Ri progressiesysteem.',
+    homeWow: 'Way of Work',
+    homeWowDesc: 'Diepgaande team health assessments. Shu-Ha-Ri progressiesysteem.',
     homeTeamFeedback: 'Team Feedback',
     homeTeamFeedbackDesc: 'Gestructureerde feedback tool met AI-gestuurde gespreksstarters.',
     homeCoachQuestions: 'Coach Vragen',
@@ -43,7 +43,7 @@ export const translations = {
     homePortfolio: 'Portfolio',
     homePortfolioDesc: 'Multi-team health overzicht en cross-team inzichten dashboard.',
     vibeDesc: 'Dagelijkse team signalen. Meet hoe je team ervoor staat.',
-    ceremoniesDesc: 'Team coaching interventies. Scherpe statements, concrete experimenten.',
+    wowDesc: 'Team coaching interventies. Scherpe statements, concrete experimenten.',
     openTool: 'Open tool',
 
     // Homepage (legacy, keep for backwards compat)
@@ -225,7 +225,7 @@ export const translations = {
     closeThisPage: 'Je kunt dit tabblad sluiten',
     closePage: 'Sluit pagina',
 
-    // Ceremonies - Angle labels
+    // Way of Work - Angle labels
     angleScrum: 'Scrum',
     angleScrumDesc: 'Zijn events nuttig? Helpt het framework?',
     angleFlow: 'Flow',
@@ -245,18 +245,18 @@ export const translations = {
     angleDemo: 'Review',
     angleDemoDesc: 'Zijn stakeholders betrokken? Is feedback waardevol?',
 
-    // Ceremonies - Session
+    // Way of Work - Session
     pickAngle: 'Kies een invalshoek',
     justOne: 'Eén per sessie. 10 stellingen. 2 minuten per persoon.',
     startSession: 'Start sessie',
 
-    // Ceremonies - Invalid session
+    // Way of Work - Invalid session
     sessionNotFound: 'Sessie niet gevonden',
     sessionNotFoundMessage: 'Deze sessie link is ongeldig of de sessie is beëindigd.',
     goToHome: 'Naar homepage',
 
-    // Ceremonies - Participation
-    ceremoniesSession: 'Ceremonies Sessie',
+    // Way of Work - Participation
+    wowSession: 'Way of Work Sessie',
     howItWorks: 'Hoe het werkt',
     statementsHonest: 'stellingen. Wees eerlijk.',
     rateStatement: 'Beoordeel elke stelling van 1 (oneens) tot 5 (eens).',
@@ -274,7 +274,7 @@ export const translations = {
     teamScore: 'Team score',
     thankYouParticipation: 'Bedankt voor je deelname',
 
-    // Ceremonies - Session detail
+    // Way of Work - Session detail
     shareWithTeam: 'Deel met je team',
     copyLink: 'Kopieer',
     copied: 'Gekopieerd!',
@@ -306,7 +306,7 @@ export const translations = {
     disagreement: 'Onenigheid',
     useInRetro: 'Neem dit mee naar je retro',
 
-    // Ceremonies - Setup view
+    // Way of Work - Setup view
     readyToShare: 'Klaar om te delen',
     openLink: 'Open sessie',
     previewFirst: 'Bekijk eerst zelf de ervaring',
@@ -324,22 +324,22 @@ export const translations = {
     metricExperimentDesc: 'Een concrete actie.',
     minimumResponses: 'Minimaal 3 reacties nodig voor inzichten.',
 
-    // Ceremonies - Team detail
+    // Way of Work - Team detail
     sessions: 'Sessies',
     responses: 'Reacties',
     active: 'Actief',
     newSession: 'Nieuwe sessie',
     startNewSession: 'Start nieuwe sessie',
-    startCeremoniesSession: 'Nieuwe Ceremonies sessie',
-    startCeremoniesSessionSubtitle: 'Kies een invalshoek en start binnen 30 seconden.',
+    startWowSession: 'Nieuwe Way of Work sessie',
+    startWowSessionSubtitle: 'Kies een invalshoek en start binnen 30 seconden.',
     noSessionsYet: 'Nog geen sessies',
-    noSessionsMessage: 'Start je eerste Ceremonies sessie.',
+    noSessionsMessage: 'Start je eerste Way of Work sessie.',
     activeSessions: 'Actieve sessies',
     teamActions: 'Acties',
     clearData: 'Data wissen',
     deleteTeam: 'Team verwijderen',
 
-    // Ceremonies - Team metrics
+    // Way of Work - Team metrics
     teamHealth: 'Team Health',
     teamHealthRadar: 'Team Radar',
     radarOverall: 'Gemiddeld',
@@ -351,7 +351,7 @@ export const translations = {
     levelBannerShu: 'Volg de structuur. Bouw het ritme. Vertrouw het proces.',
     levelBannerHa: 'Bevraag de regels. Experimenteer veilig. Vind wat werkt voor jouw team.',
     levelBannerRi: 'Overstijg het framework. Creëer je eigen proces. Leid door voorbeeld.',
-    levelBannerTitle: 'Ceremonies Niveau',
+    levelBannerTitle: 'Way of Work Niveau',
     trendLabel: 'Trend',
     trendUp: 'Stijgend',
     trendDown: 'Dalend',
@@ -369,11 +369,11 @@ export const translations = {
     vibeTeaser: 'Wil je ook je teams stemming monitoren?',
     vibeLink: 'Ontdek Vibe',
 
-    // Ceremonies - Coach insights
+    // Way of Work - Coach insights
     insightWaitingForResults: 'Wacht op meer reacties...',
     insightFlowBlocked: 'Flow wordt geblokkeerd.',
     insightRefinementWeak: 'Refinement heeft aandacht nodig.',
-    insightScrumCeremonies: 'Ceremonies voelen als verplichting.',
+    insightScrumWow: 'Way of Work voelt als verplichting.',
     insightOwnershipWeak: 'Ownership moet groeien.',
     insightOwnershipStrong: 'Sterke ownership in het team.',
     insightCollaborationTension: 'Spanning in samenwerking.',
@@ -391,13 +391,15 @@ export const translations = {
     teamsFirstTeam: 'Eerste team aanmaken',
     teamsFilterAll: 'Alle',
     teamsFilterVibe: 'Vibe',
-    teamsFilterCeremonies: 'Ceremonies',
+    teamsFilterWow: 'Way of Work',
     teamsFilterAttention: 'Aandacht nodig',
     teamsToolsEnabled: 'Tools actief',
     teamsVibeSignals: 'signalen vandaag',
-    teamsCeremoniesSessions: 'sessies',
+    teamsWowSessions: 'sessies',
     teamsLastActivity: 'Laatste activiteit',
     teamsNeedsAttention: 'Aandacht nodig',
+    attentionReasonVibe: 'Lage Vibe score',
+    attentionReasonWow: 'Lage Way of Work score',
     teamDetailContext: 'Bekijk de huidige signalen en participatie van dit team. Gebruik deze informatie om te bepalen of en waar je wilt bijsturen.',
     switchTeam: 'Wissel van team',
     viewAllTeams: 'Alle teams bekijken',
@@ -411,7 +413,7 @@ export const translations = {
     vibeStep3: 'Volg de trend over tijd',
     vibeStep4: 'Deel resultaten met je team (zie Overview)',
     vibeTrustNote: 'Korte schommelingen zijn normaal – kijk naar de richting. Betrouwbaarder naarmate meer teamleden meedoen.',
-    ceremoniesTitle: 'Wat zijn Ceremonies?',
+    wowTitle: 'Wat zijn Way of Work?',
     vibeNotEnoughData: 'Nog niet genoeg signalen',
     vibeShareLinkSuggestion: 'Deel de link met je team om te starten.',
     vibeGreat: 'Team voelt zich goed',
@@ -422,17 +424,17 @@ export const translations = {
     vibeAttentionSuggestion: 'Een goed moment voor een gesprek.',
     vibeConcern: 'Signaal is laag',
     vibeConcernSuggestion: 'Maak tijd voor 1-op-1 gesprekken.',
-    vibeCeremoniesHint: 'Veranderingen kun je verkennen in teamrituelen.',
+    vibeWowHint: 'Veranderingen kun je verkennen in teamrituelen.',
     checkedInToday: 'ingecheckt vandaag',
     totalParticipants: 'deelnemers totaal',
     vibeDisableTitle: 'Vibe uitschakelen',
     vibeDisableInfo: 'Dit schakelt de volledige Vibe functie uit voor dit team. De link werkt dan niet meer.',
-    ceremoniesExplanation: 'Verdieping op Vibe. Verken waar spanning of kracht zit in jullie werkwijze.',
-    ceremoniesStep1: 'Start een sessie en kies een invalshoek',
-    ceremoniesStep2: 'Deel de code met je team',
-    ceremoniesStep3: 'Sluit af en bespreek de resultaten',
-    ceremoniesStep4: 'Deel resultaten met je team (zie Overview)',
-    ceremoniesGuidance: 'Waar het Vibe-signaal beweegt, kan Ceremonies helpen begrijpen waarom.',
+    wowExplanation: 'Verdieping op Vibe. Verken waar spanning of kracht zit in jullie werkwijze.',
+    wowStep1: 'Start een sessie en kies een invalshoek',
+    wowStep2: 'Deel de URL met je teamleden',
+    wowStep3: 'Sluit af en bespreek de resultaten',
+    wowStep4: 'Deel resultaten met je team (zie Overview)',
+    wowGuidance: 'Waar het Vibe-signaal beweegt, kan Way of Work helpt begrijpen waarom.',
 
     // Shu-Ha-Ri detailed explanation
     shuHaRiTitle: 'Leerpad',
@@ -456,7 +458,7 @@ export const translations = {
     feedbackFraming: 'Anoniem en vrijwillig. Verschillende perspectieven zijn normaal.',
     feedbackGuidance: 'Gebruik als gespreksopener, niet als bewijs.',
     coachExplanation: 'Hulpmiddel voor jou, niet voor het team. Dit genereert denkrichtingen op basis van signalen — geen conclusies, geen diagnoses.',
-    coachUsageFrame: 'Gebruik dit als voorbereiding: na het bekijken van Vibe, Ceremonies of Feedback, vóór een gesprek met het team.',
+    coachUsageFrame: 'Gebruik dit als voorbereiding: na het bekijken van Vibe, Way of Work of Feedback, vóór een gesprek met het team.',
     coachPostureHint: 'Bereid 1-2 vragen voor. Stel ze open in het team. Luister naar wat zij zien.',
     coachObservationsTitle: 'Mogelijke gespreksrichtingen',
     coachObservationsSubtitle: 'Signalen vertaald naar vragen — valideer met je team',
@@ -474,7 +476,7 @@ export const translations = {
     levelMaxReached: 'Hoogste niveau bereikt. Blijf het goede werk volhouden!',
     levelRiskGeneric: 'Aandacht nodig',
     levelExplainer: 'Niveaus zijn gebaseerd op praktijk en stabiliteit. Ze helpen om diepere vragen vrij te spelen, niet om teams te rangschikken.',
-    ceremonyMastery: 'Ceremonies Groeipad',
+    wowMastery: 'Way of Work Groeipad',
     nextLevel: 'Volgende',
     levelStartHint: 'Start met sessies draaien om het volgende niveau te ontgrendelen.',
     levelProgressHint: 'Goed bezig! Je bent op',
@@ -493,34 +495,34 @@ export const translations = {
 
     teamsViewTeam: 'Bekijk team',
     teamsCreateTitle: 'Nieuw team',
-    teamsCreateSubtitle: 'Maak een team aan voor Vibe en Ceremonies',
+    teamsCreateSubtitle: 'Maak een team aan voor Vibe en Way of Work',
     teamsDetailVibe: 'Vibe',
-    teamsDetailCeremonies: 'Ceremonies',
+    teamsDetailWow: 'Way of Work',
     teamsDetailSettings: 'Team instellingen',
     teamsDetailModules: 'Pro',
     dashboardTab: 'Overzicht',
     more: 'Meer',
     shareOnSocial: 'Deel Pulse Labs',
     teamRemindersSoon: 'Team reminders (soon)',
-    teamRemindersSubtitle: 'Voor Vibe & Ceremonies',
+    teamRemindersSubtitle: 'Voor Vibe & Way of Work',
     teamRemindersTitle: 'Team reminders',
-    teamRemindersBody: 'We werken aan vriendelijke email reminders om je te helpen een vast teamritme te houden.\n\nDeze reminders ondersteunen het delen van Vibe en Ceremonies op momenten die passen bij jouw team.',
+    teamRemindersBody: 'We werken aan vriendelijke email reminders om je te helpen een vast teamritme te houden.\n\nDeze reminders ondersteunen het delen van Vibe en Way of Work op momenten die passen bij jouw team.',
     teamRemindersNotAvailable: 'Deze functie is nog niet beschikbaar.',
     teamsToolEnable: 'Activeer',
     teamsToolDisable: 'Deactiveer',
     teamsToolEnabled: 'Actief',
     teamsToolDisabled: 'Niet actief',
     teamsVibeNotEnabled: 'Vibe is niet actief voor dit team',
-    teamsCeremoniesNotEnabled: 'Ceremonies is niet actief voor dit team',
+    teamsWowNotEnabled: 'Way of Work is niet actief voor dit team',
     vibeCardDesc: 'Dagelijkse team signalen',
-    ceremoniesCardDesc: 'Team coaching sessies',
+    wowCardDesc: 'Team coaching sessies',
     feedbackCardDesc: 'Anonieme perspectieven',
     notEnabled: 'Nog niet actief',
     dashboardNavHint: 'Tip: Gebruik het menu om direct naar een tool te gaan',
     teamsEnableVibe: 'Activeer Vibe',
-    teamsEnableCeremonies: 'Activeer Ceremonies',
+    teamsEnableWow: 'Activeer Way of Work',
     teamsGoToVibe: 'Open Vibe',
-    teamsGoToCeremonies: 'Open Ceremonies',
+    teamsGoToWow: 'Open Way of Work',
     teamsAvgScore: 'Gem. score',
     teamsNoScore: 'Geen data',
 
@@ -560,9 +562,9 @@ export const translations = {
     shareResultsTitle: 'Resultaten delen',
     shareResultsDescription: 'Deel de resultaten met je team via deze link.',
     shareResultsPlaceholder: 'Zodra je team Vibe signalen heeft, verschijnt hier een link om resultaten te delen.',
-    resultsCeremonies: 'Ceremonies',
+    resultsWow: 'Way of Work',
     resultsSessions: 'sessies',
-    resultsCeremoniesAvg: 'Gemiddelde score',
+    resultsWowAvg: 'Gemiddelde score',
     resultsRecentSessions: 'Recente sessies',
     resultsCoachQuestion: 'Vraag voor het team',
     resultsLevel: 'Level',
@@ -650,15 +652,15 @@ export const translations = {
     feedbackInvalidLink: 'Deze link is niet geldig of verlopen.',
     feedbackMinRequired: 'Geef minimaal één antwoord',
 
-    // Ceremonies compare
-    ceremoniesCompare: 'Vergelijk',
-    ceremoniesCompareTitle: 'Sessies vergelijken',
-    ceremoniesCompareSelect: 'Selecteer sessies om te vergelijken',
-    ceremoniesCompareImproved: 'Verbeterd',
-    ceremoniesCompareDeclined: 'Gedaald',
-    ceremoniesCompareUnchanged: 'Ongewijzigd',
-    ceremoniesRepeat: 'Herhaal sessie',
-    ceremoniesRepeatInfo: 'Voer dezelfde invalshoek opnieuw uit',
+    // Way of Work compare
+    wowCompare: 'Vergelijk',
+    wowCompareTitle: 'Sessies vergelijken',
+    wowCompareSelect: 'Selecteer sessies om te vergelijken',
+    wowCompareImproved: 'Verbeterd',
+    wowCompareDeclined: 'Gedaald',
+    wowCompareUnchanged: 'Ongewijzigd',
+    wowRepeat: 'Herhaal sessie',
+    wowRepeatInfo: 'Voer dezelfde invalshoek opnieuw uit',
 
     // Dark mode
     darkMode: 'Donkere modus',
@@ -683,7 +685,7 @@ export const translations = {
     maturityStarterDesc: 'Basis tools om te starten',
     maturityMediumDesc: 'Geavanceerde analyses en inzichten',
     maturityMatureDesc: 'Volledige toolkit voor experts',
-    maturityStarterFeatures: 'Vibe check-ins, Ceremonies sessies, Basis metrics',
+    maturityStarterFeatures: 'Vibe check-ins, Way of Work sessies, Basis metrics',
     maturityMediumFeatures: 'Trend analyses, AI insights, Coach vragen, Vergelijkingen',
     maturityMatureFeatures: 'Obeya, Leadership tools, Portfolio, Department views',
     maturitySessions: 'sessies',
@@ -740,7 +742,7 @@ export const translations = {
 
     // Modules (optional extensions)
     modulesTitle: 'Verdieping',
-    modulesIntro: 'De kernflow is Vibe → Ceremonies → Feedback → Coach. Deze modules zijn in ontwikkeling.',
+    modulesIntro: 'De kernflow is Vibe → Way of Work → Feedback → Coach. Deze modules zijn in ontwikkeling.',
     modulesOptionalNote: 'We bouwen hier aan. Interesse? Laat het weten.',
     moduleComingSoon: 'In ontwikkeling',
     moduleUnlock: 'Ontgrendelen',
@@ -762,7 +764,7 @@ export const translations = {
     onboardingComplete: 'voltooid',
     onboardingStep1: 'Deel Vibe link met je team',
     onboardingStep1Hint: 'Kopieer de link en deel via Slack of Teams',
-    onboardingStep2: 'Start je eerste Ceremonies sessie',
+    onboardingStep2: 'Start je eerste Way of Work sessie',
     onboardingStep2Hint: 'Kies een invalshoek en verzamel feedback',
     onboardingStep3: 'Bekijk team inzichten',
     onboardingStep3Hint: 'Sluit een sessie af om resultaten te zien',
@@ -770,27 +772,27 @@ export const translations = {
     onboardingUseShareLink: 'Gebruik share link ↑',
     vibeOnboardingTitle: 'Start met Vibe',
     vibeOnboardingSubtitle: 'Meet de dagelijkse sfeer in je team',
-    ceremoniesOnboardingTitle: 'Start met Ceremonies',
-    ceremoniesOnboardingSubtitle: 'Voer team health checks uit',
+    wowOnboardingTitle: 'Start met Way of Work',
+    wowOnboardingSubtitle: 'Voer team health checks uit',
     onboardingStartSession: 'Start sessie',
 
     // Empty state
     emptyStateVibeDesc: 'Dagelijkse team signalen',
-    emptyStateCeremoniesDesc: 'Coaching interventies',
+    emptyStateWowDesc: 'Coaching interventies',
     emptyStateInsightsTitle: 'Inzichten',
     emptyStateInsightsDesc: 'Data-driven besluiten',
     emptyStateTime: 'Klaar in 30 seconden',
 
     // Overall Signal
     signalTitle: 'Team Signaal',
-    signalWeighting: 'Vibe 60% + Ceremonies 40%',
+    signalWeighting: 'Vibe 60% + Way of Work 40%',
     signalNoData: 'Geen data',
     signalExcellent: 'Uitstekend',
     signalGood: 'Goed',
     signalAttention: 'Aandacht',
     signalCritical: 'Kritiek',
     signalCollectData: 'Start met data verzamelen',
-    signalAddCeremonies: 'Voeg Ceremonies toe voor completer beeld',
+    signalAddWow: 'Voeg Way of Work toe voor completer beeld',
     signalAddVibe: 'Voeg Vibe toe voor dagelijkse signalen',
     signalParticipation: 'Deelname',
 
@@ -848,8 +850,8 @@ export const translations = {
     homeComingSoon: 'Coming Soon',
     homeVibeCheck: 'Vibe Check',
     homeVibeCheckDesc: 'Daily mood tracking with anonymous check-ins. See trends over time.',
-    homeCeremonies: 'Ceremonies',
-    homeCeremoniesDesc: 'Deep-dive team health assessments. Shu-Ha-Ri progression system.',
+    homeWow: 'Way of Work',
+    homeWowDesc: 'Deep-dive team health assessments. Shu-Ha-Ri progression system.',
     homeTeamFeedback: 'Team Feedback',
     homeTeamFeedbackDesc: 'Structured feedback tool with AI-powered conversation starters.',
     homeCoachQuestions: 'Coach Questions',
@@ -864,7 +866,7 @@ export const translations = {
     homePortfolio: 'Portfolio',
     homePortfolioDesc: 'Multi-team health overview and cross-team insights dashboard.',
     vibeDesc: 'Daily team signals. Measure how your team is doing.',
-    ceremoniesDesc: 'Team coaching interventions. Sharp statements, concrete experiments.',
+    wowDesc: 'Team coaching interventions. Sharp statements, concrete experiments.',
     openTool: 'Open tool',
 
     // Homepage (legacy, keep for backwards compat)
@@ -1046,7 +1048,7 @@ export const translations = {
     closeThisPage: 'You can close this tab',
     closePage: 'Close page',
 
-    // Ceremonies - Angle labels
+    // Way of Work - Angle labels
     angleScrum: 'Scrum',
     angleScrumDesc: 'Are events useful? Is the framework helping?',
     angleFlow: 'Flow',
@@ -1066,18 +1068,18 @@ export const translations = {
     angleDemo: 'Review',
     angleDemoDesc: 'Are stakeholders engaged? Is feedback valuable?',
 
-    // Ceremonies - Session
+    // Way of Work - Session
     pickAngle: 'Pick an angle',
     justOne: 'One per session. 10 statements. 2 minutes per person.',
     startSession: 'Start Session',
 
-    // Ceremonies - Invalid session
+    // Way of Work - Invalid session
     sessionNotFound: 'Session Not Found',
     sessionNotFoundMessage: 'This session link is invalid or the session has ended.',
     goToHome: 'Go to homepage',
 
-    // Ceremonies - Participation
-    ceremoniesSession: 'Ceremonies Session',
+    // Way of Work - Participation
+    wowSession: 'Way of Work Session',
     howItWorks: 'How it works',
     statementsHonest: 'statements. Be honest.',
     rateStatement: 'Rate each from 1 (disagree) to 5 (agree).',
@@ -1095,7 +1097,7 @@ export const translations = {
     teamScore: 'Team score',
     thankYouParticipation: 'Thank you for participating',
 
-    // Ceremonies - Session detail
+    // Way of Work - Session detail
     shareWithTeam: 'Share with your team',
     copyLink: 'Copy Link',
     copied: 'Copied!',
@@ -1127,7 +1129,7 @@ export const translations = {
     disagreement: 'Disagreement',
     useInRetro: 'Bring this to your retro',
 
-    // Ceremonies - Setup view
+    // Way of Work - Setup view
     readyToShare: 'Ready to share',
     openLink: 'Open session',
     previewFirst: 'Preview the experience yourself first',
@@ -1145,22 +1147,22 @@ export const translations = {
     metricExperimentDesc: 'A concrete action.',
     minimumResponses: 'Minimum 3 responses needed for insights.',
 
-    // Ceremonies - Team detail
+    // Way of Work - Team detail
     sessions: 'Sessions',
     responses: 'Responses',
     active: 'Active',
     newSession: 'New session',
     startNewSession: 'Start new session',
-    startCeremoniesSession: 'New Ceremonies session',
-    startCeremoniesSessionSubtitle: 'Pick an angle and start within 30 seconds.',
+    startWowSession: 'New Way of Work session',
+    startWowSessionSubtitle: 'Pick an angle and start within 30 seconds.',
     noSessionsYet: 'No sessions yet',
-    noSessionsMessage: 'Start your first Ceremonies session.',
+    noSessionsMessage: 'Start your first Way of Work session.',
     activeSessions: 'Active Sessions',
     teamActions: 'Actions',
     clearData: 'Clear data',
     deleteTeam: 'Delete team',
 
-    // Ceremonies - Team metrics
+    // Way of Work - Team metrics
     teamHealth: 'Team Health',
     teamHealthRadar: 'Team Radar',
     radarOverall: 'Overall',
@@ -1172,7 +1174,7 @@ export const translations = {
     levelBannerShu: 'Follow the structure. Build the habit. Trust the process.',
     levelBannerHa: 'Question the rules. Experiment safely. Find what works for your team.',
     levelBannerRi: 'Transcend the framework. Create your own process. Lead by example.',
-    levelBannerTitle: 'Ceremonies Level',
+    levelBannerTitle: 'Way of Work Level',
     trendLabel: 'Trend',
     trendUp: 'Improving',
     trendDown: 'Declining',
@@ -1190,11 +1192,11 @@ export const translations = {
     vibeTeaser: 'Want to monitor your team mood too?',
     vibeLink: 'Discover Vibe',
 
-    // Ceremonies - Coach insights
+    // Way of Work - Coach insights
     insightWaitingForResults: 'Waiting for more responses...',
     insightFlowBlocked: 'Flow is being blocked.',
     insightRefinementWeak: 'Refinement needs attention.',
-    insightScrumCeremonies: 'Ceremonies feel like obligations.',
+    insightScrumWow: 'Way of Work feel like obligations.',
     insightOwnershipWeak: 'Ownership needs to grow.',
     insightOwnershipStrong: 'Strong ownership in the team.',
     insightCollaborationTension: 'Tension in collaboration.',
@@ -1212,13 +1214,15 @@ export const translations = {
     teamsFirstTeam: 'Create first team',
     teamsFilterAll: 'All',
     teamsFilterVibe: 'Vibe',
-    teamsFilterCeremonies: 'Ceremonies',
+    teamsFilterWow: 'Way of Work',
     teamsFilterAttention: 'Needs attention',
     teamsToolsEnabled: 'Tools active',
     teamsVibeSignals: 'signals today',
-    teamsCeremoniesSessions: 'sessions',
+    teamsWowSessions: 'sessions',
     teamsLastActivity: 'Last activity',
     teamsNeedsAttention: 'Needs attention',
+    attentionReasonVibe: 'Low Vibe score',
+    attentionReasonWow: 'Low Way of Work score',
     teamDetailContext: 'Monitor current signals and participation for this team. Use this view to decide whether and where to intervene.',
     switchTeam: 'Switch team',
     viewAllTeams: 'View all teams',
@@ -1232,7 +1236,7 @@ export const translations = {
     vibeStep3: 'Follow the trend over time',
     vibeStep4: 'Share results with your team (see Overview)',
     vibeTrustNote: 'Short-term fluctuations are normal – focus on direction. More reliable as more team members participate.',
-    ceremoniesTitle: 'What are Ceremonies?',
+    wowTitle: 'What are Way of Work?',
     vibeNotEnoughData: 'Not enough signals yet',
     vibeShareLinkSuggestion: 'Share the link with your team to get started.',
     vibeGreat: 'Team is feeling good',
@@ -1243,17 +1247,17 @@ export const translations = {
     vibeAttentionSuggestion: 'A good moment for a conversation.',
     vibeConcern: 'Signal is low',
     vibeConcernSuggestion: 'Make time for 1-on-1 conversations.',
-    vibeCeremoniesHint: 'Changes can be explored in team rituals.',
+    vibeWowHint: 'Changes can be explored in team rituals.',
     checkedInToday: 'checked in today',
     totalParticipants: 'total participants',
     vibeDisableTitle: 'Disable Vibe',
     vibeDisableInfo: 'This disables the entire Vibe feature for this team. The link will no longer work.',
-    ceremoniesExplanation: 'Goes deeper than Vibe. Explore where tension or strength exists in how you work.',
-    ceremoniesStep1: 'Start a session and pick an angle',
-    ceremoniesStep2: 'Share the code with your team',
-    ceremoniesStep3: 'Close and discuss the results',
-    ceremoniesStep4: 'Share results with your team (see Overview)',
-    ceremoniesGuidance: 'When the Vibe signal moves, Ceremonies can help understand why.',
+    wowExplanation: 'Goes deeper than Vibe. Explore where tension or strength exists in how you work.',
+    wowStep1: 'Start a session and pick an angle',
+    wowStep2: 'Share the URL with your team members',
+    wowStep3: 'Close and discuss the results',
+    wowStep4: 'Share results with your team (see Overview)',
+    wowGuidance: 'When the Vibe signal moves, Way of Work can help understand why.',
 
     // Shu-Ha-Ri detailed explanation
     shuHaRiTitle: 'Learning Path',
@@ -1277,7 +1281,7 @@ export const translations = {
     feedbackFraming: 'Anonymous and voluntary. Different perspectives are normal.',
     feedbackGuidance: 'Use as a conversation starter, not as proof.',
     coachExplanation: 'A tool for you, not for the team. This generates thinking directions based on signals — not conclusions, not diagnoses.',
-    coachUsageFrame: 'Use this as preparation: after reviewing Vibe, Ceremonies or Feedback, before a conversation with the team.',
+    coachUsageFrame: 'Use this as preparation: after reviewing Vibe, Way of Work or Feedback, before a conversation with the team.',
     coachPostureHint: 'Prepare 1-2 questions. Ask them openly in the team. Listen to what they see.',
     coachObservationsTitle: 'Possible conversation directions',
     coachObservationsSubtitle: 'Signals translated into questions — validate with your team',
@@ -1295,7 +1299,7 @@ export const translations = {
     levelMaxReached: 'Maximum level reached. Keep up the great work!',
     levelRiskGeneric: 'Needs attention',
     levelExplainer: 'Levels are based on practice and stability. They help unlock deeper questions, not to rank teams.',
-    ceremonyMastery: 'Ceremony Growth Path',
+    wowMastery: 'Way of Work Growth Path',
     nextLevel: 'Next',
     levelStartHint: 'Start running sessions to unlock the next level.',
     levelProgressHint: 'Keep going! You\'re at',
@@ -1314,34 +1318,34 @@ export const translations = {
 
     teamsViewTeam: 'View team',
     teamsCreateTitle: 'New team',
-    teamsCreateSubtitle: 'Create a team for Vibe and Ceremonies',
+    teamsCreateSubtitle: 'Create a team for Vibe and Way of Work',
     teamsDetailVibe: 'Vibe',
-    teamsDetailCeremonies: 'Ceremonies',
+    teamsDetailWow: 'Way of Work',
     teamsDetailSettings: 'Team Settings',
     teamsDetailModules: 'Pro',
     dashboardTab: 'Overview',
     more: 'More',
     shareOnSocial: 'Share Pulse Labs',
     teamRemindersSoon: 'Team reminders (soon)',
-    teamRemindersSubtitle: 'For Vibe & Ceremonies',
+    teamRemindersSubtitle: 'For Vibe & Way of Work',
     teamRemindersTitle: 'Team reminders',
-    teamRemindersBody: "We're working on gentle email reminders to help you keep a steady team rhythm.\n\nThese reminders will support sharing Vibe and Ceremonies at moments that make sense for your team.",
+    teamRemindersBody: "We're working on gentle email reminders to help you keep a steady team rhythm.\n\nThese reminders will support sharing Vibe and Way of Work at moments that make sense for your team.",
     teamRemindersNotAvailable: 'This feature is not available yet.',
     teamsToolEnable: 'Enable',
     teamsToolDisable: 'Disable',
     teamsToolEnabled: 'Active',
     teamsToolDisabled: 'Not active',
     teamsVibeNotEnabled: 'Vibe is not enabled for this team',
-    teamsCeremoniesNotEnabled: 'Ceremonies is not enabled for this team',
+    teamsWowNotEnabled: 'Way of Work is not enabled for this team',
     vibeCardDesc: 'Daily team signals',
-    ceremoniesCardDesc: 'Team coaching sessions',
+    wowCardDesc: 'Team coaching sessions',
     feedbackCardDesc: 'Anonymous perspectives',
     notEnabled: 'Not enabled yet',
     dashboardNavHint: 'Tip: Use the menu to jump directly to a tool',
     teamsEnableVibe: 'Enable Vibe',
-    teamsEnableCeremonies: 'Enable Ceremonies',
+    teamsEnableWow: 'Enable Way of Work',
     teamsGoToVibe: 'Open Vibe',
-    teamsGoToCeremonies: 'Open Ceremonies',
+    teamsGoToWow: 'Open Way of Work',
     teamsAvgScore: 'Avg. score',
     teamsNoScore: 'No data',
 
@@ -1381,9 +1385,9 @@ export const translations = {
     shareResultsTitle: 'Share Results',
     shareResultsDescription: 'Share results with your team via this link.',
     shareResultsPlaceholder: 'Once your team has Vibe signals, a link to share results will appear here.',
-    resultsCeremonies: 'Ceremonies',
+    resultsWow: 'Way of Work',
     resultsSessions: 'sessions',
-    resultsCeremoniesAvg: 'Average score',
+    resultsWowAvg: 'Average score',
     resultsRecentSessions: 'Recent sessions',
     resultsCoachQuestion: 'Question for the team',
     resultsLevel: 'Level',
@@ -1471,15 +1475,15 @@ export const translations = {
     feedbackInvalidLink: 'This link is not valid or has expired.',
     feedbackMinRequired: 'Please provide at least one answer',
 
-    // Ceremonies compare
-    ceremoniesCompare: 'Compare',
-    ceremoniesCompareTitle: 'Compare sessions',
-    ceremoniesCompareSelect: 'Select sessions to compare',
-    ceremoniesCompareImproved: 'Improved',
-    ceremoniesCompareDeclined: 'Declined',
-    ceremoniesCompareUnchanged: 'Unchanged',
-    ceremoniesRepeat: 'Repeat session',
-    ceremoniesRepeatInfo: 'Run the same angle again',
+    // Way of Work compare
+    wowCompare: 'Compare',
+    wowCompareTitle: 'Compare sessions',
+    wowCompareSelect: 'Select sessions to compare',
+    wowCompareImproved: 'Improved',
+    wowCompareDeclined: 'Declined',
+    wowCompareUnchanged: 'Unchanged',
+    wowRepeat: 'Repeat session',
+    wowRepeatInfo: 'Run the same angle again',
 
     // Dark mode
     darkMode: 'Dark mode',
@@ -1504,7 +1508,7 @@ export const translations = {
     maturityStarterDesc: 'Basic tools to get started',
     maturityMediumDesc: 'Advanced analytics and insights',
     maturityMatureDesc: 'Complete toolkit for experts',
-    maturityStarterFeatures: 'Vibe check-ins, Ceremonies sessions, Basic metrics',
+    maturityStarterFeatures: 'Vibe check-ins, Way of Work sessions, Basic metrics',
     maturityMediumFeatures: 'Trend analysis, AI insights, Coach questions, Comparisons',
     maturityMatureFeatures: 'Obeya, Leadership tools, Portfolio, Department views',
     maturitySessions: 'sessions',
@@ -1561,7 +1565,7 @@ export const translations = {
 
     // Modules (optional extensions)
     modulesTitle: 'Deeper exploration',
-    modulesIntro: 'The core flow is Vibe → Ceremonies → Feedback → Coach. These modules are in development.',
+    modulesIntro: 'The core flow is Vibe → Way of Work → Feedback → Coach. These modules are in development.',
     modulesOptionalNote: 'We are building these. Interested? Let us know.',
     moduleComingSoon: 'In development',
     moduleUnlock: 'Unlock',
@@ -1583,7 +1587,7 @@ export const translations = {
     onboardingComplete: 'completed',
     onboardingStep1: 'Share Vibe link with your team',
     onboardingStep1Hint: 'Copy the link and share via Slack or Teams',
-    onboardingStep2: 'Start your first Ceremonies session',
+    onboardingStep2: 'Start your first Way of Work session',
     onboardingStep2Hint: 'Pick an angle and collect feedback',
     onboardingStep3: 'Review team insights',
     onboardingStep3Hint: 'Close a session to see results',
@@ -1591,27 +1595,27 @@ export const translations = {
     onboardingUseShareLink: 'Use share link ↑',
     vibeOnboardingTitle: 'Get started with Vibe',
     vibeOnboardingSubtitle: 'Measure daily team mood',
-    ceremoniesOnboardingTitle: 'Get started with Ceremonies',
-    ceremoniesOnboardingSubtitle: 'Run team health checks',
+    wowOnboardingTitle: 'Get started with Way of Work',
+    wowOnboardingSubtitle: 'Run team health checks',
     onboardingStartSession: 'Start session',
 
     // Empty state
     emptyStateVibeDesc: 'Daily team signals',
-    emptyStateCeremoniesDesc: 'Coaching interventions',
+    emptyStateWowDesc: 'Coaching interventions',
     emptyStateInsightsTitle: 'Insights',
     emptyStateInsightsDesc: 'Data-driven decisions',
     emptyStateTime: 'Ready in 30 seconds',
 
     // Overall Signal
     signalTitle: 'Team Signal',
-    signalWeighting: 'Vibe 60% + Ceremonies 40%',
+    signalWeighting: 'Vibe 60% + Way of Work 40%',
     signalNoData: 'No data',
     signalExcellent: 'Excellent',
     signalGood: 'Good',
     signalAttention: 'Attention',
     signalCritical: 'Critical',
     signalCollectData: 'Start collecting data',
-    signalAddCeremonies: 'Add Ceremonies for a more complete picture',
+    signalAddWow: 'Add Way of Work for a more complete picture',
     signalAddVibe: 'Add Vibe for daily signals',
     signalParticipation: 'Participation',
 

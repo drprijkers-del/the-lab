@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { createSession, getTeamCeremonyLevel } from '@/domain/ceremonies/actions'
-import { ANGLES, CeremonyAngle, CeremonyLevel, CEREMONY_LEVELS } from '@/domain/ceremonies/types'
+import { createSession, getTeamWowLevel } from '@/domain/wow/actions'
+import { ANGLES, WowAngle, WowLevel, WOW_LEVELS } from '@/domain/wow/types'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/context'
 import { AdminHeader } from '@/components/admin/header'
 
-export default function NewCeremonySessionPage() {
+export default function NewWowSessionPage() {
   const router = useRouter()
   const params = useParams()
   const searchParams = useSearchParams()
@@ -17,20 +17,20 @@ export default function NewCeremonySessionPage() {
   const teamId = params.id as string
 
   // Pre-select angle from URL if provided (for repeat sessions)
-  const preSelectedAngle = searchParams.get('angle') as CeremonyAngle | null
+  const preSelectedAngle = searchParams.get('angle') as WowAngle | null
   const validAngles = ANGLES.map(a => a.id)
   const initialAngle = preSelectedAngle && validAngles.includes(preSelectedAngle) ? preSelectedAngle : null
 
-  const [selectedAngle, setSelectedAngle] = useState<CeremonyAngle | null>(initialAngle)
+  const [selectedAngle, setSelectedAngle] = useState<WowAngle | null>(initialAngle)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [teamLevel, setTeamLevel] = useState<CeremonyLevel>('shu')
+  const [teamLevel, setTeamLevel] = useState<WowLevel>('shu')
   const [loadingLevel, setLoadingLevel] = useState(true)
 
-  // Fetch team's ceremony level
+  // Fetch team's wow level
   useEffect(() => {
     async function fetchLevel() {
-      const level = await getTeamCeremonyLevel(teamId)
+      const level = await getTeamWowLevel(teamId)
       setTeamLevel(level)
       setLoadingLevel(false)
     }
@@ -51,7 +51,7 @@ export default function NewCeremonySessionPage() {
       return
     }
 
-    router.push(`/ceremonies/session/${result.sessionId}`)
+    router.push(`/wow/session/${result.sessionId}`)
   }
 
   // Map angle IDs to translation keys
@@ -113,7 +113,7 @@ export default function NewCeremonySessionPage() {
     },
   }
 
-  const currentLevelInfo = CEREMONY_LEVELS.find(l => l.id === teamLevel)
+  const currentLevelInfo = WOW_LEVELS.find(l => l.id === teamLevel)
   const colors = levelConfig[teamLevel]
 
   return (
@@ -122,7 +122,7 @@ export default function NewCeremonySessionPage() {
       <main className="max-w-2xl mx-auto px-4 pt-8 pb-24">
         {/* Back link */}
         <Link
-          href={`/teams/${teamId}?tab=ceremonies`}
+          href={`/teams/${teamId}?tab=wow`}
           className="inline-flex items-center text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 mb-6 min-h-11 py-2"
         >
           <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,7 +133,7 @@ export default function NewCeremonySessionPage() {
 
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">{t('startCeremoniesSession')}</h1>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">{t('startWowSession')}</h1>
           <p className="text-stone-600 dark:text-stone-400 mt-1">{t('justOne')}</p>
         </div>
 
@@ -238,7 +238,7 @@ export default function NewCeremonySessionPage() {
 
         {/* Action buttons */}
         <div className="flex gap-3">
-          <Link href={`/teams/${teamId}?tab=ceremonies`} className="flex-1">
+          <Link href={`/teams/${teamId}?tab=wow`} className="flex-1">
             <Button type="button" variant="secondary" className="w-full">
               {t('cancel')}
             </Button>

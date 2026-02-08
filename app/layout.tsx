@@ -11,7 +11,7 @@ const geist = Geist({
 
 export const metadata: Metadata = {
   title: "Pulse Labs",
-  description: "Tools for teams that build - Vibe, Ceremonies & more",
+  description: "Tools for teams that build - Vibe, Way of Work & more",
 };
 
 export default function RootLayout({

@@ -39,7 +39,7 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
     return date.toLocaleDateString()
   }
 
-  // Shu-Ha-Ri level config for ceremonies
+  // Shu-Ha-Ri level config for wow
   const shuHaRiConfig = {
     shu: { kanji: '守', label: 'Shu', color: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-700' },
     ha: { kanji: '破', label: 'Ha', color: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400 border border-cyan-300 dark:border-cyan-700' },
@@ -111,8 +111,8 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
                 <div className="w-8 h-8 rounded-lg bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center mb-2">
                   <span className="text-cyan-600 dark:text-cyan-400 font-bold text-sm">Δ</span>
                 </div>
-                <div className="text-sm font-medium text-stone-900 dark:text-stone-100">Ceremonies</div>
-                <div className="text-xs text-stone-500 dark:text-stone-400">{t('emptyStateCeremoniesDesc')}</div>
+                <div className="text-sm font-medium text-stone-900 dark:text-stone-100">Way of Work</div>
+                <div className="text-xs text-stone-500 dark:text-stone-400">{t('emptyStateWowDesc')}</div>
               </div>
               <div className="bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700">
                 <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-2">
@@ -142,8 +142,8 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredTeams.map(team => {
-            const ceremonyLevel = team.ceremonies?.level as 'shu' | 'ha' | 'ri' | undefined
-            const levelConfig = ceremonyLevel ? shuHaRiConfig[ceremonyLevel] : null
+            const wowLevel = team.wow?.level as 'shu' | 'ha' | 'ri' | undefined
+            const levelConfig = wowLevel ? shuHaRiConfig[wowLevel] : null
 
             return (
               <Link
@@ -170,9 +170,9 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
                           Vibe
                         </span>
                       )}
-                      {team.tools_enabled.includes('ceremonies') && (
+                      {team.tools_enabled.includes('wow') && (
                         <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 rounded">
-                          Ceremonies
+                          Way of Work
                         </span>
                       )}
                     </div>
@@ -227,44 +227,44 @@ export function TeamsListContent({ teams }: TeamsListContentProps) {
                       <span className="hidden sm:inline text-xs text-stone-400 dark:text-stone-500">Vibe</span>
                     </div>
                   )}
-                  {team.ceremonies?.average_score && (
+                  {team.wow?.average_score && (
                     <div className="flex items-center gap-1">
                       <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs sm:text-sm ${
-                        team.ceremonies.average_score >= 4 ? 'bg-green-500' :
-                        team.ceremonies.average_score >= 3 ? 'bg-cyan-500' :
-                        team.ceremonies.average_score >= 2 ? 'bg-amber-500' :
+                        team.wow.average_score >= 4 ? 'bg-green-500' :
+                        team.wow.average_score >= 3 ? 'bg-cyan-500' :
+                        team.wow.average_score >= 2 ? 'bg-amber-500' :
                         'bg-red-500'
                       }`}>
-                        {team.ceremonies.average_score}
+                        {team.wow.average_score}
                       </div>
                       {/* Trend indicator */}
-                      {team.ceremonies.trend && (
+                      {team.wow.trend && (
                         <div className={`flex items-center justify-center w-4 h-4 ${
-                          team.ceremonies.trend === 'up' ? 'text-green-500' :
-                          team.ceremonies.trend === 'down' ? 'text-red-500' :
+                          team.wow.trend === 'up' ? 'text-green-500' :
+                          team.wow.trend === 'down' ? 'text-red-500' :
                           'text-stone-400 dark:text-stone-500'
                         }`}>
-                          {team.ceremonies.trend === 'up' && (
+                          {team.wow.trend === 'up' && (
                             <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                             </svg>
                           )}
-                          {team.ceremonies.trend === 'down' && (
+                          {team.wow.trend === 'down' && (
                             <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
                           )}
-                          {team.ceremonies.trend === 'stable' && (
+                          {team.wow.trend === 'stable' && (
                             <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14" />
                             </svg>
                           )}
                         </div>
                       )}
-                      <span className="hidden sm:inline text-xs text-stone-400 dark:text-stone-500">Ceremonies</span>
+                      <span className="hidden sm:inline text-xs text-stone-400 dark:text-stone-500">Way of Work</span>
                     </div>
                   )}
-                  {!team.vibe?.average_score && !team.ceremonies?.average_score && (
+                  {!team.vibe?.average_score && !team.wow?.average_score && (
                     <span className="text-xs text-stone-400 dark:text-stone-500">{t('teamsNoData')}</span>
                   )}
                 </div>
