@@ -85,6 +85,48 @@ const shuStatements: Statement[] = [
   { id: 'demo_shu_3', angle: 'demo', level: 'shu', text: 'The Sprint Goal was clearly demonstrated' },
   { id: 'demo_shu_4', angle: 'demo', level: 'shu', text: 'Developers presented their own work' },
   { id: 'demo_shu_5', angle: 'demo', level: 'shu', text: 'The demo was timeboxed and focused' },
+
+  // Obeya - Shu
+  { id: 'obeya_shu_1', angle: 'obeya', level: 'shu', text: 'Our team goals are visible to everyone in one place' },
+  { id: 'obeya_shu_2', angle: 'obeya', level: 'shu', text: 'Progress toward sprint goals is updated daily on a shared board' },
+  { id: 'obeya_shu_3', angle: 'obeya', level: 'shu', text: 'Impediments are made visible as soon as they arise' },
+  { id: 'obeya_shu_4', angle: 'obeya', level: 'shu', text: 'Key metrics are displayed where the team can see them' },
+  { id: 'obeya_shu_5', angle: 'obeya', level: 'shu', text: 'We have a regular cadence where the team gathers around shared visuals' },
+
+  // Dependencies - Shu
+  { id: 'dep_shu_1', angle: 'dependencies', level: 'shu', text: 'We know which teams depend on us and which we depend on' },
+  { id: 'dep_shu_2', angle: 'dependencies', level: 'shu', text: 'Dependencies are identified before work starts' },
+  { id: 'dep_shu_3', angle: 'dependencies', level: 'shu', text: 'We communicate blockers to dependent teams within hours' },
+  { id: 'dep_shu_4', angle: 'dependencies', level: 'shu', text: 'Cross-team handoffs have clear ownership' },
+  { id: 'dep_shu_5', angle: 'dependencies', level: 'shu', text: 'We attend cross-team sync meetings when relevant' },
+
+  // Psychological Safety - Shu
+  { id: 'psych_shu_1', angle: 'psychological_safety', level: 'shu', text: 'I can admit mistakes without fear of blame' },
+  { id: 'psych_shu_2', angle: 'psychological_safety', level: 'shu', text: 'Disagreement is expressed openly in team meetings' },
+  { id: 'psych_shu_3', angle: 'psychological_safety', level: 'shu', text: 'Questions are welcomed, not dismissed' },
+  { id: 'psych_shu_4', angle: 'psychological_safety', level: 'shu', text: 'Team members speak up when they see a problem' },
+  { id: 'psych_shu_5', angle: 'psychological_safety', level: 'shu', text: 'Nobody was interrupted or talked over in the last meeting' },
+
+  // DevOps - Shu
+  { id: 'devops_shu_1', angle: 'devops', level: 'shu', text: 'We deploy to production at least once a week' },
+  { id: 'devops_shu_2', angle: 'devops', level: 'shu', text: 'Our CI pipeline runs on every pull request' },
+  { id: 'devops_shu_3', angle: 'devops', level: 'shu', text: 'Monitoring alerts go to the team, not just ops' },
+  { id: 'devops_shu_4', angle: 'devops', level: 'shu', text: 'We have runbooks for common incidents' },
+  { id: 'devops_shu_5', angle: 'devops', level: 'shu', text: 'Deployments require no manual steps' },
+
+  // Stakeholder - Shu
+  { id: 'stake_shu_1', angle: 'stakeholder', level: 'shu', text: 'Stakeholders know when and how to reach the team' },
+  { id: 'stake_shu_2', angle: 'stakeholder', level: 'shu', text: 'We share progress updates at least once per sprint' },
+  { id: 'stake_shu_3', angle: 'stakeholder', level: 'shu', text: 'Stakeholder feedback is captured and added to the backlog' },
+  { id: 'stake_shu_4', angle: 'stakeholder', level: 'shu', text: 'The Product Owner represents stakeholder needs in planning' },
+  { id: 'stake_shu_5', angle: 'stakeholder', level: 'shu', text: 'We know who our key stakeholders are and what they need' },
+
+  // Leadership - Shu
+  { id: 'lead_shu_1', angle: 'leadership', level: 'shu', text: 'Leaders communicate clear priorities to their teams' },
+  { id: 'lead_shu_2', angle: 'leadership', level: 'shu', text: 'One-on-ones happen regularly and are not cancelled' },
+  { id: 'lead_shu_3', angle: 'leadership', level: 'shu', text: 'Leaders remove blockers when teams escalate' },
+  { id: 'lead_shu_4', angle: 'leadership', level: 'shu', text: 'Team members know the organizational direction' },
+  { id: 'lead_shu_5', angle: 'leadership', level: 'shu', text: 'Leaders attend team demos and retrospectives' },
 ]
 
 // ============================================
@@ -154,6 +196,48 @@ const haStatements: Statement[] = [
   { id: 'demo_ha_3', angle: 'demo', level: 'ha', text: 'The PO confirmed whether the Sprint Goal was met' },
   { id: 'demo_ha_4', angle: 'demo', level: 'ha', text: 'Future direction was discussed based on what was learned' },
   { id: 'demo_ha_5', angle: 'demo', level: 'ha', text: 'Incomplete work was shown transparently, not hidden' },
+
+  // Obeya - Ha
+  { id: 'obeya_ha_1', angle: 'obeya', level: 'ha', text: 'Our visual boards drive the conversation, not replace it' },
+  { id: 'obeya_ha_2', angle: 'obeya', level: 'ha', text: 'We update our metrics based on what we learn, not habit' },
+  { id: 'obeya_ha_3', angle: 'obeya', level: 'ha', text: 'Cross-team dependencies are visualized and actively managed' },
+  { id: 'obeya_ha_4', angle: 'obeya', level: 'ha', text: 'Our Obeya reflects current reality, not last week\'s truth' },
+  { id: 'obeya_ha_5', angle: 'obeya', level: 'ha', text: 'Stakeholders visit our Obeya to understand our situation' },
+
+  // Dependencies - Ha
+  { id: 'dep_ha_1', angle: 'dependencies', level: 'ha', text: 'We proactively reduce dependencies through API contracts' },
+  { id: 'dep_ha_2', angle: 'dependencies', level: 'ha', text: 'Dependency risks are tracked and mitigated before they block' },
+  { id: 'dep_ha_3', angle: 'dependencies', level: 'ha', text: 'We negotiate delivery timelines directly with other teams' },
+  { id: 'dep_ha_4', angle: 'dependencies', level: 'ha', text: 'Integration testing with dependent teams happens regularly' },
+  { id: 'dep_ha_5', angle: 'dependencies', level: 'ha', text: 'We visualize our dependency map and keep it current' },
+
+  // Psychological Safety - Ha
+  { id: 'psych_ha_1', angle: 'psychological_safety', level: 'ha', text: 'We give each other direct, honest feedback regularly' },
+  { id: 'psych_ha_2', angle: 'psychological_safety', level: 'ha', text: 'Failed experiments are discussed as learning opportunities' },
+  { id: 'psych_ha_3', angle: 'psychological_safety', level: 'ha', text: 'Junior members challenge senior members\' ideas' },
+  { id: 'psych_ha_4', angle: 'psychological_safety', level: 'ha', text: 'We discuss interpersonal tensions, not just technical problems' },
+  { id: 'psych_ha_5', angle: 'psychological_safety', level: 'ha', text: 'Vulnerability is treated as strength, not weakness' },
+
+  // DevOps - Ha
+  { id: 'devops_ha_1', angle: 'devops', level: 'ha', text: 'We can deploy multiple times per day without coordination' },
+  { id: 'devops_ha_2', angle: 'devops', level: 'ha', text: 'Feature flags separate deployment from release' },
+  { id: 'devops_ha_3', angle: 'devops', level: 'ha', text: 'We own our infrastructure configuration as code' },
+  { id: 'devops_ha_4', angle: 'devops', level: 'ha', text: 'Mean time to recovery is under one hour' },
+  { id: 'devops_ha_5', angle: 'devops', level: 'ha', text: 'We review production metrics after every deployment' },
+
+  // Stakeholder - Ha
+  { id: 'stake_ha_1', angle: 'stakeholder', level: 'ha', text: 'We invite stakeholders to give feedback on working software' },
+  { id: 'stake_ha_2', angle: 'stakeholder', level: 'ha', text: 'Stakeholder expectations are managed proactively, not reactively' },
+  { id: 'stake_ha_3', angle: 'stakeholder', level: 'ha', text: 'We say no to requests that conflict with the Sprint Goal' },
+  { id: 'stake_ha_4', angle: 'stakeholder', level: 'ha', text: 'We present trade-offs and options, not just solutions' },
+  { id: 'stake_ha_5', angle: 'stakeholder', level: 'ha', text: 'Stakeholders trust the team to make technical decisions' },
+
+  // Leadership - Ha
+  { id: 'lead_ha_1', angle: 'leadership', level: 'ha', text: 'Leaders create space for teams to make their own decisions' },
+  { id: 'lead_ha_2', angle: 'leadership', level: 'ha', text: 'Feedback flows both ways between leaders and teams' },
+  { id: 'lead_ha_3', angle: 'leadership', level: 'ha', text: 'Leaders experiment with different leadership styles' },
+  { id: 'lead_ha_4', angle: 'leadership', level: 'ha', text: 'Strategic trade-offs are communicated transparently' },
+  { id: 'lead_ha_5', angle: 'leadership', level: 'ha', text: 'Leaders actively coach, not just manage' },
 ]
 
 // ============================================
@@ -223,6 +307,48 @@ const riStatements: Statement[] = [
   { id: 'demo_ri_3', angle: 'demo', level: 'ri', text: 'Our demo format has been adopted by other teams' },
   { id: 'demo_ri_4', angle: 'demo', level: 'ri', text: 'We gather quantitative feedback, not just qualitative' },
   { id: 'demo_ri_5', angle: 'demo', level: 'ri', text: 'We demonstrate impact on business outcomes, not just features' },
+
+  // Obeya - Ri
+  { id: 'obeya_ri_1', angle: 'obeya', level: 'ri', text: 'Our visual management style has been adopted by other teams' },
+  { id: 'obeya_ri_2', angle: 'obeya', level: 'ri', text: 'We connect team-level visuals to organizational strategy' },
+  { id: 'obeya_ri_3', angle: 'obeya', level: 'ri', text: 'Our Obeya evolves as our team\'s needs change' },
+  { id: 'obeya_ri_4', angle: 'obeya', level: 'ri', text: 'We use our visual space to facilitate strategic conversations' },
+  { id: 'obeya_ri_5', angle: 'obeya', level: 'ri', text: 'We coach other teams on effective visual management' },
+
+  // Dependencies - Ri
+  { id: 'dep_ri_1', angle: 'dependencies', level: 'ri', text: 'We have eliminated most hard dependencies through decoupling' },
+  { id: 'dep_ri_2', angle: 'dependencies', level: 'ri', text: 'We help other teams become less dependent on us' },
+  { id: 'dep_ri_3', angle: 'dependencies', level: 'ri', text: 'Our architecture decisions consider cross-team impact' },
+  { id: 'dep_ri_4', angle: 'dependencies', level: 'ri', text: 'We contribute to organization-wide dependency management' },
+  { id: 'dep_ri_5', angle: 'dependencies', level: 'ri', text: 'We proactively refactor shared interfaces to reduce coupling' },
+
+  // Psychological Safety - Ri
+  { id: 'psych_ri_1', angle: 'psychological_safety', level: 'ri', text: 'We actively create space for dissenting opinions' },
+  { id: 'psych_ri_2', angle: 'psychological_safety', level: 'ri', text: 'Our team culture of safety has been adopted by other teams' },
+  { id: 'psych_ri_3', angle: 'psychological_safety', level: 'ri', text: 'We address systemic barriers to psychological safety' },
+  { id: 'psych_ri_4', angle: 'psychological_safety', level: 'ri', text: 'We facilitate difficult conversations across the organization' },
+  { id: 'psych_ri_5', angle: 'psychological_safety', level: 'ri', text: 'Newcomers report feeling safe within their first week' },
+
+  // DevOps - Ri
+  { id: 'devops_ri_1', angle: 'devops', level: 'ri', text: 'Continuous deployment is our default, not a goal' },
+  { id: 'devops_ri_2', angle: 'devops', level: 'ri', text: 'We contribute to the organization\'s platform and tooling' },
+  { id: 'devops_ri_3', angle: 'devops', level: 'ri', text: 'Our deployment pipeline is a reference for other teams' },
+  { id: 'devops_ri_4', angle: 'devops', level: 'ri', text: 'We proactively improve observability across services' },
+  { id: 'devops_ri_5', angle: 'devops', level: 'ri', text: 'We experiment with chaos engineering or resilience testing' },
+
+  // Stakeholder - Ri
+  { id: 'stake_ri_1', angle: 'stakeholder', level: 'ri', text: 'We co-create the product roadmap with stakeholders' },
+  { id: 'stake_ri_2', angle: 'stakeholder', level: 'ri', text: 'Stakeholders advocate for the team\'s needs to leadership' },
+  { id: 'stake_ri_3', angle: 'stakeholder', level: 'ri', text: 'We influence strategic decisions beyond our team boundary' },
+  { id: 'stake_ri_4', angle: 'stakeholder', level: 'ri', text: 'Our stakeholder communication model has been adopted by others' },
+  { id: 'stake_ri_5', angle: 'stakeholder', level: 'ri', text: 'We actively seek out new stakeholders we should engage with' },
+
+  // Leadership - Ri
+  { id: 'lead_ri_1', angle: 'leadership', level: 'ri', text: 'Leaders develop other leaders within the organization' },
+  { id: 'lead_ri_2', angle: 'leadership', level: 'ri', text: 'Our leadership approach has been recognized outside the organization' },
+  { id: 'lead_ri_3', angle: 'leadership', level: 'ri', text: 'Leaders facilitate cross-team collaboration at a systemic level' },
+  { id: 'lead_ri_4', angle: 'leadership', level: 'ri', text: 'Psychological safety is a leadership KPI, not just a value' },
+  { id: 'lead_ri_5', angle: 'leadership', level: 'ri', text: 'Leaders question and adapt the organizational structure' },
 ]
 
 // All statements

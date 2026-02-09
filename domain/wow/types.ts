@@ -15,6 +15,12 @@ export type WowAngle =
   | 'planning'
   | 'retro'
   | 'demo'
+  | 'obeya'
+  | 'dependencies'
+  | 'psychological_safety'
+  | 'devops'
+  | 'stakeholder'
+  | 'leadership'
 
 // Session lifecycle status
 export type WowStatus = 'draft' | 'active' | 'closed'
@@ -113,13 +119,19 @@ export const ANGLES: AngleInfo[] = [
   { id: 'ownership', label: 'Ownership', description: 'Does the team own it? Can we act without asking?' },
   { id: 'technical_excellence', label: 'Technical Excellence', description: 'Is the code getting better? Are we building quality in?' },
   { id: 'demo', label: 'Review', description: 'Are stakeholders engaged? Is feedback valuable?' },
+  { id: 'obeya', label: 'Obeya', description: 'Is work visible? Does the team align around shared visuals?' },
+  { id: 'dependencies', label: 'Dependencies', description: 'Are cross-team dependencies managed? Do handoffs work?' },
+  { id: 'psychological_safety', label: 'Psychological Safety', description: 'Can we speak up? Is it safe to fail?' },
+  { id: 'devops', label: 'DevOps', description: 'Is deployment smooth? Do we own our pipeline?' },
+  { id: 'stakeholder', label: 'Stakeholders', description: 'Are stakeholders aligned? Is communication proactive?' },
+  { id: 'leadership', label: 'Leadership', description: 'Do leaders enable teams? Is direction clear?' },
 ]
 
 // Angles available on the Free plan — the essentials
 export const FREE_ANGLES: WowAngle[] = ['retro', 'planning', 'scrum', 'flow', 'collaboration']
 
 // Pro-only angles — require a Pro subscription
-export const PRO_ANGLES: WowAngle[] = ['refinement', 'ownership', 'technical_excellence', 'demo']
+export const PRO_ANGLES: WowAngle[] = ['refinement', 'ownership', 'technical_excellence', 'demo', 'obeya', 'dependencies', 'psychological_safety', 'devops', 'stakeholder', 'leadership']
 
 // Check if an angle requires Pro
 export function isProAngle(angle: WowAngle): boolean {

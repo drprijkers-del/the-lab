@@ -70,6 +70,12 @@ export default function NewWowSessionPage() {
       planning: t('anglePlanning'),
       retro: t('angleRetro'),
       demo: t('angleDemo'),
+      obeya: t('angleObeya'),
+      dependencies: t('angleDependencies'),
+      psychological_safety: t('anglePsychSafety'),
+      devops: t('angleDevOps'),
+      stakeholder: t('angleStakeholder'),
+      leadership: t('angleLeadership'),
     }
     return labelMap[angleId] || angleId
   }
@@ -85,6 +91,12 @@ export default function NewWowSessionPage() {
       planning: t('anglePlanningDesc'),
       retro: t('angleRetroDesc'),
       demo: t('angleDemoDesc'),
+      obeya: t('angleObeyaDesc'),
+      dependencies: t('angleDependenciesDesc'),
+      psychological_safety: t('anglePsychSafetyDesc'),
+      devops: t('angleDevOpsDesc'),
+      stakeholder: t('angleStakeholderDesc'),
+      leadership: t('angleLeadershipDesc'),
     }
     return descMap[angleId] || ''
   }

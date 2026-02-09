@@ -37,6 +37,12 @@ const ANGLE_LABELS: Record<string, string> = {
   planning: 'Planning',
   retro: 'Retro',
   demo: 'Demo',
+  obeya: 'Obeya',
+  dependencies: 'Dependencies',
+  psychological_safety: 'Psych Safety',
+  devops: 'DevOps',
+  stakeholder: 'Stakeholders',
+  leadership: 'Leadership',
 }
 
 export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSessions = [], wowStats }: TeamDetailContentProps) {

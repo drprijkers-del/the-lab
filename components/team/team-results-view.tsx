@@ -17,6 +17,12 @@ const ANGLE_LABELS: Record<string, string> = {
   planning: 'Planning',
   retro: 'Retro',
   demo: 'Demo',
+  obeya: 'Obeya',
+  dependencies: 'Dependencies',
+  psychological_safety: 'Psych Safety',
+  devops: 'DevOps',
+  stakeholder: 'Stakeholders',
+  leadership: 'Leadership',
 }
 
 const LEVEL_INFO: Record<string, { kanji: string; label: string; color: string; gradient: string; subtitle: string; bannerKey: string }> = {

@@ -164,12 +164,13 @@ export function BillingTab({ teamId, teamPlan }: BillingTabProps) {
       {/* Pro Features */}
       <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6">
         <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">{t('billingProFeatures')}</h3>
-        <ul className="space-y-3">
+
+        {/* Core features */}
+        <ul className="space-y-3 mb-6">
           {[
-            t('billingFeatureCoach'),
-            t('billingFeatureAngles'),
             t('billingFeatureLevels'),
             t('billingFeatureTrends'),
+            t('billingFeatureCoach'),
           ].map((feature) => (
             <li key={feature} className="flex items-start gap-3">
               <svg className={`w-5 h-5 mt-0.5 shrink-0 ${isPro ? 'text-green-500' : 'text-stone-300 dark:text-stone-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,6 +184,36 @@ export function BillingTab({ teamId, teamPlan }: BillingTabProps) {
             </li>
           ))}
         </ul>
+
+        {/* Pro angles grid */}
+        <div className="border-t border-stone-200 dark:border-stone-700 pt-4">
+          <p className="text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-3">{t('billingProAnglesTitle')}</p>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { key: 'refinement', label: t('angleRefinement') },
+              { key: 'ownership', label: t('angleOwnership') },
+              { key: 'technical_excellence', label: t('angleTechnicalExcellence') },
+              { key: 'demo', label: t('angleDemo') },
+              { key: 'obeya', label: t('angleObeya') },
+              { key: 'dependencies', label: t('angleDependencies') },
+              { key: 'psychological_safety', label: t('anglePsychSafety') },
+              { key: 'devops', label: t('angleDevOps') },
+              { key: 'stakeholder', label: t('angleStakeholder') },
+              { key: 'leadership', label: t('angleLeadership') },
+            ].map((angle) => (
+              <div key={angle.key} className="flex items-center gap-2 py-1.5">
+                <svg className={`w-4 h-4 shrink-0 ${isPro ? 'text-green-500' : 'text-stone-300 dark:text-stone-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {isPro ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  )}
+                </svg>
+                <span className="text-sm text-stone-700 dark:text-stone-300">{angle.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Payment History */}
