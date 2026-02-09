@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
+import { Resend } from 'resend'
 import { createAdminClient } from '@/lib/supabase/server'
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 // Rate limiting: track submissions by IP
 const submissionsByIP = new Map<string, { count: number; firstSubmission: number }>()
@@ -79,9 +82,24 @@ export async function POST(request: Request) {
       // If table doesn't exist, still return success (form data won't be saved but user experience is preserved)
       if (dbError.code === '42P01') {
         console.warn('contact_submissions table does not exist - submission not saved')
-        return NextResponse.json({ success: true })
+      } else {
+        throw dbError
       }
-      throw dbError
+    }
+
+    // Send email notification
+    if (resend) {
+      try {
+        await resend.emails.send({
+          from: 'Pulse Labs <noreply@pulse-labs.io>',
+          to: 'info@pinkpollos.com',
+          subject: `Contact: ${name.trim()}`,
+          text: `Naam: ${name.trim()}\nEmail: ${email.trim()}\nTeam: ${team?.trim() || '-'}\n\n${message.trim()}`,
+        })
+      } catch (emailError) {
+        console.error('Failed to send email notification:', emailError)
+        // Don't fail the request if email fails — submission is already saved
+      }
     }
 
     return NextResponse.json({ success: true })
