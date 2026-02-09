@@ -373,6 +373,11 @@ export async function createSession(
   // Get team's current wow level (default to 'shu')
   const sessionLevel = (team.wow_level as WowLevel) || 'shu'
 
+  // Enforce: Ha/Ri levels require Pro plan
+  if ((sessionLevel === 'ha' || sessionLevel === 'ri') && team.plan !== 'pro') {
+    return { success: false, error: 'Ha and Ri levels require a Pro subscription' }
+  }
+
   // Create session with the team's current level
   const { data: session, error } = await supabase
     .from('delta_sessions')

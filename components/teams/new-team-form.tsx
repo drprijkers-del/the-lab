@@ -12,15 +12,21 @@ export function NewTeamForm() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [limitInfo, setLimitInfo] = useState<{ teamCount: number; maxTeams: number } | null>(null)
 
   async function handleSubmit(formData: FormData) {
+    if (loading) return
     setLoading(true)
     setError(null)
+    setLimitInfo(null)
 
     const result = await createTeam(formData)
 
     if (!result.success) {
       setError(result.error || 'Failed to create team')
+      if (result.error === 'teamLimitReached' && 'teamCount' in result && 'maxTeams' in result) {
+        setLimitInfo({ teamCount: result.teamCount as number, maxTeams: result.maxTeams as number })
+      }
       setLoading(false)
       return
     }
@@ -31,8 +37,25 @@ export function NewTeamForm() {
   return (
     <form action={handleSubmit} className="space-y-6">
       {error && (
-        <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl text-red-600 dark:text-red-400 text-sm">
-          {error}
+        <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-xl text-sm">
+          {error === 'teamLimitReached' ? (
+            <div className="space-y-2">
+              <p className="text-red-600 dark:text-red-400">{t('teamLimitReached')}</p>
+              {limitInfo && (
+                <p className="text-xs text-red-500/80 dark:text-red-400/80">
+                  {limitInfo.teamCount} / {limitInfo.maxTeams} {t('tierTeamUsage').toLowerCase()}
+                </p>
+              )}
+              <Link
+                href="/account/billing?returnUrl=/teams/new"
+                className="inline-flex items-center gap-1 text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 font-medium"
+              >
+                {t('teamLimitUpgradeLink')} &rarr;
+              </Link>
+            </div>
+          ) : (
+            <p className="text-red-600 dark:text-red-400">{error}</p>
+          )}
         </div>
       )}
 

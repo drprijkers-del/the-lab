@@ -7,6 +7,7 @@ import { requireAdmin } from '@/lib/auth/admin'
 import { AdminHeader } from '@/components/admin/header'
 import { TeamDetailContent } from '@/components/teams/team-detail-content'
 import { getLanguage } from '@/lib/i18n/server'
+import { getSubscriptionTier } from '@/domain/coach/actions'
 
 interface TeamPageProps {
   params: Promise<{ id: string }>
@@ -29,12 +30,13 @@ export default async function TeamPage({ params }: TeamPageProps) {
   // Pro teams get 60 days of trend data (30 + 30 previous), free gets 14 (7 + 7)
   const trendDays = teamData.plan === 'pro' ? 60 : 14
 
-  const [team, vibeMetrics, vibeInsights, wowSessions, wowStats] = await Promise.all([
+  const [team, vibeMetrics, vibeInsights, wowSessions, wowStats, subscriptionTier] = await Promise.all([
     Promise.resolve(teamData),
     getTeamMetrics(id, trendDays),
     getTeamInsights(id, language),
     getTeamSessions(id),
     getPublicWowStats(id),
+    getSubscriptionTier(),
   ])
 
   // Prepare team list for header selector
@@ -49,7 +51,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
         userRole={admin.role}
       />
       <main className="max-w-6xl mx-auto px-4 pt-6 pb-24">
-        <TeamDetailContent team={team} vibeMetrics={vibeMetrics} vibeInsights={vibeInsights} wowSessions={wowSessions} wowStats={wowStats} />
+        <TeamDetailContent team={team} vibeMetrics={vibeMetrics} vibeInsights={vibeInsights} wowSessions={wowSessions} wowStats={wowStats} subscriptionTier={subscriptionTier} />
       </main>
     </>
   )

@@ -5,6 +5,7 @@ import { requireAdmin, AdminUser } from '@/lib/auth/admin'
 import { generateSlug } from '@/lib/utils'
 import { hashToken, generateToken } from '@/lib/tenant/context'
 import { revalidatePath } from 'next/cache'
+import { TIERS, type SubscriptionTier } from '@/domain/billing/tiers'
 
 export interface Team {
   id: string
@@ -579,7 +580,7 @@ export async function disableTool(teamId: string, tool: 'vibe' | 'wow'): Promise
   return { success: true }
 }
 
-export async function createTeam(formData: FormData): Promise<{ success: boolean; teamId?: string; error?: string }> {
+export async function createTeam(formData: FormData): Promise<{ success: boolean; teamId?: string; error?: string; teamCount?: number; maxTeams?: number }> {
   const adminUser = await requireAdmin()
   const supabase = await createAdminClient()
 
@@ -595,6 +596,25 @@ export async function createTeam(formData: FormData): Promise<{ success: boolean
   // Validate expected_team_size if provided
   if (expectedTeamSize !== null && (isNaN(expectedTeamSize) || expectedTeamSize < 1 || expectedTeamSize > 100)) {
     return { success: false, error: 'Team size must be between 1 and 100' }
+  }
+
+  // Check team count limit based on subscription tier (graceful if migration 011 not applied)
+  const { data: owner, error: ownerError } = await supabase
+    .from('admin_users')
+    .select('subscription_tier')
+    .eq('id', adminUser.id)
+    .single()
+
+  const tier = (!ownerError && owner?.subscription_tier ? owner.subscription_tier : 'free') as SubscriptionTier
+  const maxTeams = TIERS[tier].maxTeams
+
+  const { count: currentTeamCount } = await supabase
+    .from('teams')
+    .select('*', { count: 'exact', head: true })
+    .eq('owner_id', adminUser.id)
+
+  if ((currentTeamCount || 0) >= maxTeams) {
+    return { success: false, error: 'teamLimitReached', teamCount: currentTeamCount || 0, maxTeams }
   }
 
   const slug = generateSlug(name)

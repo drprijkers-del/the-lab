@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/context'
 import { OverallSignal } from '@/components/teams/overall-signal'
 import { CoachQuestions } from '@/components/teams/coach-questions'
-import { BillingTab } from '@/components/teams/billing-tab'
+// BillingTab removed — billing is now at /account/billing
 import { ProGate } from '@/components/teams/pro-gate'
 import { FeedbackTool } from '@/components/teams/feedback-tool'
 import { VibeMetrics } from '@/components/admin/vibe-metrics'
@@ -16,6 +16,8 @@ import { RadarChart, type RadarAxis } from '@/components/ui/radar-chart'
 import type { TeamMetrics, VibeInsight } from '@/domain/metrics/types'
 import type { WowSessionWithStats, WowLevel } from '@/domain/wow/types'
 import type { PublicWowStats } from '@/domain/metrics/public-actions'
+import type { SubscriptionTier } from '@/domain/billing/tiers'
+import { AiCoach } from '@/components/teams/ai-coach'
 
 interface TeamDetailContentProps {
   team: UnifiedTeam
@@ -23,9 +25,10 @@ interface TeamDetailContentProps {
   vibeInsights?: VibeInsight[]
   wowSessions?: WowSessionWithStats[]
   wowStats?: PublicWowStats | null
+  subscriptionTier?: SubscriptionTier
 }
 
-type TabType = 'home' | 'vibe' | 'wow' | 'feedback' | 'coach' | 'billing' | 'settings'
+type TabType = 'home' | 'vibe' | 'wow' | 'feedback' | 'coach' | 'settings'
 
 const ANGLE_LABELS: Record<string, string> = {
   scrum: 'Scrum',
@@ -45,7 +48,7 @@ const ANGLE_LABELS: Record<string, string> = {
   leadership: 'Leadership',
 }
 
-export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSessions = [], wowStats }: TeamDetailContentProps) {
+export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSessions = [], wowStats, subscriptionTier = 'free' }: TeamDetailContentProps) {
   const t = useTranslation()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -53,7 +56,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
   // Get initial tab from URL or default to home dashboard
   const getInitialTab = (): TabType => {
     const urlTab = searchParams.get('tab') as TabType | null
-    const validTabs = ['home', 'vibe', 'wow', 'feedback', 'coach', 'billing', 'settings']
+    const validTabs = ['home', 'vibe', 'wow', 'feedback', 'coach', 'settings']
     // Always respect URL tab - content handles disabled state
     if (urlTab && validTabs.includes(urlTab)) {
       return urlTab
@@ -74,7 +77,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
   // Update tab when URL changes (e.g., browser back/forward)
   useEffect(() => {
     const urlTab = searchParams.get('tab') as TabType | null
-    const validTabs = ['home', 'vibe', 'wow', 'feedback', 'coach', 'billing', 'settings']
+    const validTabs = ['home', 'vibe', 'wow', 'feedback', 'coach', 'settings']
     // Always respect URL tab - content handles disabled state
     if (urlTab && validTabs.includes(urlTab)) {
       setActiveTab(urlTab)
@@ -300,7 +303,6 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
             activeTab === 'wow' ? 'bg-cyan-100 dark:bg-cyan-900/30' :
             activeTab === 'feedback' ? 'bg-purple-100 dark:bg-purple-900/30' :
             activeTab === 'coach' ? 'bg-emerald-100 dark:bg-emerald-900/30' :
-            activeTab === 'billing' ? 'bg-amber-100 dark:bg-amber-900/30' :
             'bg-stone-100 dark:bg-stone-700'
           }`}>
             {activeTab === 'vibe' && (
@@ -319,11 +321,6 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             )}
-            {activeTab === 'billing' && (
-              <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-              </svg>
-            )}
             {(activeTab === 'settings' || !activeTab) && (
               <svg className="w-5 h-5 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -336,7 +333,6 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
               {activeTab === 'wow' && t('wowTitle')}
               {activeTab === 'feedback' && t('feedbackTitle')}
               {activeTab === 'coach' && t('coachQuestionsTitle')}
-              {activeTab === 'billing' && t('billingTitle')}
               {activeTab === 'settings' && t('teamSettings')}
               {!activeTab && t('teamDetailContext')}
             </h3>
@@ -345,7 +341,6 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
               {activeTab === 'wow' && t('wowExplanation')}
               {activeTab === 'feedback' && t('feedbackExplanation')}
               {activeTab === 'coach' && t('coachExplanation')}
-              {activeTab === 'billing' && t('billingExplanation')}
               {activeTab === 'settings' && t('settingsExplanation')}
               {!activeTab && t('teamDetailContext')}
             </p>
@@ -619,7 +614,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
           {/* Upgrade CTA for free teams */}
           {team.plan === 'free' && (
             <button
-              onClick={() => router.push(`/teams/${team.id}?tab=billing`)}
+              onClick={() => router.push('/account/billing')}
               className="w-full bg-gradient-to-r from-amber-50 to-cyan-50 dark:from-amber-900/20 dark:to-cyan-900/20 rounded-xl border border-amber-200/50 dark:border-amber-800/50 p-4 text-left hover:shadow-md transition-all"
             >
               <div className="flex items-center gap-3">
@@ -1118,29 +1113,12 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
         <FeedbackTool teamId={team.id} teamName={team.name} />
       )}
 
-      {/* Coach Questions Tab */}
+      {/* Coach Tab — tier-aware switcher */}
       {activeTab === 'coach' && (
-        <ProGate teamId={team.id} isPro={team.plan === 'pro'} feature="billingCoachFeature">
-          <div className="space-y-6">
-            <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('coachQuestionsTitle')}</h3>
-                  <p className="text-sm text-stone-500 dark:text-stone-400">{t('coachQuestionsSubtitle')}</p>
-                </div>
-              </div>
-
-              {/* Example */}
-              <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4 mb-6">
-                <p className="text-sm text-emerald-800 dark:text-emerald-300 italic">{t('coachQuestionsExample')}</p>
-              </div>
-
-              {/* Coach Question Generator */}
+        <>
+          {/* Free: ProGate paywall */}
+          {team.plan === 'free' && (
+            <ProGate teamId={team.id} isPro={false} feature="billingCoachFeature">
               <CoachQuestions
                 pulseScore={team.vibe?.average_score || null}
                 pulseParticipation={(() => {
@@ -1149,23 +1127,66 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
                   return effectiveSize > 0 ? Math.round((todayCount / effectiveSize) * 100) : 0
                 })()}
                 deltaTensions={
-                  // Extract tensions from closed wow sessions with low scores
                   wowSessions
                     .filter(s => s.status === 'closed' && s.overall_score != null && s.overall_score < 3.5)
                     .map(s => ({ area: s.angle, score: s.overall_score as number }))
-                    .sort((a, b) => a.score - b.score) // Lowest scores first
-                    .slice(0, 3) // Top 3 tensions
+                    .sort((a, b) => a.score - b.score)
+                    .slice(0, 3)
                 }
                 teamName={team.name}
               />
-            </div>
-          </div>
-        </ProGate>
-      )}
+            </ProGate>
+          )}
 
-      {/* Billing Tab */}
-      {activeTab === 'billing' && (
-        <BillingTab teamId={team.id} teamPlan={team.plan} />
+          {/* Scrum Master: Smart Questions (rule-based) */}
+          {team.plan === 'pro' && subscriptionTier === 'scrum_master' && (
+            <div className="space-y-6">
+              <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                    <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('smartQuestionsTitle')}</h3>
+                    <p className="text-sm text-stone-500 dark:text-stone-400">{t('smartQuestionsSubtitle')}</p>
+                  </div>
+                </div>
+
+                <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-4 mb-6">
+                  <p className="text-sm text-emerald-800 dark:text-emerald-300 italic">{t('coachQuestionsExample')}</p>
+                </div>
+
+                <CoachQuestions
+                  pulseScore={team.vibe?.average_score || null}
+                  pulseParticipation={(() => {
+                    const effectiveSize = team.expected_team_size || team.vibe?.participant_count || 1
+                    const todayCount = team.vibe?.today_entries || 0
+                    return effectiveSize > 0 ? Math.round((todayCount / effectiveSize) * 100) : 0
+                  })()}
+                  deltaTensions={
+                    wowSessions
+                      .filter(s => s.status === 'closed' && s.overall_score != null && s.overall_score < 3.5)
+                      .map(s => ({ area: s.angle, score: s.overall_score as number }))
+                      .sort((a, b) => a.score - b.score)
+                      .slice(0, 3)
+                  }
+                  teamName={team.name}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Agile Coach + Transition Coach: AI Coach */}
+          {team.plan === 'pro' && (subscriptionTier === 'agile_coach' || subscriptionTier === 'transition_coach') && (
+            <AiCoach
+              teamId={team.id}
+              teamName={team.name}
+              subscriptionTier={subscriptionTier}
+            />
+          )}
+        </>
       )}
 
       {activeTab === 'settings' && (

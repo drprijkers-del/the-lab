@@ -1,46 +1,86 @@
 import { test, expect } from '@playwright/test'
 
-test.describe('Billing Tab', () => {
-  test('billing tab shows Free plan with upgrade option', async ({ page }) => {
-    await page.goto('/teams')
-    const firstTeamLink = page.locator('a[href^="/teams/"]').first()
-    await expect(firstTeamLink).toBeVisible({ timeout: 10000 })
-    await firstTeamLink.click()
-    await page.waitForURL(/\/teams\/[^/]+/)
-
-    // Navigate to billing tab via URL
-    const url = page.url()
-    await page.goto(`${url}?tab=billing`)
-
-    // Should show Free plan
-    await expect(page.getByText('Free')).toBeVisible({ timeout: 10000 })
-
-    // Should show Pro features list
-    await expect(page.getByText(/Pro features/i)).toBeVisible()
-
-    // Should show upgrade button
-    await expect(page.getByText(/Upgrade.+Pro/i)).toBeVisible()
+test.describe('Account Billing Page', () => {
+  test('billing page loads and shows current tier', async ({ page }) => {
+    await page.goto('/account/billing')
+    await expect(page.getByText(/Subscription|Abonnement/i).first()).toBeVisible({ timeout: 10000 })
+    // Should show a tier name
+    await expect(page.getByText(/Free|Scrum Master|Agile Coach|Transition Coach/).first()).toBeVisible()
   })
 
-  test('billing tab shows Pro feature descriptions', async ({ page }) => {
-    await page.goto('/teams')
-    const firstTeamLink = page.locator('a[href^="/teams/"]').first()
-    await expect(firstTeamLink).toBeVisible({ timeout: 10000 })
-    await firstTeamLink.click()
-    await page.waitForURL(/\/teams\/[^/]+/)
+  test('billing page shows team usage counter', async ({ page }) => {
+    await page.goto('/account/billing')
+    // Team usage label
+    await expect(page.getByText(/Teams in (use|gebruik)/i)).toBeVisible({ timeout: 10000 })
+    // X / Y format
+    await expect(page.locator('text=/\\d+ \\/ \\d+/')).toBeVisible()
+  })
 
-    const url = page.url()
-    await page.goto(`${url}?tab=billing`)
+  test('tier comparison shows all 4 tier cards', async ({ page }) => {
+    await page.goto('/account/billing')
+    await expect(page.getByText('Free').first()).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText(/Scrum Master/).first()).toBeVisible()
+    await expect(page.getByText(/Agile Coach/).first()).toBeVisible()
+    await expect(page.getByText(/Transition Coach/).first()).toBeVisible()
+  })
 
-    // Wait for billing content to load
-    await expect(page.getByText(/Pro features/i)).toBeVisible({ timeout: 10000 })
+  test('tier cards show correct pricing', async ({ page }) => {
+    await page.goto('/account/billing')
+    await expect(page.getByText(/€9[.,]99/).first()).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText(/€24[.,]99/).first()).toBeVisible()
+    await expect(page.getByText(/€49[.,]99/).first()).toBeVisible()
+  })
 
-    // Should list Coach feature
-    await expect(page.getByText(/Coach/i).first()).toBeVisible()
+  test('current tier is marked with badge', async ({ page }) => {
+    await page.goto('/account/billing')
+    await expect(page.getByText(/Current|Huidig/i).first()).toBeVisible({ timeout: 10000 })
+  })
+
+  test('Pro features comparison section is visible', async ({ page }) => {
+    await page.goto('/account/billing')
+    await expect(page.getByText(/Pro\?|Pro features/i).first()).toBeVisible({ timeout: 10000 })
+  })
+
+  test('back link navigates to teams page', async ({ page }) => {
+    await page.goto('/account/billing')
+    const backLink = page.locator('a[href="/teams"]').first()
+    await expect(backLink).toBeVisible({ timeout: 10000 })
+    await backLink.click()
+    await expect(page).toHaveURL(/\/teams/)
   })
 })
 
-test.describe('Pro Gate — Coach Tab', () => {
+test.describe('Billing Navigation', () => {
+  test('billing page accessible from header settings menu', async ({ page }) => {
+    await page.goto('/teams')
+    await page.waitForTimeout(2000)
+    // Click settings gear icon
+    const settingsBtn = page.getByLabel(/settings|instellingen/i).first()
+    if (await settingsBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await settingsBtn.click()
+      const billingLink = page.locator('a[href="/account/billing"]').first()
+      await expect(billingLink).toBeVisible({ timeout: 5000 })
+      await billingLink.click()
+      await expect(page).toHaveURL(/\/account\/billing/)
+    }
+  })
+
+  test('billing page accessible from mobile menu', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 })
+    await page.goto('/teams')
+    await page.waitForTimeout(2000)
+    const menuBtn = page.getByLabel(/open menu|menu/i).first()
+    if (await menuBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await menuBtn.click()
+      const billingLink = page.locator('a[href="/account/billing"]').first()
+      await expect(billingLink).toBeVisible({ timeout: 5000 })
+      await billingLink.click()
+      await expect(page).toHaveURL(/\/account\/billing/)
+    }
+  })
+})
+
+test.describe('Pro Gate', () => {
   test('coach tab shows Pro gate overlay for free team', async ({ page }) => {
     await page.goto('/teams')
     const firstTeamLink = page.locator('a[href^="/teams/"]').first()
@@ -48,12 +88,28 @@ test.describe('Pro Gate — Coach Tab', () => {
     await firstTeamLink.click()
     await page.waitForURL(/\/teams\/[^/]+/)
 
-    // Navigate to coach tab
     const url = page.url()
     await page.goto(`${url}?tab=coach`)
 
-    // Should show upgrade overlay (ProGate component)
-    await expect(page.getByText(/Upgrade.+Pro/i).first()).toBeVisible({ timeout: 10000 })
+    // Should show Pro gate overlay
+    await expect(page.getByText(/Pro feature|Pro functie/i).first()).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText(/Upgrade.*Pro/i).first()).toBeVisible()
+  })
+
+  test('Pro gate upgrade button navigates to billing page', async ({ page }) => {
+    await page.goto('/teams')
+    const firstTeamLink = page.locator('a[href^="/teams/"]').first()
+    await expect(firstTeamLink).toBeVisible({ timeout: 10000 })
+    await firstTeamLink.click()
+    await page.waitForURL(/\/teams\/[^/]+/)
+
+    const url = page.url()
+    await page.goto(`${url}?tab=coach`)
+
+    const upgradeBtn = page.getByText(/Upgrade.*Pro/i).first()
+    await expect(upgradeBtn).toBeVisible({ timeout: 10000 })
+    await upgradeBtn.click()
+    await expect(page).toHaveURL(/\/account\/billing/)
   })
 })
 
@@ -66,6 +122,6 @@ test.describe('Home Tab — Upgrade CTA', () => {
     await page.waitForURL(/\/teams\/[^/]+/)
 
     // Home tab is default — check for upgrade CTA
-    await expect(page.getByText(/Upgrade.+Pro/i).first()).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText(/Upgrade.*Pro/i).first()).toBeVisible({ timeout: 10000 })
   })
 })

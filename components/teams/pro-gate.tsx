@@ -3,7 +3,7 @@
 import { useTranslation } from '@/lib/i18n/context'
 import type { TranslationKey } from '@/lib/i18n/translations'
 import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 interface ProGateProps {
   teamId: string
@@ -15,6 +15,7 @@ interface ProGateProps {
 export function ProGate({ teamId, isPro, feature, children }: ProGateProps) {
   const t = useTranslation()
   const router = useRouter()
+  const pathname = usePathname()
 
   if (isPro) return <>{children}</>
 
@@ -39,7 +40,7 @@ export function ProGate({ teamId, isPro, feature, children }: ProGateProps) {
           <p className="text-xs text-stone-400 dark:text-stone-500 mb-3">
             {t('billingPriceLabel')}
           </p>
-          <Button size="sm" onClick={() => router.push(`/teams/${teamId}?tab=billing`)}>
+          <Button size="sm" onClick={() => router.push(`/account/billing?returnUrl=${encodeURIComponent(pathname)}`)}>
             {t('upgradeToPro')}
           </Button>
         </div>

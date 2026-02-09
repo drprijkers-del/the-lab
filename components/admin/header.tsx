@@ -21,7 +21,7 @@ interface AdminHeaderProps {
   userRole?: 'super_admin' | 'scrum_master'
 }
 
-type NavMode = 'home' | 'vibe' | 'wow' | 'feedback' | 'coach' | 'billing' | 'settings'
+type NavMode = 'home' | 'vibe' | 'wow' | 'feedback' | 'coach' | 'settings'
 
 // Inner component that uses useSearchParams
 function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: AdminHeaderProps) {
@@ -50,7 +50,7 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: A
 
   // Determine active mode from URL (default to 'home' on team pages)
   const currentTab = searchParams.get('tab') as NavMode | null
-  const activeMode: NavMode = currentTab && ['home', 'vibe', 'wow', 'feedback', 'coach', 'billing', 'modules', 'settings'].includes(currentTab)
+  const activeMode: NavMode = currentTab && ['home', 'vibe', 'wow', 'feedback', 'coach', 'modules', 'settings'].includes(currentTab)
     ? currentTab as NavMode
     : isOnTeamPage ? 'home' : 'home'
 
@@ -106,13 +106,13 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: A
   // Secondary tabs shown in "More" dropdown
   const secondaryModes: { key: NavMode; label: string }[] = [
     { key: 'coach', label: t('coachQuestionsTab') },
-    { key: 'billing', label: t('billingTab') },
     { key: 'settings', label: t('teamsDetailSettings') },
   ]
 
   // Items for the "More" dropdown that are not team modes
   const moreMenuExtras = [
     { href: '/backlog', label: t('backlogTab') },
+    { href: '/account/billing', label: t('accountBilling') },
   ]
 
   // All modes for mobile menu
@@ -464,6 +464,17 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: A
                       </div>
                     </div>
 
+                    {/* Billing link */}
+                    <div className="border-t border-stone-100 dark:border-stone-700 mt-1 pt-1">
+                      <Link
+                        href="/account/billing"
+                        onClick={() => setShowSettingsMenu(false)}
+                        className="block w-full text-left px-3 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700"
+                      >
+                        {t('accountBilling')}
+                      </Link>
+                    </div>
+
                     <div className="border-t border-stone-100 dark:border-stone-700 mt-1 pt-1">
                       <button
                         onClick={handleLogout}
@@ -622,6 +633,21 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: A
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
                 {t('backlogTab')}
+              </Link>
+              {/* Billing / Subscription */}
+              <Link
+                href="/account/billing"
+                className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors touch-manipulation active:bg-stone-200 dark:active:bg-stone-700 ${
+                  pathname === '/account/billing'
+                    ? 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100'
+                    : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
+                }`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <svg className={`w-5 h-5 ${pathname === '/account/billing' ? 'text-stone-700 dark:text-stone-300' : 'text-stone-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+                {t('accountBilling')}
               </Link>
               {/* Team Reminders (coming soon) */}
               <button
