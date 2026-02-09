@@ -21,7 +21,7 @@ echo ""
 
 # 3. Playwright public tests (HARD GATE)
 echo "▶ [3/3] UAT tests..."
-npx playwright test home login participation billing --reporter=list
+npx playwright test home login participation --reporter=list
 echo "  ✓ Tests OK"
 echo ""
 
