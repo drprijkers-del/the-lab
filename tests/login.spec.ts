@@ -14,8 +14,8 @@ test.describe('Login Page', () => {
     await page.locator('input[type="email"]').fill('fake@example.com')
     await page.locator('input[type="password"]').fill('wrongpassword')
     await page.getByRole('button', { name: /sign in/i }).click()
-    // Wait for error message to appear (API call can take a few seconds)
-    await expect(page.locator('text=/Invalid|error|credentials|mislukt|fout/i')).toBeVisible({ timeout: 15000 })
+    // Wait for Clerk error message (red error box)
+    await expect(page.locator('.bg-red-50, .bg-red-900\\/30')).toBeVisible({ timeout: 20000 })
   })
 
   test('redirects unauthenticated /teams access to login', async ({ page }) => {
