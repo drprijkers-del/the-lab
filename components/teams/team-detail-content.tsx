@@ -1183,16 +1183,8 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
               </Button>
             </form>
 
-            {/* Read-only info */}
-            <div className="mt-6 pt-6 border-t border-stone-200 dark:border-stone-700 space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-stone-500 dark:text-stone-400">ID</span>
-                <span className="text-stone-700 dark:text-stone-300 font-mono text-xs">{team.id}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-stone-500 dark:text-stone-400">Slug</span>
-                <span className="text-stone-700 dark:text-stone-300">{team.slug}</span>
-              </div>
+            {/* Created date only — ID/slug hidden from UI */}
+            <div className="mt-6 pt-6 border-t border-stone-200 dark:border-stone-700 text-sm">
               <div className="flex justify-between">
                 <span className="text-stone-500 dark:text-stone-400">{t('adminCreatedOn')}</span>
                 <span className="text-stone-700 dark:text-stone-300">{new Date(team.created_at).toLocaleDateString()}</span>
@@ -1225,8 +1217,8 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
               <div className="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
                 <div className="flex items-center gap-3">
                   <span className="text-pink-500">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                      <path d="M2 12h3l2-6 3 12 3-8 2 4h7" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>
                   <span className="font-medium text-stone-900 dark:text-stone-100">Vibe</span>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { useTranslation } from '@/lib/i18n/context'
+import { useTranslation, useLanguage } from '@/lib/i18n/context'
 import { getFeedbackShareLink, deactivateFeedbackLink, getTeamFeedbackGrouped, clearTeamFeedback, type TeamFeedback } from '@/domain/feedback/actions'
 
 interface FeedbackToolProps {
@@ -23,6 +23,7 @@ const PROMPT_LABELS: Record<string, { nl: string; en: string; icon: string; colo
 
 export function FeedbackTool({ teamId, teamName }: FeedbackToolProps) {
   const t = useTranslation()
+  const { language } = useLanguage()
   const [shareUrl, setShareUrl] = useState<string | null>(null)
   const [shareLoading, setShareLoading] = useState(false)
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -323,7 +324,7 @@ export function FeedbackTool({ teamId, teamName }: FeedbackToolProps) {
                         {label.icon}
                       </span>
                       <h5 className="font-medium text-stone-800 dark:text-stone-200 text-sm">
-                        {label.nl}
+                        {label[language]}
                       </h5>
                     </div>
                     {/* Feedback items - de-emphasized individual entries */}
@@ -334,6 +335,9 @@ export function FeedbackTool({ teamId, teamName }: FeedbackToolProps) {
                           className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed"
                         >
                           <p className="whitespace-pre-wrap">{item.response}</p>
+                          <p className="text-[11px] text-stone-400 dark:text-stone-500 mt-0.5">
+                            {new Date(item.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                          </p>
                         </div>
                       ))}
                     </div>

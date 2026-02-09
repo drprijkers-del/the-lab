@@ -124,54 +124,27 @@ export function HomeContent() {
 
           {/* Coming Soon */}
           <div className="mb-12">
-            <h2 className="text-sm font-medium text-stone-500 uppercase tracking-widest mb-6">{t('homeComingSoon')}</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
-              <div className="bg-stone-800/30 rounded-xl p-5 border border-stone-700/30 opacity-70">
-                <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mb-3">
-                  <svg className="w-5 h-5 text-blue-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+            <h2 className="text-sm font-medium text-stone-500 uppercase tracking-widest mb-4">{t('homeComingSoon')}</h2>
+            <div className="flex flex-wrap justify-center gap-2 mb-4">
+              {[
+                { label: t('homeObeya'), color: 'blue' },
+                { label: t('homeLeadership'), color: 'indigo' },
+                { label: t('homePortfolio'), color: 'teal' },
+                { label: t('moduleTransition'), color: 'amber' },
+                { label: t('moduleWhiteLabel'), color: 'rose' },
+              ].map((item) => (
+                <span
+                  key={item.label}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-800/40 border border-stone-700/30 rounded-full text-sm text-stone-500"
+                >
+                  <svg className="w-3.5 h-3.5 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
-                </div>
-                <h3 className="font-semibold text-stone-300 mb-1">{t('homeObeya')}</h3>
-                <p className="text-sm text-stone-500">{t('homeObeyaDesc')}</p>
-              </div>
-              <div className="bg-stone-800/30 rounded-xl p-5 border border-stone-700/30 opacity-70">
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center mb-3">
-                  <svg className="w-5 h-5 text-indigo-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-stone-300 mb-1">{t('homeLeadership')}</h3>
-                <p className="text-sm text-stone-500">{t('homeLeadershipDesc')}</p>
-              </div>
-              <div className="bg-stone-800/30 rounded-xl p-5 border border-stone-700/30 opacity-70">
-                <div className="w-10 h-10 rounded-lg bg-teal-500/10 flex items-center justify-center mb-3">
-                  <svg className="w-5 h-5 text-teal-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-stone-300 mb-1">{t('homePortfolio')}</h3>
-                <p className="text-sm text-stone-500">{t('homePortfolioDesc')}</p>
-              </div>
-              <div className="bg-stone-800/30 rounded-xl p-5 border border-stone-700/30 opacity-70">
-                <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center mb-3">
-                  <svg className="w-5 h-5 text-amber-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-stone-300 mb-1">{t('moduleTransition')}</h3>
-                <p className="text-sm text-stone-500">{t('moduleTransitionDesc')}</p>
-              </div>
-              <div className="bg-stone-800/30 rounded-xl p-5 border border-stone-700/30 opacity-70">
-                <div className="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center mb-3">
-                  <svg className="w-5 h-5 text-rose-400/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-stone-300 mb-1">{t('moduleWhiteLabel')}</h3>
-                <p className="text-sm text-stone-500">{t('moduleWhiteLabelDesc')}</p>
-              </div>
+                  {item.label}
+                </span>
+              ))}
             </div>
+            <p className="text-sm text-stone-500 italic">{t('homeComingSoonNote')}</p>
           </div>
 
           {/* Feedback question */}

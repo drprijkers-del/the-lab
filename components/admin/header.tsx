@@ -259,7 +259,7 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: A
                       <div className="border-t border-stone-200 dark:border-stone-700 mt-1 pt-1">
                         <div className="mx-3 my-2 p-3 bg-stone-50 dark:bg-stone-700/50 rounded-lg">
                           <div className="text-xs font-medium text-cyan-600 dark:text-cyan-400 mb-2">
-                            Coming soon
+                            {t('homeComingSoon')}
                           </div>
                           <button
                             onClick={() => {
@@ -268,24 +268,24 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: A
                             }}
                             className="w-full text-left py-1 text-sm text-stone-600 dark:text-stone-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
                           >
-                            Reminders
-                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">automatische check-ins</p>
+                            {t('menuReminders')}
+                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">{t('menuRemindersDesc')}</p>
                           </button>
                           <div className="py-1 text-sm text-stone-600 dark:text-stone-300">
-                            Obeya
-                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">visueel sturen</p>
+                            {t('homeObeya')}
+                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">{t('menuObeyaDesc')}</p>
                           </div>
                           <div className="py-1 text-sm text-stone-600 dark:text-stone-300">
-                            Leadership
-                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">leiderschapsontwikkeling</p>
+                            {t('homeLeadership')}
+                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">{t('menuLeadershipDesc')}</p>
                           </div>
                           <div className="py-1 text-sm text-stone-600 dark:text-stone-300">
-                            Portfolio
-                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">multi-team overzicht</p>
+                            {t('homePortfolio')}
+                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">{t('menuPortfolioDesc')}</p>
                           </div>
                           <div className="py-1 text-sm text-stone-600 dark:text-stone-300">
-                            White Label
-                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">eigen merk</p>
+                            {t('moduleWhiteLabel')}
+                            <p className="text-[11px] text-stone-400 dark:text-stone-500 leading-tight">{t('menuWhiteLabelDesc')}</p>
                           </div>
                         </div>
                       </div>
@@ -397,7 +397,7 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: A
                     e.stopPropagation()
                     setShowSettingsMenu(!showSettingsMenu)
                   }}
-                  className="p-2 rounded-lg text-stone-500 hover:text-stone-900 hover:bg-stone-100 dark:text-stone-400 dark:hover:text-stone-100 dark:hover:bg-stone-800 transition-colors"
+                  className="p-2.5 min-h-11 min-w-11 flex items-center justify-center rounded-lg text-stone-500 hover:text-stone-900 hover:bg-stone-100 dark:text-stone-400 dark:hover:text-stone-100 dark:hover:bg-stone-800 transition-colors"
                   aria-label="Settings"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -496,6 +496,40 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: A
           </div>
         </nav>
       </header>
+
+      {/* Mobile: Scrollable tab bar (team pages only) */}
+      {isOnTeamPage && currentTeam && (
+        <div className="md:hidden bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700 sticky top-14 z-30">
+          <div className="flex overflow-x-auto scrollbar-hide px-2 gap-1 py-1.5" style={{ WebkitOverflowScrolling: 'touch' }}>
+            {primaryModes.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => navigateToMode(key)}
+                className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+                  activeMode === key
+                    ? 'bg-cyan-100 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-400'
+                    : 'text-stone-500 dark:text-stone-400 active:bg-stone-100 dark:active:bg-stone-800'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+            {secondaryModes.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => navigateToMode(key)}
+                className={`shrink-0 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+                  activeMode === key
+                    ? 'bg-cyan-100 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-400'
+                    : 'text-stone-500 dark:text-stone-400 active:bg-stone-100 dark:active:bg-stone-800'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (

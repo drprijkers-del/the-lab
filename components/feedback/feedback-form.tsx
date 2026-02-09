@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { submitFeedback } from '@/domain/feedback/actions'
 import { useTranslation } from '@/lib/i18n/context'
 import { Button } from '@/components/ui/button'
@@ -24,8 +24,22 @@ export function FeedbackForm({ teamSlug, teamName, tokenHash }: FeedbackFormProp
   const t = useTranslation()
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [rulesAccepted, setRulesAccepted] = useState(false)
+
+  // Device-based deduplication: check if this device already submitted feedback for this link
+  const storageKey = `feedback_submitted_${teamSlug}_${tokenHash.slice(0, 12)}`
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(storageKey)) {
+        setAlreadySubmitted(true)
+      }
+    } catch {
+      // localStorage unavailable — allow submission
+    }
+  }, [storageKey])
 
   const [prompts, setPrompts] = useState<PromptField[]>([
     { key: 'helps_collaboration', labelKey: 'feedbackPromptHelps', hintKey: 'feedbackPromptHelpsHint', value: '' },
@@ -66,6 +80,13 @@ export function FeedbackForm({ teamSlug, teamName, tokenHash }: FeedbackFormProp
       return
     }
 
+    // Mark this device as having submitted for this link
+    try {
+      localStorage.setItem(storageKey, new Date().toISOString())
+    } catch {
+      // localStorage unavailable — not critical
+    }
+
     setSubmitted(true)
   }
 
@@ -99,6 +120,33 @@ export function FeedbackForm({ teamSlug, teamName, tokenHash }: FeedbackFormProp
           <p className="text-xs text-stone-400 dark:text-stone-500 mt-2">
             {t('closeThisPage')}
           </p>
+        </div>
+      </div>
+    )
+  }
+
+  // Already submitted on this device
+  if (alreadySubmitted) {
+    return (
+      <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center p-4">
+        <div className="max-w-md w-full text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+            <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2">
+            {t('feedbackAlreadySubmitted')}
+          </h1>
+          <p className="text-stone-600 dark:text-stone-400 mb-6">
+            {t('feedbackAlreadySubmittedMessage')}
+          </p>
+          <button
+            onClick={() => window.close()}
+            className="px-6 py-2 text-sm font-medium text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
+          >
+            {t('closePage')}
+          </button>
         </div>
       </div>
     )
