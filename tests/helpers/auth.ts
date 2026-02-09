@@ -1,8 +1,11 @@
 import { type Page } from '@playwright/test'
 
 /**
- * Log in via the password login API and set the session cookie.
+ * Log in via the password login form.
  * Uses env vars TEST_ADMIN_EMAIL and TEST_ADMIN_PASSWORD.
+ *
+ * Note: For authenticated test projects, prefer storageState via auth.setup.ts.
+ * This helper is available if you need to log in within a standalone test.
  */
 export async function loginAsAdmin(page: Page) {
   const email = process.env.TEST_ADMIN_EMAIL
@@ -15,13 +18,12 @@ export async function loginAsAdmin(page: Page) {
     )
   }
 
-  // Call the login API directly
-  const response = await page.request.post('/api/auth/login-password', {
-    data: { email, password, redirect: '/teams' },
-  })
+  // Navigate to login page and fill form
+  await page.goto('/login')
+  await page.locator('input[type="email"]').fill(email)
+  await page.locator('input[type="password"]').fill(password)
+  await page.getByRole('button', { name: /sign in/i }).click()
 
-  if (!response.ok()) {
-    const body = await response.json()
-    throw new Error(`Login failed: ${body.error || response.status()}`)
-  }
+  // Wait for redirect to /teams
+  await page.waitForURL(/\/teams/, { timeout: 15000 })
 }

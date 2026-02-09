@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import { requireAdmin } from '@/lib/auth/admin'
 import type { TeamMetrics, DailyVibe, VibeInsight } from './types'
 import {
@@ -299,7 +299,7 @@ function buildInsight(
  */
 export async function getTeamMetrics(teamId: string): Promise<TeamMetrics | null> {
   const adminUser = await requireAdmin()
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Verify team access and get expected_team_size
   const { data: team } = await supabase

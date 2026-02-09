@@ -1,5 +1,5 @@
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { requireAdmin, getAdminUser } from './admin'
 
 export interface SuperAdminSession {
   userId: string
@@ -8,37 +8,34 @@ export interface SuperAdminSession {
   exp: number
 }
 
-export async function getSuperAdminSession(): Promise<SuperAdminSession | null> {
-  const cookieStore = await cookies()
-  const sessionCookie = cookieStore.get('super_admin_session')?.value
+export async function requireSuperAdmin(): Promise<SuperAdminSession> {
+  const adminUser = await requireAdmin()
 
-  if (!sessionCookie) return null
+  if (adminUser.role !== 'super_admin') {
+    redirect('/login?error=unauthorized')
+  }
 
-  try {
-    const session = JSON.parse(sessionCookie) as SuperAdminSession
-
-    // Check expiration
-    if (session.exp < Date.now()) {
-      return null
-    }
-
-    return session
-  } catch {
-    return null
+  return {
+    userId: adminUser.id,
+    email: adminUser.email,
+    role: 'super_admin',
+    exp: Date.now() + 24 * 60 * 60 * 1000,
   }
 }
 
-export async function requireSuperAdmin(): Promise<SuperAdminSession> {
-  const session = await getSuperAdminSession()
+export async function getSuperAdminSession(): Promise<SuperAdminSession | null> {
+  const adminUser = await getAdminUser()
+  if (!adminUser || adminUser.role !== 'super_admin') return null
 
-  if (!session) {
-    redirect('/super-admin/login')
+  return {
+    userId: adminUser.id,
+    email: adminUser.email,
+    role: 'super_admin',
+    exp: Date.now() + 24 * 60 * 60 * 1000,
   }
-
-  return session
 }
 
 export async function isSuperAdmin(): Promise<boolean> {
-  const session = await getSuperAdminSession()
-  return session !== null
+  const adminUser = await getAdminUser()
+  return adminUser?.role === 'super_admin'
 }

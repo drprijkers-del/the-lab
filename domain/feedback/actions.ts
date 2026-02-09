@@ -22,7 +22,7 @@ export interface FeedbackSubmission {
 async function verifyTeamOwnership(teamId: string, adminUser: AdminUser): Promise<boolean> {
   if (adminUser.role === 'super_admin') return true
 
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
   const { data } = await supabase
     .from('teams')
     .select('owner_id')

@@ -13,9 +13,9 @@
     "test:public": "npx playwright test home login participation"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.37.3",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.93.2",
-    "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "cookies-next": "^6.1.1",
     "date-fns": "^4.1.0",
@@ -27,7 +27,6 @@
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4",
-    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -2,26 +2,9 @@
 
 import { Suspense } from 'react'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 import { useTranslation } from '@/lib/i18n/context'
 import { LanguageToggle } from '@/components/ui/language-toggle'
 import { LoginForm } from '@/components/admin/login-form'
-
-function SuperAdminLink() {
-  const searchParams = useSearchParams()
-  const showSuperAdmin = searchParams.get('admin') === 'true'
-
-  if (!showSuperAdmin) return null
-
-  return (
-    <Link
-      href="/super-admin/login"
-      className="block text-center text-stone-300 dark:text-stone-600 text-xs mt-4 hover:text-stone-500 dark:hover:text-stone-400 transition-colors"
-    >
-      Super Admin →
-    </Link>
-  )
-}
 
 export function LoginPageContent() {
   const t = useTranslation()
@@ -61,14 +44,6 @@ export function LoginPageContent() {
             </div>
           }>
             <LoginForm />
-          </Suspense>
-
-          <p className="text-center text-stone-400 dark:text-stone-500 text-xs mt-6">
-            {t('loginForgotPassword')}
-          </p>
-
-          <Suspense fallback={null}>
-            <SuperAdminLink />
           </Suspense>
         </div>
       </main>

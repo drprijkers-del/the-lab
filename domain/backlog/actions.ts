@@ -72,7 +72,7 @@ export async function getBacklogItems(): Promise<BacklogItem[]> {
  * Get a single backlog item by ID
  */
 export async function getBacklogItem(id: string): Promise<BacklogItem | null> {
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   const { data, error } = await supabase
     .from('backlog_items')
@@ -221,7 +221,7 @@ export async function getReleaseNotes(): Promise<ReleaseNote[]> {
  * Get a single release note by ID
  */
 export async function getReleaseNote(id: string): Promise<ReleaseNote | null> {
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   const { data, error } = await supabase
     .from('release_notes')
@@ -353,7 +353,7 @@ export async function deleteReleaseNote(id: string): Promise<{ success: boolean;
  * Submit a wish from the public backlog page (creates a backlog item in 'review' status)
  */
 export async function submitWish(wish: string, why: string): Promise<{ success: boolean; error?: string }> {
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   const item = {
     product: 'vibe' as ProductType,

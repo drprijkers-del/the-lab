@@ -550,7 +550,7 @@ export async function validateSessionCode(sessionCode: string): Promise<{
     wow_level: WowLevel
   }
 }> {
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   const { data } = await supabase.rpc('validate_delta_session', {
     p_session_code: sessionCode,
@@ -587,7 +587,7 @@ export async function validateSessionCode(sessionCode: string): Promise<{
  * Get a team's wow level
  */
 export async function getTeamWowLevel(teamId: string): Promise<WowLevel> {
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   const { data } = await supabase
     .from('teams')
@@ -606,7 +606,7 @@ export async function submitResponse(
   deviceId: string,
   answers: ResponseAnswers
 ): Promise<{ success: boolean; error?: string; alreadyResponded?: boolean }> {
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   const { data } = await supabase.rpc('submit_delta_response', {
     p_session_id: sessionId,
@@ -633,7 +633,7 @@ export async function submitResponse(
  * Check if device has already responded (public)
  */
 export async function hasResponded(sessionId: string, deviceId: string): Promise<boolean> {
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   const { data } = await supabase
     .from('delta_responses')
@@ -658,7 +658,7 @@ export interface PublicSessionOutcome {
 }
 
 export async function getPublicSessionOutcome(sessionId: string): Promise<PublicSessionOutcome | null> {
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Get session info (public read access for outcome)
   const { data: session } = await supabase

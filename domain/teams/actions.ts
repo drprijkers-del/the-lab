@@ -80,7 +80,7 @@ async function verifyTeamOwnership(teamId: string, adminUser: AdminUser): Promis
   // Super admin can access all teams
   if (adminUser.role === 'super_admin') return true
 
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
   const { data } = await supabase
     .from('teams')
     .select('owner_id')
@@ -92,7 +92,7 @@ async function verifyTeamOwnership(teamId: string, adminUser: AdminUser): Promis
 
 export async function getTeams(appType?: 'vibe' | 'wow'): Promise<TeamWithStats[]> {
   const adminUser = await requireAdmin()
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Build query - filter by owner unless super admin
   let query = supabase
@@ -254,7 +254,7 @@ async function computeWowStatsFallback(teamId: string): Promise<NonNullable<Unif
 // Uses denormalized stats if available (fast), falls back to computed stats (slow but works without migration)
 export async function getTeamsUnified(filter?: 'all' | 'vibe' | 'wow' | 'needs_attention'): Promise<UnifiedTeam[]> {
   const adminUser = await requireAdmin()
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Build query - filter by owner unless super admin
   let query = supabase
@@ -372,7 +372,7 @@ export async function getTeamsUnified(filter?: 'all' | 'vibe' | 'wow' | 'needs_a
 
 export async function getTeam(id: string): Promise<TeamWithStats | null> {
   const adminUser = await requireAdmin()
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   const { data: team, error } = await supabase
     .from('teams')
@@ -420,7 +420,7 @@ export async function getTeam(id: string): Promise<TeamWithStats | null> {
 // Uses denormalized stats if available (fast), falls back to computed stats (slow but works without migration)
 export async function getTeamUnified(id: string): Promise<UnifiedTeam | null> {
   const adminUser = await requireAdmin()
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Fetch team, tools, and active link in parallel
   const [teamResult, toolsResult, linkResult] = await Promise.all([
@@ -499,7 +499,7 @@ export async function getTeamUnified(id: string): Promise<UnifiedTeam | null> {
 
 // Get tools enabled for a team
 export async function getTeamTools(teamId: string): Promise<('vibe' | 'wow')[]> {
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   const { data } = await supabase
     .from('team_tools')
@@ -580,7 +580,7 @@ export async function disableTool(teamId: string, tool: 'vibe' | 'wow'): Promise
 
 export async function createTeam(formData: FormData): Promise<{ success: boolean; teamId?: string; error?: string }> {
   const adminUser = await requireAdmin()
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   const name = formData.get('name') as string
   const description = formData.get('description') as string | null
@@ -653,7 +653,7 @@ export async function updateTeam(
   formData: FormData
 ): Promise<{ success: boolean; error?: string }> {
   const adminUser = await requireAdmin()
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Verify ownership
   if (!(await verifyTeamOwnership(id, adminUser))) {
@@ -698,7 +698,7 @@ export async function updateTeam(
 
 export async function deleteTeam(id: string): Promise<{ success: boolean; error?: string }> {
   const adminUser = await requireAdmin()
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Verify ownership
   if (!(await verifyTeamOwnership(id, adminUser))) {
@@ -759,7 +759,7 @@ export async function resetTeam(id: string): Promise<{ success: boolean; error?:
 
 export async function regenerateInviteLink(teamId: string): Promise<{ success: boolean; token?: string; error?: string }> {
   const adminUser = await requireAdmin()
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Verify ownership
   if (!(await verifyTeamOwnership(teamId, adminUser))) {
@@ -859,7 +859,7 @@ export async function getTeamMoodHistory(teamId: string, days: number = 7): Prom
   count: number
 }[]> {
   const adminUser = await requireAdmin()
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Verify ownership
   if (!(await verifyTeamOwnership(teamId, adminUser))) {
@@ -884,7 +884,7 @@ export async function exportPulseData(teamId: string): Promise<{
   error?: string
 }> {
   const adminUser = await requireAdmin()
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Verify ownership
   if (!(await verifyTeamOwnership(teamId, adminUser))) {

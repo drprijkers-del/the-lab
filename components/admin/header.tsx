@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useClerk } from '@clerk/nextjs'
 import { useTranslation, useLanguage } from '@/lib/i18n/context'
 import { useTheme } from '@/lib/theme/context'
 import { Button } from '@/components/ui/button'
@@ -25,6 +26,7 @@ type NavMode = 'home' | 'vibe' | 'wow' | 'feedback' | 'coach' | 'settings'
 // Inner component that uses useSearchParams
 function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: AdminHeaderProps) {
   const t = useTranslation()
+  const { signOut } = useClerk()
 
   // Extract username from email (part before @)
   const username = userEmail ? userEmail.split('@')[0] : null
@@ -77,13 +79,7 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: A
   }, [showSettingsMenu, showTeamSelector, showCoachDropdown, showMoreMenu])
 
   async function handleLogout() {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' })
-    } catch {
-      // Continue with redirect even if API fails
-    }
-    router.push('/')
-    router.refresh()
+    await signOut({ redirectUrl: '/' })
   }
 
   function navigateToMode(mode: NavMode) {

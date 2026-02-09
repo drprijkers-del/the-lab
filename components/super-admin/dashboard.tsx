@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useClerk } from '@clerk/nextjs'
 
 interface AdminUser {
   id: string
@@ -17,6 +18,7 @@ interface Props {
 
 export function SuperAdminDashboard({ users: initialUsers }: Props) {
   const router = useRouter()
+  const { signOut } = useClerk()
   const [users, setUsers] = useState(initialUsers)
   const [deleting, setDeleting] = useState<string | null>(null)
 
@@ -48,9 +50,7 @@ export function SuperAdminDashboard({ users: initialUsers }: Props) {
   }
 
   async function handleLogout() {
-    await fetch('/api/auth/super-admin/logout', { method: 'POST' })
-    router.push('/super-admin/login')
-    router.refresh()
+    await signOut({ redirectUrl: '/' })
   }
 
   const scrumMasters = users.filter((u) => u.role === 'scrum_master')

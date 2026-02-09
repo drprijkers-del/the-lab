@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import { getTeamContext } from '@/lib/tenant/context'
 
 export interface MoodStats {
@@ -28,7 +28,7 @@ export async function submitMoodCheckin(
     return { success: false, error: 'No active team session' }
   }
 
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Get or create participant using deviceId from context
   const { data: participantId, error: participantError } = await supabase
@@ -83,7 +83,7 @@ export async function getTeamMoodStats(): Promise<MoodStats | null> {
 
   if (!context) return null
 
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   const { data } = await supabase
     .rpc('get_team_mood_stats', { p_team_id: context.teamId })
@@ -96,7 +96,7 @@ export async function getParticipantStreak(): Promise<number> {
 
   if (!context) return 0
 
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Get participant using deviceId from context
   const { data: participant } = await supabase
@@ -119,7 +119,7 @@ export async function hasCheckedInToday(): Promise<boolean> {
 
   if (!context) return false
 
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Get participant using deviceId from context
   const { data: participant } = await supabase
@@ -152,7 +152,7 @@ export async function getTeamTrend(): Promise<{
 
   if (!context) return []
 
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   const { data } = await supabase
     .rpc('get_team_trend', { p_team_id: context.teamId })

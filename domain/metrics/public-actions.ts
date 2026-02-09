@@ -33,7 +33,7 @@ export async function getPublicTeamMetrics(directTeamId?: string): Promise<{
     teamId = context.teamId
   }
 
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Get team info including expected_team_size
   const { data: team } = await supabase
@@ -155,7 +155,7 @@ export async function getPublicVibeHistory(directTeamId?: string): Promise<Daily
     teamId = context.teamId
   }
 
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   const { data: rawHistory } = await supabase
     .rpc('get_team_trend', { p_team_id: teamId })
@@ -199,7 +199,7 @@ export async function getPublicWowStats(directTeamId?: string): Promise<PublicWo
   }
 
   // Use admin client when called with directTeamId (admin flow) to bypass RLS
-  const supabase = directTeamId ? await createAdminClient() : await createClient()
+  const supabase = await createAdminClient()
 
   // Get team wow level
   const { data: teamData } = await supabase
@@ -365,7 +365,7 @@ export async function getResultsShareUrl(teamId: string): Promise<string | null>
   const adminUser = await getAdminUser()
   if (!adminUser) return null
 
-  const supabase = await createClient()
+  const supabase = await createAdminClient()
 
   // Verify team ownership
   let query = supabase.from('teams').select('slug').eq('id', teamId)
