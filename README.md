@@ -13,8 +13,9 @@ Een **Agile Team Mood App** als losse tool binnen de Pink Pollos Lab-omgeving. T
 ## Tech Stack
 
 - **Next.js 16** (App Router, TypeScript)
-- **Supabase** (Auth + Postgres)
-- **Prisma** (ORM)
+- **Clerk** (Authentication)
+- **Supabase** (Postgres database)
+- **Resend** (Email notifications)
 - **Tailwind CSS**
 - **Vercel** (Deployment)
 
@@ -43,28 +44,42 @@ cp .env.example .env
 ```
 
 ```env
-# Supabase Configuration
+# Supabase
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
-# Database (gebruik Supabase connection strings)
-DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/login
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/teams
+
+# Resend (email notifications for contact form)
+RESEND_API_KEY=re_...
 
 # App URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-### 4. Admin User Aanmaken
+### 4. Clerk Setup
 
-1. Ga naar Supabase **Authentication > Users** en maak een user aan
-2. Voeg deze user toe aan de `admin_users` tabel:
+1. Maak een applicatie aan op [clerk.com](https://clerk.com)
+2. Schakel "Email + Password" in als sign-in methode
+3. Kopieer je API keys naar `.env`
+4. Maak users aan in het Clerk Dashboard
+5. Stel `publicMetadata` in per user: `{"role": "super_admin"}` of `{"role": "scrum_master"}`
 
-```sql
-INSERT INTO admin_users (email) VALUES ('jouw@email.com');
-```
+### 5. Resend Setup (optioneel)
 
-### 5. Run Locally
+1. Maak een account aan op [resend.com](https://resend.com)
+2. Voeg en verifieer je domein toe (bijv. `pulse-labs.io`)
+3. Maak een API key aan en voeg toe aan `.env`
+4. Contact formulier submissions worden per email verstuurd naar `info@pinkpollos.com`
+
+Zonder `RESEND_API_KEY` worden submissions alleen opgeslagen in Supabase.
+
+### 6. Run Locally
 
 ```bash
 npm run dev
@@ -99,8 +114,8 @@ pulse-labs/
 ## User Flows
 
 ### Admin Flow
-1. Login op `/admin/login`
-2. Maak teams aan op `/admin/teams`
+1. Login op `/login` (via Clerk)
+2. Maak teams aan op `/teams`
 3. Kopieer de share-link
 4. Deel met je team
 
@@ -132,7 +147,9 @@ Voeg dezelfde environment variables toe in Vercel:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
-- `DATABASE_URL`
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (gebruik `pk_live_...` voor productie)
+- `CLERK_SECRET_KEY` (gebruik `sk_live_...` voor productie)
+- `RESEND_API_KEY`
 - `NEXT_PUBLIC_APP_URL` (je Vercel URL)
 
 ## Security
