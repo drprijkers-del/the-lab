@@ -136,7 +136,11 @@ test.describe('Home Tab — Upgrade CTA', () => {
     await expect(firstTeamLink).toBeVisible({ timeout: 10000 })
     await firstTeamLink.click()
     await page.waitForURL(/\/teams\/[^/]+/)
-    await page.waitForTimeout(2000)
+    // Wait for skeleton loading to finish — look for any real text content
+    await page.waitForFunction(
+      () => (document.querySelector('main')?.textContent?.trim().length ?? 0) > 10,
+      { timeout: 15000 }
+    )
 
     // Free users see upgrade CTA, paid users see dashboard content
     const upgradeCta = page.getByText(/Upgrade.*Pro/i).first()

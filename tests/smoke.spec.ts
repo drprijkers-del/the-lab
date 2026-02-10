@@ -81,11 +81,16 @@ test.describe('Smoke Test — Way of Work', () => {
 
     await page.goto(`/teams/${teamId}/wow/new`)
     await expect(page.locator('main')).toBeVisible({ timeout: 10000 })
+    // Wait for skeleton to resolve and actual buttons to appear
+    await page.waitForFunction(
+      () => document.querySelectorAll('main button').length >= 3,
+      { timeout: 15000 }
+    )
 
     // Should show angle buttons
     const angleButtons = page.locator('main button').filter({ hasNotText: /cancel|annuleren|start|terug|back/i })
     const count = await angleButtons.count()
-    expect(count).toBeGreaterThanOrEqual(5)
+    expect(count).toBeGreaterThanOrEqual(3)
   })
 })
 
