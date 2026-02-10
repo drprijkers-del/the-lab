@@ -18,18 +18,19 @@ interface AdminHeaderProps {
   currentTeam?: Team | null
   allTeams?: Team[]
   userEmail?: string
+  userName?: string | null
   userRole?: 'super_admin' | 'scrum_master'
 }
 
 type NavMode = 'home' | 'vibe' | 'wow' | 'feedback' | 'coach' | 'settings'
 
 // Inner component that uses useSearchParams
-function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userRole }: AdminHeaderProps) {
+function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userName, userRole }: AdminHeaderProps) {
   const t = useTranslation()
   const { signOut } = useClerk()
 
-  // Extract username from email (part before @)
-  const username = userEmail ? userEmail.split('@')[0] : null
+  // Show first name, fall back to email prefix
+  const username = userName || (userEmail ? userEmail.split('@')[0] : null)
   const isSuperAdmin = userRole === 'super_admin'
   const router = useRouter()
   const pathname = usePathname()

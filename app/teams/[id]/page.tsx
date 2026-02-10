@@ -48,6 +48,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
         currentTeam={{ id: team.id, name: team.name, slug: team.slug }}
         allTeams={teamList}
         userEmail={admin.email}
+        userName={admin.firstName}
         userRole={admin.role}
       />
       <main className="max-w-6xl mx-auto px-4 pt-6 pb-24">

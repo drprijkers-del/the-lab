@@ -6,6 +6,7 @@ export interface AdminUser {
   id: string
   email: string
   role: 'super_admin' | 'scrum_master'
+  firstName?: string | null
 }
 
 /**
@@ -76,6 +77,7 @@ export async function requireAdmin(): Promise<AdminUser> {
     redirect('/login?error=unauthorized')
   }
 
+  adminUser.firstName = user.firstName
   return adminUser
 }
 
@@ -86,7 +88,9 @@ export async function getAdminUser(): Promise<AdminUser | null> {
   const user = await currentUser()
   if (!user?.emailAddresses?.[0]?.emailAddress) return null
 
-  return resolveAdminUser(userId, user.emailAddresses[0].emailAddress)
+  const adminUser = await resolveAdminUser(userId, user.emailAddresses[0].emailAddress)
+  if (adminUser) adminUser.firstName = user.firstName
+  return adminUser
 }
 
 export async function getCurrentAdminId(): Promise<string | null> {

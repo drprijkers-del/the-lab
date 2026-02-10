@@ -1,4 +1,17 @@
 import { defineConfig, devices } from '@playwright/test'
+import fs from 'fs'
+import path from 'path'
+
+// Load .env so CLERK_SECRET_KEY is available for auth setup
+const envPath = path.resolve(__dirname, '.env')
+if (fs.existsSync(envPath)) {
+  for (const line of fs.readFileSync(envPath, 'utf-8').split('\n')) {
+    const match = line.match(/^([A-Z_][A-Z0-9_]*)=(.*)$/)
+    if (match && !process.env[match[1]]) {
+      process.env[match[1]] = match[2]
+    }
+  }
+}
 
 export default defineConfig({
   testDir: './tests',
@@ -27,7 +40,7 @@ export default defineConfig({
         storageState: 'tests/.auth/session.json',
       },
       dependencies: ['setup'],
-      testMatch: /\/(teams|billing|wow-session|rename-verification)\.spec\.ts/,
+      testMatch: /\/(teams|billing|wow-session|rename-verification|smoke)\.spec\.ts/,
     },
     // Public tests (no login required)
     {

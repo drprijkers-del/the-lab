@@ -18,7 +18,7 @@ export default async function BacklogPage() {
 
   return (
     <>
-      <AdminHeader userEmail={admin.email} userRole={admin.role} />
+      <AdminHeader userEmail={admin.email} userName={admin.firstName} userRole={admin.role} />
       <main className="max-w-6xl mx-auto px-4 pt-8 pb-24">
         <BacklogPageContent items={backlogItems} releases={releases} />
       </main>

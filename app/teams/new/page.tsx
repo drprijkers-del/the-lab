@@ -10,7 +10,7 @@ export default async function NewTeamPage() {
 
   return (
     <>
-      <AdminHeader userEmail={admin.email} userRole={admin.role} />
+      <AdminHeader userEmail={admin.email} userName={admin.firstName} userRole={admin.role} />
       <main className="max-w-2xl mx-auto px-4 pt-8 pb-24">
         {/* Back link */}
         <Link
