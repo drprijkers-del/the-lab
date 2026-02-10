@@ -109,25 +109,28 @@ export function AiCoach({ teamId, teamName, subscriptionTier }: AiCoachProps) {
   return (
     <div className="space-y-6">
 
-      {/* ── Section 1: Context + Primary CTA ── */}
+      {/* ── Section 1: How it works + Primary CTA ── */}
       <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6">
-        {/* Title + subtitle */}
-        <div className="flex items-start gap-3 mb-3">
-          <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
-            <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-          </div>
-          <div>
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('aiCoachTitle')}</h3>
-            <p className="text-sm text-stone-600 dark:text-stone-400 mt-0.5">{t('aiCoachSubtitle')}</p>
-          </div>
-        </div>
 
-        {/* Context line */}
-        <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed mb-5">
-          {t('aiCoachContextLine')}
-        </p>
+        {/* How it works — 3 steps so user understands the flow */}
+        {!insight && !generating && (
+          <div className="mb-5">
+            <div className="space-y-2.5">
+              <div className="flex items-center gap-2.5">
+                <span className="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs font-bold flex items-center justify-center shrink-0">1</span>
+                <span className="text-sm text-stone-700 dark:text-stone-300">{t('coachFlowStep1')}</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <span className="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs font-bold flex items-center justify-center shrink-0">2</span>
+                <span className="text-sm text-stone-700 dark:text-stone-300">{t('coachFlowStep2')}</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <span className="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs font-bold flex items-center justify-center shrink-0">3</span>
+                <span className="text-sm text-stone-700 dark:text-stone-300">{t('coachFlowStep3')}</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* New data badge */}
         {status?.hasNewData && insight && !generating && (
@@ -215,6 +218,15 @@ export function AiCoach({ teamId, teamName, subscriptionTier }: AiCoachProps) {
       {/* ── Section 2: Results ── */}
       {insight && (
         <div className="space-y-5">
+          {/* Action prompt — tells user what to do with these results */}
+          <div className="flex items-start gap-3 p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
+            <span className="text-lg shrink-0">&#x1f3af;</span>
+            <div>
+              <p className="text-sm font-medium text-emerald-800 dark:text-emerald-200">{t('coachPickPrompt')}</p>
+              <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-0.5">{t('coachPickDetail')}</p>
+            </div>
+          </div>
+
           {/* Observations */}
           {insight.observations.length > 0 && (
             <div>
@@ -304,19 +316,6 @@ export function AiCoach({ teamId, teamName, subscriptionTier }: AiCoachProps) {
               </button>
             </div>
           )}
-
-          {/* Tips — after results, compact */}
-          <div className="p-4 bg-stone-50 dark:bg-stone-800/50 rounded-lg border border-stone-200 dark:border-stone-700">
-            <h5 className="font-medium text-stone-700 dark:text-stone-300 text-sm mb-2">
-              {t('coachTipsTitle')}
-            </h5>
-            <ul className="text-xs text-stone-500 dark:text-stone-400 space-y-1">
-              <li>&bull; {t('coachTip1')}</li>
-              <li>&bull; {t('coachTip2')}</li>
-              <li>&bull; {t('coachTip3')}</li>
-              <li>&bull; {t('coachTip4')}</li>
-            </ul>
-          </div>
         </div>
       )}
 

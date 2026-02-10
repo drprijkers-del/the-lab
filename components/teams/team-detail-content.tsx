@@ -332,7 +332,11 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
               {activeTab === 'vibe' && t('vibeTitle')}
               {activeTab === 'wow' && t('wowTitle')}
               {activeTab === 'feedback' && t('feedbackTitle')}
-              {activeTab === 'coach' && t('coachQuestionsTitle')}
+              {activeTab === 'coach' && (
+                (subscriptionTier === 'agile_coach' || subscriptionTier === 'transition_coach')
+                  ? t('aiCoachTitle')
+                  : t('coachQuestionsTitle')
+              )}
               {activeTab === 'settings' && t('teamSettings')}
               {!activeTab && t('teamDetailContext')}
             </h3>

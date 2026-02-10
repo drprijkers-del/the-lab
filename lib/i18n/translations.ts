@@ -492,6 +492,11 @@ export const translations = {
     coachTip2: 'Stel ze open — zonder verwacht antwoord',
     coachTip3: 'Laat het team vertellen wat zij zien',
     coachTip4: 'Hun perspectief is het startpunt, niet dit overzicht',
+    coachFlowStep1: 'Druk op de knop — wij analyseren Vibe, WoW en Feedback signalen',
+    coachFlowStep2: 'Kies 1-2 observaties of vragen die bij je team passen',
+    coachFlowStep3: 'Gebruik ze in je volgende teamgesprek',
+    coachPickPrompt: 'Kies hieronder wat past bij je team',
+    coachPickDetail: 'Kies 1-2 observaties of vragen en gebruik ze in je volgende gesprek. De rest mag je negeren.',
     // AI Coach
     smartQuestionsTitle: 'Slimme Vragen',
     smartQuestionsSubtitle: 'Vragen op basis van team signalen',
@@ -1515,6 +1520,11 @@ export const translations = {
     coachTip2: 'Ask them openly — without an expected answer',
     coachTip3: 'Let the team tell you what they see',
     coachTip4: 'Their perspective is the starting point, not this overview',
+    coachFlowStep1: 'Press the button — we analyze Vibe, WoW and Feedback signals',
+    coachFlowStep2: 'Pick 1-2 observations or questions that fit your team',
+    coachFlowStep3: 'Use them in your next team conversation',
+    coachPickPrompt: 'Pick what fits your team below',
+    coachPickDetail: 'Choose 1-2 observations or questions and use them in your next conversation. Ignore the rest.',
     // AI Coach
     smartQuestionsTitle: 'Smart Questions',
     smartQuestionsSubtitle: 'Questions based on team signals',

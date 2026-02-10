@@ -73,27 +73,49 @@ async function handleAccountPayment(payment: any, metadata: Record<string, unkno
       const customerId = payment.customerId as string
       const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '')
 
-      const subscription = await getMollieClient().customerSubscriptions.create({
-        customerId,
-        amount: { currency: 'EUR', value: tierConfig.price },
-        interval: '1 month',
-        description: tierConfig.mollieDesc,
-        webhookUrl: `${baseUrl}/api/webhooks/mollie`,
-        metadata: JSON.stringify({ adminUserId, tier }),
-      })
-
-      await supabase
+      // Idempotency: skip if subscription already exists (webhook retry)
+      const { data: existingUser } = await supabase
         .from('admin_users')
-        .update({
-          subscription_tier: tier,
-          billing_status: 'active',
-          mollie_subscription_id: subscription.id,
-          billing_period_end: subscription.nextPaymentDate ?? null,
-        })
+        .select('mollie_subscription_id')
         .eq('id', adminUserId)
+        .single()
 
-      // Sync all owned teams to Pro
-      await syncTeamPlans(adminUserId, tier, 'active')
+      if (existingUser?.mollie_subscription_id) {
+        console.log('[mollie-webhook] Subscription already exists for', adminUserId, '— skipping')
+        return NextResponse.json({ received: true })
+      }
+
+      try {
+        const subscription = await getMollieClient().customerSubscriptions.create({
+          customerId,
+          amount: { currency: 'EUR', value: tierConfig.price },
+          interval: '1 month',
+          description: tierConfig.mollieDesc,
+          webhookUrl: `${baseUrl}/api/webhooks/mollie`,
+          metadata: JSON.stringify({ adminUserId, tier }),
+        })
+
+        const { error: updateError } = await supabase
+          .from('admin_users')
+          .update({
+            subscription_tier: tier,
+            billing_status: 'active',
+            mollie_subscription_id: subscription.id,
+            billing_period_end: subscription.nextPaymentDate ?? null,
+          })
+          .eq('id', adminUserId)
+
+        if (updateError) {
+          console.error('[mollie-webhook] Failed to activate user:', adminUserId, updateError)
+          return NextResponse.json({ error: 'DB update failed' }, { status: 500 })
+        }
+
+        // Sync all owned teams to Pro
+        await syncTeamPlans(adminUserId, tier, 'active')
+      } catch (err) {
+        console.error('[mollie-webhook] Subscription creation failed:', adminUserId, err)
+        return NextResponse.json({ error: 'Subscription creation failed' }, { status: 500 })
+      }
 
     } else if (payment.sequenceType === SequenceType.recurring) {
       // Recurring payment → update period end
@@ -108,13 +130,17 @@ async function handleAccountPayment(payment: any, metadata: Record<string, unkno
           user.mollie_subscription_id,
           { customerId: user.mollie_customer_id }
         )
-        await supabase
+        const { error: updateError } = await supabase
           .from('admin_users')
           .update({
             billing_status: 'active',
             billing_period_end: sub.nextPaymentDate ?? null,
           })
           .eq('id', adminUserId)
+
+        if (updateError) {
+          console.error('[mollie-webhook] Failed to update period:', adminUserId, updateError)
+        }
 
         await syncTeamPlans(adminUserId, user.subscription_tier as SubscriptionTier, 'active')
       }
@@ -161,6 +187,18 @@ async function handleLegacyTeamPayment(payment: any, teamId: string) {
     if (payment.sequenceType === SequenceType.first) {
       const customerId = payment.customerId as string
       const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '')
+
+      // Idempotency: skip if subscription already exists (webhook retry)
+      const { data: existingTeam } = await supabase
+        .from('teams')
+        .select('mollie_subscription_id')
+        .eq('id', teamId)
+        .single()
+
+      if (existingTeam?.mollie_subscription_id) {
+        console.log('[mollie-webhook] Legacy subscription already exists for team', teamId, '— skipping')
+        return NextResponse.json({ received: true })
+      }
 
       const subscription = await getMollieClient().customerSubscriptions.create({
         customerId,
