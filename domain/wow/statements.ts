@@ -355,10 +355,16 @@ const riStatements: Statement[] = [
 const ALL_STATEMENTS: Statement[] = [...shuStatements, ...haStatements, ...riStatements]
 
 /**
- * Get statements for a specific angle AND level
+ * Get statements for a specific angle AND level.
+ * Optional maxCount caps the number of statements (e.g. to match team size).
+ * Minimum is 3 statements to ensure meaningful data.
  */
-export function getStatements(angle: WowAngle, level: WowLevel = 'shu'): Statement[] {
-  return ALL_STATEMENTS.filter(s => s.angle === angle && s.level === level)
+export function getStatements(angle: WowAngle, level: WowLevel = 'shu', maxCount?: number): Statement[] {
+  const stmts = ALL_STATEMENTS.filter(s => s.angle === angle && s.level === level)
+  if (maxCount && maxCount >= 3 && maxCount < stmts.length) {
+    return stmts.slice(0, maxCount)
+  }
+  return stmts
 }
 
 /**

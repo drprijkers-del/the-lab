@@ -97,9 +97,9 @@ test.describe('ProGate Clickability', () => {
       await gateCard.click()
       await expect(page).toHaveURL(/\/account\/billing/)
     } else {
-      // Paid user: Coach content should be visible instead
+      // Paid user: Voorbereiding/Preparation content should be visible
       const main = await page.locator('main').textContent() || ''
-      expect(main).toMatch(/Coach|Genereer|Generate|Prepare|Observat/i)
+      expect(main).toMatch(/Voorbereiding|Preparation|Analyseer|Analyze|Signalen|Signals|Observat/i)
     }
   })
 })

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useTranslation } from '@/lib/i18n/context'
 import { Button } from '@/components/ui/button'
 import { AdminHeader } from '@/components/admin/header'
@@ -15,6 +15,7 @@ function generateMathChallenge() {
 
 export default function ContactPage() {
   const t = useTranslation()
+  const router = useRouter()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [team, setTeam] = useState('')
@@ -101,11 +102,9 @@ export default function ContactPage() {
             <p className="text-stone-600 dark:text-stone-400 mb-8">
               {t('contactSuccessMessage')}
             </p>
-            <Link href="/teams">
-              <Button variant="secondary">
-                {t('contactBackToTeams')}
-              </Button>
-            </Link>
+            <Button variant="secondary" onClick={() => router.back()}>
+              {t('contactBackToTeams')}
+            </Button>
           </div>
         </main>
       </>
@@ -117,15 +116,15 @@ export default function ContactPage() {
       <AdminHeader />
       <main className="max-w-lg mx-auto px-4 pt-8 pb-24">
         {/* Back link */}
-        <Link
-          href="/teams"
+        <button
+          onClick={() => router.back()}
           className="inline-flex items-center text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 mb-6 min-h-11 py-2"
         >
           <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           {t('adminBack')}
-        </Link>
+        </button>
 
         {/* Header */}
         <div className="mb-8">

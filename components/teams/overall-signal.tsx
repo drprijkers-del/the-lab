@@ -13,6 +13,7 @@ interface OverallSignalProps {
   vibeParticipation: number // percentage 0-100
   wowSessions: number
   wowLevel?: WowLevel | null
+  activeTab?: string
   // Optional vibe context (only shown when on Vibe tab)
   vibeMessage?: string | null
   vibeSuggestion?: string | null
@@ -28,6 +29,7 @@ export function OverallSignal({
   vibeParticipation,
   wowSessions,
   wowLevel,
+  activeTab,
   vibeMessage,
   vibeSuggestion,
   vibeWowHint,
@@ -58,6 +60,15 @@ export function OverallSignal({
     scoreSource = 'wow'
   }
 
+  // Tab-aware score: show the relevant score for the active tab
+  const displayScore = activeTab === 'vibe' ? (vibeScore ?? combinedScore) :
+    activeTab === 'wow' ? (wowScore ?? combinedScore) :
+    combinedScore
+  const displayLabel = activeTab === 'vibe' ? 'Vibe' :
+    activeTab === 'wow' ? 'Way of Work' :
+    activeTab === 'feedback' ? t('feedbackTitle') :
+    null
+
   // Determine health status
   const getHealthStatus = (score: number | null) => {
     if (score === null) return { label: t('signalNoData'), color: 'stone', icon: '○' }
@@ -67,7 +78,7 @@ export function OverallSignal({
     return { label: t('signalCritical'), color: 'red', icon: '○' }
   }
 
-  const status = getHealthStatus(combinedScore)
+  const status = getHealthStatus(displayScore)
 
   // Color mappings for Tailwind
   const colorMap = {
@@ -117,15 +128,27 @@ export function OverallSignal({
         <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-100">
           {teamName}
         </h1>
-        <Link
-          href={`/teams/${teamId}?tab=settings`}
-          className="p-1 text-stone-300 dark:text-stone-600 hover:text-stone-500 dark:hover:text-stone-400 transition-colors"
-          title={t('teamSettings')}
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-          </svg>
-        </Link>
+        <div className="flex items-center gap-1 ml-auto">
+          <Link
+            href={`/teams/${teamId}?tab=coach`}
+            className="p-1.5 rounded-lg text-stone-400 dark:text-stone-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
+            title={t('coachQuestionsTab')}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </Link>
+          <Link
+            href={`/teams/${teamId}?tab=settings`}
+            className="p-1.5 rounded-lg text-stone-400 dark:text-stone-500 hover:text-stone-600 dark:hover:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+            title={t('teamSettings')}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </Link>
+        </div>
         {needsAttention && (
           <span className="px-2.5 py-1 text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded-full">
             {t('teamsNeedsAttention')}
@@ -162,9 +185,9 @@ export function OverallSignal({
         {/* Score circle */}
         <div className="relative">
           <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full ${colors.bg} flex items-center justify-center ring-4 ${colors.ring}`}>
-            {combinedScore !== null ? (
+            {displayScore !== null ? (
               <span className="text-xl sm:text-2xl font-bold text-white">
-                {combinedScore.toFixed(1)}
+                {displayScore.toFixed(1)}
               </span>
             ) : (
               <span className="text-xl sm:text-2xl text-white/60">—</span>
@@ -176,39 +199,77 @@ export function OverallSignal({
         <div className="flex-1 min-w-0">
           <div className="mb-1">
             <h3 className="font-medium text-stone-700 dark:text-stone-300">
-              {t('signalTitle')}
+              {displayLabel ? `${displayLabel} ${t('signalTitle')}` : t('signalTitle')}
             </h3>
-            {scoreSource === 'both' && (
+            {!activeTab && scoreSource === 'both' && (
               <p className="text-[10px] text-stone-400 dark:text-stone-500">{t('signalWeighting')}</p>
             )}
           </div>
 
           {/* Source indicators */}
           <div className="flex flex-wrap items-center gap-3 text-sm">
-            {vibeScore !== null && (
+            {/* On specific tabs, show only that score. On home/other, show both */}
+            {activeTab === 'vibe' && vibeScore !== null && (
               <div className="flex items-center gap-1.5">
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M2 12h3l2-6 3 12 3-8 2 4h7"
-                    stroke="currentColor"
-                    strokeWidth={2.5}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="text-cyan-500"
-                  />
+                  <path d="M2 12h3l2-6 3 12 3-8 2 4h7" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="text-cyan-500" />
                 </svg>
                 <span className="text-stone-600 dark:text-stone-400">
                   Vibe: {vibeScore.toFixed(1)}
                 </span>
               </div>
             )}
-            {wowScore !== null && (
+            {activeTab === 'wow' && wowScore !== null && (
               <div className="flex items-center gap-1.5">
                 <span className="text-cyan-500 font-bold">Δ</span>
                 <span className="text-stone-600 dark:text-stone-400">
                   Way of Work: {wowScore.toFixed(1)}
                 </span>
               </div>
+            )}
+            {activeTab === 'feedback' && (
+              <div className="flex flex-wrap items-center gap-3">
+                {vibeScore !== null && (
+                  <div className="flex items-center gap-1.5">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                      <path d="M2 12h3l2-6 3 12 3-8 2 4h7" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="text-cyan-500" />
+                    </svg>
+                    <span className="text-stone-600 dark:text-stone-400">
+                      Vibe: {vibeScore.toFixed(1)}
+                    </span>
+                  </div>
+                )}
+                {wowScore !== null && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-cyan-500 font-bold">Δ</span>
+                    <span className="text-stone-600 dark:text-stone-400">
+                      WoW: {wowScore.toFixed(1)}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+            {(!activeTab || (activeTab !== 'vibe' && activeTab !== 'wow' && activeTab !== 'feedback')) && (
+              <>
+                {vibeScore !== null && (
+                  <div className="flex items-center gap-1.5">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                      <path d="M2 12h3l2-6 3 12 3-8 2 4h7" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="text-cyan-500" />
+                    </svg>
+                    <span className="text-stone-600 dark:text-stone-400">
+                      Vibe: {vibeScore.toFixed(1)}
+                    </span>
+                  </div>
+                )}
+                {wowScore !== null && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-cyan-500 font-bold">Δ</span>
+                    <span className="text-stone-600 dark:text-stone-400">
+                      Way of Work: {wowScore.toFixed(1)}
+                    </span>
+                  </div>
+                )}
+              </>
             )}
             {scoreSource === 'none' && (
               <span className="text-stone-500 dark:text-stone-400">
@@ -218,7 +279,7 @@ export function OverallSignal({
           </div>
 
           {/* Data completeness hint */}
-          {scoreSource !== 'both' && scoreSource !== 'none' && (
+          {!activeTab && scoreSource !== 'both' && scoreSource !== 'none' && (
             <p className="text-xs text-stone-400 dark:text-stone-500 mt-1">
               {scoreSource === 'vibe' ? t('signalAddWow') : t('signalAddVibe')}
             </p>

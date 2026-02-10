@@ -15,6 +15,7 @@ interface ParticipationContentProps {
   angle: WowAngle
   title: string | null
   wowLevel: WowLevel
+  teamSize?: number | null
 }
 
 type ViewState = 'loading' | 'intro' | 'statements' | 'submitting' | 'done' | 'already_responded' | 'closed_results'
@@ -25,6 +26,7 @@ export function ParticipationContent({
   angle,
   title,
   wowLevel,
+  teamSize,
 }: ParticipationContentProps) {
   const { t, language } = useLanguage()
   const [viewState, setViewState] = useState<ViewState>('loading')
@@ -78,14 +80,14 @@ export function ParticipationContent({
         return
       }
 
-      // Load statements
-      const stmts = getStatements(angle)
+      // Load statements (capped to team size for consistency)
+      const stmts = getStatements(angle, wowLevel, teamSize ?? undefined)
       setStatements(stmts)
       setViewState('intro')
     }
 
     init()
-  }, [sessionId, angle])
+  }, [sessionId, angle, wowLevel, teamSize])
 
   function handleStart() {
     setViewState('statements')

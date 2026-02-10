@@ -105,9 +105,9 @@ test.describe('Smoke Test — Coach Tab', () => {
     const url = page.url()
     await page.goto(`${url}?tab=coach`)
 
-    // Should show either ProGate (free) or Coach content (paid)
+    // Should show either ProGate (free) or Voorbereiding content (paid)
     const main = await page.locator('main').textContent() || ''
-    const hasCoachContent = /Pro feature|Pro functie|Coach|Genereer|Generate|Smart|AI Coach|Observat|Insight/i.test(main)
+    const hasCoachContent = /Pro feature|Pro functie|Voorbereiding|Preparation|Analyseer|Analyze|Signalen|Signals|Observat|Perspectiev/i.test(main)
     expect(hasCoachContent).toBeTruthy()
   })
 })

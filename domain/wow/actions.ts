@@ -559,6 +559,7 @@ export async function validateSessionCode(sessionCode: string): Promise<{
     angle: WowAngle
     title: string | null
     wow_level: WowLevel
+    team_size: number | null
   }
 }> {
   const supabase = await createAdminClient()
@@ -573,14 +574,25 @@ export async function validateSessionCode(sessionCode: string): Promise<{
 
   const row = data[0]
 
-  // Get wow level from session (stored when session was created)
+  // Get wow level and team_id from session (stored when session was created)
   const { data: sessionData } = await supabase
     .from('delta_sessions')
-    .select('level')
+    .select('level, team_id')
     .eq('id', row.session_id)
     .single()
 
   const wowLevel: WowLevel = (sessionData?.level as WowLevel) || 'shu'
+
+  // Get expected_team_size so we can cap statement count
+  let teamSize: number | null = null
+  if (sessionData?.team_id) {
+    const { data: team } = await supabase
+      .from('teams')
+      .select('expected_team_size')
+      .eq('id', sessionData.team_id)
+      .single()
+    teamSize = team?.expected_team_size ?? null
+  }
 
   return {
     valid: true,
@@ -590,6 +602,7 @@ export async function validateSessionCode(sessionCode: string): Promise<{
       angle: row.angle as WowAngle,
       title: row.title,
       wow_level: wowLevel,
+      team_size: teamSize,
     },
   }
 }
@@ -752,10 +765,10 @@ export async function synthesizeSession(sessionId: string): Promise<SynthesisRes
     return null
   }
 
-  // Get session to know the angle and level
+  // Get session to know the angle, level, and team
   const { data: session } = await supabase
     .from('delta_sessions')
-    .select('angle, level')
+    .select('angle, level, team_id')
     .eq('id', sessionId)
     .single()
 
@@ -770,9 +783,22 @@ export async function synthesizeSession(sessionId: string): Promise<SynthesisRes
     return null
   }
 
-  // Get statements for this angle and level
+  // Get team size to cap statements (consistent with what participants saw)
+  let teamSize: number | undefined
+  if (session.team_id) {
+    const { data: team } = await supabase
+      .from('teams')
+      .select('expected_team_size')
+      .eq('id', session.team_id)
+      .single()
+    if (team?.expected_team_size) {
+      teamSize = team.expected_team_size
+    }
+  }
+
+  // Get statements for this angle and level (capped to team size)
   const sessionLevel = (session.level as WowLevel) || 'shu'
-  const statements = getStatements(session.angle as WowAngle, sessionLevel)
+  const statements = getStatements(session.angle as WowAngle, sessionLevel, teamSize)
 
   // Track all scores for overall calculation
   let allScoresSum = 0

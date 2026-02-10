@@ -22,6 +22,7 @@ export function TeamsListContent({ teams, owners = [], userRole, currentUserId }
   const [selectedOwner, setSelectedOwner] = useState<string>(currentUserId ?? 'all')
   const [showPreview, setShowPreview] = useState(false)
   const [showResultPreview, setShowResultPreview] = useState(false)
+  const [showHowItWorks, setShowHowItWorks] = useState(false)
 
   const filteredTeams = teams.filter(team => {
     if (filter === 'needs_attention' && !team.needs_attention) return false
@@ -412,7 +413,7 @@ export function TeamsListContent({ teams, owners = [], userRole, currentUserId }
                 href={`/teams/${team.id}`}
                 className="block bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-sm transition-all group"
               >
-                {/* Header: Name + attention indicator */}
+                {/* Header: Name + attention indicator + settings gear */}
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
@@ -423,6 +424,21 @@ export function TeamsListContent({ teams, owners = [], userRole, currentUserId }
                       {team.needs_attention && (
                         <span className="w-2 h-2 rounded-full bg-red-500 shrink-0 animate-pulse" />
                       )}
+                      {/* Settings gear - stops propagation to prevent card click */}
+                      <span
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          window.location.href = `/teams/${team.id}?tab=settings`
+                        }}
+                        className="ml-auto p-1 rounded text-stone-300 dark:text-stone-600 hover:text-stone-500 dark:hover:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors opacity-0 group-hover:opacity-100 cursor-pointer"
+                        title="Settings"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                      </span>
                     </div>
                     {/* Tool labels */}
                     <div className="flex flex-wrap gap-1 mt-1">
@@ -576,6 +592,56 @@ export function TeamsListContent({ teams, owners = [], userRole, currentUserId }
               </Link>
             )
           })}
+        </div>
+      )}
+
+      {/* Collapsible "How it works" — always accessible, even with teams */}
+      {teams.length > 0 && (
+        <div className="border-t border-stone-200 dark:border-stone-700 pt-4">
+          <button
+            onClick={() => setShowHowItWorks(v => !v)}
+            className="flex items-center gap-2 text-sm text-stone-400 dark:text-stone-500 hover:text-stone-600 dark:hover:text-stone-300 transition-colors"
+          >
+            <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${showHowItWorks ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+            {t('howItWorks')}
+          </button>
+
+          <div className="grid transition-[grid-template-rows] duration-300 ease-in-out" style={{ gridTemplateRows: showHowItWorks ? '1fr' : '0fr' }}>
+            <div className="overflow-hidden">
+              <div className="pt-4 space-y-3 max-w-lg">
+                <div className="flex items-start gap-3 bg-white dark:bg-stone-800 rounded-xl p-3 border border-stone-200 dark:border-stone-700">
+                  <div className="w-7 h-7 rounded-full bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center shrink-0 text-xs font-bold text-cyan-700 dark:text-cyan-400">1</div>
+                  <div>
+                    <div className="text-sm font-medium text-stone-900 dark:text-stone-100">{t('onboardingStep1Title')}</div>
+                    <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{t('onboardingStep1Desc')}</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 bg-white dark:bg-stone-800 rounded-xl p-3 border border-stone-200 dark:border-stone-700">
+                  <div className="w-7 h-7 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center shrink-0 text-xs font-bold text-pink-700 dark:text-pink-400">2</div>
+                  <div>
+                    <div className="text-sm font-medium text-stone-900 dark:text-stone-100">{t('onboardingStep2Title')}</div>
+                    <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{t('onboardingStep2Desc')}</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 bg-white dark:bg-stone-800 rounded-xl p-3 border border-stone-200 dark:border-stone-700">
+                  <div className="w-7 h-7 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center shrink-0 text-xs font-bold text-purple-700 dark:text-purple-400">3</div>
+                  <div>
+                    <div className="text-sm font-medium text-stone-900 dark:text-stone-100">{t('onboardingStep3Title')}</div>
+                    <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{t('onboardingStep3Desc')}</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 bg-white dark:bg-stone-800 rounded-xl p-3 border border-stone-200 dark:border-stone-700">
+                  <div className="w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0 text-xs font-bold text-emerald-700 dark:text-emerald-400">4</div>
+                  <div>
+                    <div className="text-sm font-medium text-stone-900 dark:text-stone-100">{t('onboardingStep4Title')}</div>
+                    <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">{t('onboardingStep4Desc')}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

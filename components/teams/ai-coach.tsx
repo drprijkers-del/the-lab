@@ -109,28 +109,26 @@ export function AiCoach({ teamId, teamName, subscriptionTier }: AiCoachProps) {
   return (
     <div className="space-y-6">
 
-      {/* ── Section 1: How it works + Primary CTA ── */}
+      {/* ── Section 1: Context + Lens ── */}
       <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6">
 
-        {/* How it works — 3 steps so user understands the flow */}
-        {!insight && !generating && (
-          <div className="mb-5">
-            <div className="space-y-2.5">
-              <div className="flex items-center gap-2.5">
-                <span className="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs font-bold flex items-center justify-center shrink-0">1</span>
-                <span className="text-sm text-stone-700 dark:text-stone-300">{t('coachFlowStep1')}</span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <span className="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs font-bold flex items-center justify-center shrink-0">2</span>
-                <span className="text-sm text-stone-700 dark:text-stone-300">{t('coachFlowStep2')}</span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <span className="w-6 h-6 rounded-full bg-emerald-500 text-white text-xs font-bold flex items-center justify-center shrink-0">3</span>
-                <span className="text-sm text-stone-700 dark:text-stone-300">{t('coachFlowStep3')}</span>
-              </div>
-            </div>
+        {/* Title + subtitle */}
+        <div className="flex items-start gap-3 mb-3">
+          <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+            <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
           </div>
-        )}
+          <div>
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('aiCoachTitle')}</h3>
+            <p className="text-sm text-stone-600 dark:text-stone-400 mt-0.5">{t('aiCoachSubtitle')}</p>
+          </div>
+        </div>
+
+        {/* Context line */}
+        <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed mb-5">
+          {t('aiCoachContextLine')}
+        </p>
 
         {/* New data badge */}
         {status?.hasNewData && insight && !generating && (
@@ -143,37 +141,12 @@ export function AiCoach({ teamId, teamName, subscriptionTier }: AiCoachProps) {
           </div>
         )}
 
-        {/* Primary CTA */}
-        {(!insight || (status?.hasNewData && !generating)) && (
-          <div className="space-y-2">
-            <Button
-              onClick={handleGenerate}
-              loading={generating}
-              disabled={generating || (status?.dailyGenerationsLeft === 0)}
-              className="w-full"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              {generating ? t('aiCoachGenerating') : t('aiCoachGenerate')}
-            </Button>
-
-            {status?.dailyGenerationsLeft !== undefined && status.dailyGenerationsLeft < MAX_DAILY && (
-              <p className="text-[10px] text-stone-400 dark:text-stone-500 text-center">
-                {status.dailyGenerationsLeft === 0
-                  ? t('aiCoachDailyLimitReached')
-                  : `${status.dailyGenerationsLeft}/5 ${t('aiCoachDailyLimit')}`}
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Perspective selector — secondary, below CTA */}
-        <div className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700/50">
+        {/* Perspective selector — ABOVE CTA (context before action) */}
+        <div className="mb-4">
           <div className="relative">
             <button
               onClick={() => setLensOpen(!lensOpen)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors rounded-lg border border-stone-200 dark:border-stone-700"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -206,6 +179,7 @@ export function AiCoach({ teamId, teamName, subscriptionTier }: AiCoachProps) {
             )}
           </div>
         </div>
+
       </div>
 
       {/* Error */}
@@ -299,22 +273,68 @@ export function AiCoach({ teamId, teamName, subscriptionTier }: AiCoachProps) {
             </div>
           )}
 
+          {/* "How to bring this up" — coaching script suggestion */}
+          <div className="p-4 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700">
+            <h5 className="font-medium text-stone-700 dark:text-stone-300 text-sm mb-2">
+              {t('coachPlayItOut')}
+            </h5>
+            <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed italic">
+              {t('coachPlayItOutText')}
+            </p>
+          </div>
+
           {/* Disclaimer — AI is assistive, not authoritative */}
           <p className="text-xs text-stone-400 dark:text-stone-500 text-center italic">
             {t('aiCoachDisclaimer')}
           </p>
 
-          {/* Regenerate when new data */}
-          {status?.hasNewData && (
-            <div className="text-center">
-              <button
+          {/* Regenerate CTA — below results */}
+          {status?.hasNewData && !generating && (
+            <div className="space-y-2">
+              <Button
                 onClick={handleGenerate}
-                disabled={generating || status.dailyGenerationsLeft === 0}
-                className="text-xs text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 font-medium disabled:opacity-50"
+                loading={generating}
+                disabled={generating || (status?.dailyGenerationsLeft === 0)}
+                className="w-full"
               >
-                {generating ? t('aiCoachGenerating') : t('aiCoachGenerate')}
-              </button>
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                {t('aiCoachGenerate')}
+              </Button>
+              {status?.dailyGenerationsLeft !== undefined && status.dailyGenerationsLeft < MAX_DAILY && (
+                <p className="text-[10px] text-stone-400 dark:text-stone-500 text-center">
+                  {status.dailyGenerationsLeft === 0
+                    ? t('aiCoachDailyLimitReached')
+                    : `${status.dailyGenerationsLeft}/5 ${t('aiCoachDailyLimit')}`}
+                </p>
+              )}
             </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Primary CTA — below context (no results yet) ── */}
+      {!insight && (
+        <div className="space-y-2">
+          <Button
+            onClick={handleGenerate}
+            loading={generating}
+            disabled={generating || (status?.dailyGenerationsLeft === 0)}
+            className="w-full"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            {generating ? t('aiCoachGenerating') : t('aiCoachGenerate')}
+          </Button>
+
+          {status?.dailyGenerationsLeft !== undefined && status.dailyGenerationsLeft < MAX_DAILY && (
+            <p className="text-[10px] text-stone-400 dark:text-stone-500 text-center">
+              {status.dailyGenerationsLeft === 0
+                ? t('aiCoachDailyLimitReached')
+                : `${status.dailyGenerationsLeft}/5 ${t('aiCoachDailyLimit')}`}
+            </p>
           )}
         </div>
       )}

@@ -22,6 +22,7 @@ export default async function ParticipationPage({ params }: ParticipationPagePro
       angle={validation.session.angle}
       title={validation.session.title}
       wowLevel={validation.session.wow_level}
+      teamSize={validation.session.team_size}
     />
   )
 }

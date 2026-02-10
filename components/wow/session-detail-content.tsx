@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { WowSessionWithStats, SynthesisResult, StatementScore, getAngleInfo, WowAngle } from '@/domain/wow/types'
+import { WowSessionWithStats, SynthesisResult, StatementScore, getAngleInfo, WowAngle, WowLevel } from '@/domain/wow/types'
 import { getStatements } from '@/domain/wow/statements'
 import { closeSession, deleteSession } from '@/domain/wow/actions'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -17,9 +17,10 @@ interface SessionDetailContentProps {
   synthesis: SynthesisResult | null
   shareLink: string | null
   backPath?: string // Optional: defaults to /teams/[team_id]
+  teamSize?: number | null
 }
 
-export function SessionDetailContent({ session, synthesis, shareLink, backPath }: SessionDetailContentProps) {
+export function SessionDetailContent({ session, synthesis, shareLink, backPath, teamSize }: SessionDetailContentProps) {
   const router = useRouter()
   const { t, language } = useLanguage()
   const angleInfo = getAngleInfo(session.angle)
@@ -124,6 +125,7 @@ export function SessionDetailContent({ session, synthesis, shareLink, backPath }
           onCopy={handleCopy}
           t={t}
           language={language}
+          teamSize={teamSize}
         />
       )}
 
@@ -501,7 +503,8 @@ function SessionSetupView({
   copied,
   onCopy,
   t,
-  language
+  language,
+  teamSize
 }: {
   shareLink: string
   session: WowSessionWithStats
@@ -509,9 +512,11 @@ function SessionSetupView({
   onCopy: () => void
   t: TranslationFunction
   language: 'nl' | 'en'
+  teamSize?: number | null
 }) {
   const [showStatements, setShowStatements] = useState(false)
-  const statements = getStatements(session.angle as WowAngle)
+  const sessionLevel = (session.level || 'shu') as WowLevel
+  const statements = getStatements(session.angle as WowAngle, sessionLevel, teamSize ?? undefined)
 
   return (
     <div className="space-y-6 mb-8">

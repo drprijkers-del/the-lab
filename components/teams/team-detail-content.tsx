@@ -260,6 +260,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
         })()}
         wowSessions={team.wow?.total_sessions || 0}
         wowLevel={team.wow?.level as WowLevel | undefined}
+        activeTab={activeTab}
         vibeMessage={vibeContext.message}
         vibeSuggestion={vibeContext.suggestion}
         vibeWowHint={vibeContext.wowHint}
