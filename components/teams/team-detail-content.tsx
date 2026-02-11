@@ -7,7 +7,6 @@ import { UnifiedTeam, enableTool, disableTool, deleteTeam, exportPulseData, getS
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/context'
 import { OverallSignal } from '@/components/teams/overall-signal'
-import { RadarChart, type RadarAxis } from '@/components/ui/radar-chart'
 import { VibeSection } from '@/components/teams/sections/vibe-section'
 import { WowSection } from '@/components/teams/sections/wow-section'
 import { FeedbackSection } from '@/components/teams/sections/feedback-section'
@@ -77,6 +76,21 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
   const [shareLoading, setShareLoading] = useState(false)
   const [settingsSuccess, setSettingsSuccess] = useState(false)
   const [resultsCopied, setResultsCopied] = useState(false)
+
+  // Toolkit intro visibility (persisted in localStorage)
+  const [showToolkitIntro, setShowToolkitIntro] = useState(() => {
+    if (typeof window === 'undefined') return true
+    const stored = localStorage.getItem('toolkit_intro_visible')
+    return stored === null ? true : stored === 'true'
+  })
+
+  const toggleToolkitIntro = () => {
+    setShowToolkitIntro(prev => {
+      const next = !prev
+      localStorage.setItem('toolkit_intro_visible', String(next))
+      return next
+    })
+  }
 
   // Toggle an accordion section (close if already open, open otherwise)
   const toggleSection = (section: SectionType) => {
@@ -280,24 +294,47 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
       {/* DASHBOARD — always visible (except when on settings) */}
       {activeTab !== 'settings' && (
         <div className="space-y-6">
-          {/* Dashboard intro */}
+          {/* Dashboard intro - collapsible */}
           <div className="space-y-1.5">
-            <h2 className="text-sm font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide">
-              {t('dashboardIntroTitle')}
-            </h2>
-            <p className="text-sm text-stone-500 dark:text-stone-400 leading-relaxed">
-              {t('dashboardIntroText').split(/(\{vibeIcon\}|\{wowIcon\}|\{coachIcon\}|\{settingsIcon\})/).map((segment, i) => {
-                if (segment === '{vibeIcon}') return <svg key={i} className="w-3.5 h-3.5 inline-block -mt-px text-pink-500" viewBox="0 0 24 24" fill="none"><path d="M2 12h3l2-6 3 12 3-8 2 4h7" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" /></svg>
-                if (segment === '{wowIcon}') return <span key={i} className="font-bold text-cyan-500">Δ</span>
-                if (segment === '{coachIcon}') return <svg key={i} className="w-3.5 h-3.5 inline-block -mt-px text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                if (segment === '{settingsIcon}') return <svg key={i} className="w-3.5 h-3.5 inline-block -mt-px text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                return segment
-              })}
-            </p>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide">
+                {t('dashboardIntroTitle')}
+              </h2>
+              <button
+                onClick={toggleToolkitIntro}
+                className="p-1 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors group"
+                title={showToolkitIntro ? 'Hide intro' : 'Show intro'}
+              >
+                <svg
+                  className={`w-4 h-4 text-stone-400 group-hover:text-stone-600 dark:group-hover:text-stone-300 transition-transform ${
+                    showToolkitIntro ? 'rotate-180' : ''
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
+            <div className="accordion-content" data-open={showToolkitIntro}>
+              <div>
+                <p className="text-sm text-stone-500 dark:text-stone-400 leading-relaxed">
+                  {t('dashboardIntroText').split(/(\{vibeIcon\}|\{wowIcon\}|\{coachIcon\}|\{settingsIcon\})/).map((segment, i) => {
+                    if (segment === '{vibeIcon}') return <svg key={i} className="w-3.5 h-3.5 inline-block -mt-px text-pink-500" viewBox="0 0 24 24" fill="none"><path d="M2 12h3l2-6 3 12 3-8 2 4h7" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    if (segment === '{wowIcon}') return <span key={i} className="font-bold text-cyan-500">Δ</span>
+                    if (segment === '{coachIcon}') return <svg key={i} className="w-3.5 h-3.5 inline-block -mt-px text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                    if (segment === '{settingsIcon}') return <svg key={i} className="w-3.5 h-3.5 inline-block -mt-px text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    return segment
+                  })}
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* Tool Cards — 5 compact tiles */}
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          {/* Tool Cards — 5 compact tiles (sticky navigation) */}
+          <div className="sticky top-14 z-10 bg-stone-50 dark:bg-stone-900 pb-6 -mb-6 pt-6 -mt-6">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             {/* Vibe */}
             <button
               onClick={() => toggleSection('vibe')}
@@ -307,6 +344,10 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
                   : 'border-stone-200 dark:border-stone-700 hover:border-pink-300 dark:hover:border-pink-700'
               }`}
             >
+              {/* Connector triangle when active */}
+              {openSection === 'vibe' && (
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-8 border-t-pink-400 dark:border-t-pink-600" />
+              )}
               <div className="flex items-start justify-between mb-2">
                 <div className="w-10 h-10 rounded-lg bg-pink-100 dark:bg-pink-900/50 flex items-center justify-center group-hover:scale-105 transition-transform">
                   <svg className="w-5 h-5 text-pink-600 dark:text-pink-400" viewBox="0 0 24 24" fill="none">
@@ -334,6 +375,10 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
                   : 'border-stone-200 dark:border-stone-700 hover:border-cyan-300 dark:hover:border-cyan-700'
               }`}
             >
+              {/* Connector triangle when active */}
+              {openSection === 'wow' && (
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-8 border-t-cyan-400 dark:border-t-cyan-600" />
+              )}
               <div className="flex items-start justify-between mb-2">
                 <div className="w-10 h-10 rounded-lg bg-cyan-100 dark:bg-cyan-900/50 flex items-center justify-center group-hover:scale-105 transition-transform">
                   <span className="text-xl font-bold text-cyan-600 dark:text-cyan-400">Δ</span>
@@ -359,6 +404,10 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
                   : 'border-stone-200 dark:border-stone-700 hover:border-purple-300 dark:hover:border-purple-700'
               }`}
             >
+              {/* Connector triangle when active */}
+              {openSection === 'feedback' && (
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-8 border-t-purple-400 dark:border-t-purple-600" />
+              )}
               <div className="flex items-start justify-between mb-2">
                 <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center group-hover:scale-105 transition-transform">
                   <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -386,6 +435,10 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
                   : 'border-stone-200 dark:border-stone-700 hover:border-emerald-300 dark:hover:border-emerald-700'
               }`}
             >
+              {/* Connector triangle when active */}
+              {openSection === 'coach' && (
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-8 border-t-emerald-400 dark:border-t-emerald-600" />
+              )}
               <div className="flex items-start justify-between mb-2">
                 <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center group-hover:scale-105 transition-transform">
                   <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -456,12 +509,19 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
               </p>
             </div>
           </div>
+          </div>
 
           {/* ═══════════════════════════════════════════════════════════════════
               SECTION CONTENT — appears at same position below tiles
               ═══════════════════════════════════════════════════════════════════ */}
           {openSection && (
-            <div>
+            <div className={`relative ${
+              openSection === 'vibe' ? 'border-t-2 border-pink-400 dark:border-pink-600' :
+              openSection === 'wow' ? 'border-t-2 border-cyan-400 dark:border-cyan-600' :
+              openSection === 'feedback' ? 'border-t-2 border-purple-400 dark:border-purple-600' :
+              openSection === 'coach' ? 'border-t-2 border-emerald-400 dark:border-emerald-600' :
+              ''
+            } pt-6 -mt-3`}>
               {openSection === 'vibe' && (
                 <VibeSection
                   teamId={team.id}
@@ -481,10 +541,14 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
               {openSection === 'wow' && (
                 <WowSection
                   teamId={team.id}
+                  teamName={team.name}
                   teamPlan={team.plan}
                   wowStats={team.wow ? { total_sessions: team.wow.total_sessions || 0, active_sessions: team.wow.active_sessions || 0, average_score: team.wow.average_score, level: team.wow.level || 'shu' } : null}
                   wowSessions={wowSessions}
                   angleLabels={ANGLE_LABELS}
+                  radarWowStats={wowStats}
+                  vibeMetrics={vibeMetrics}
+                  subscriptionTier={subscriptionTier}
                 />
               )}
               {openSection === 'feedback' && (
@@ -509,7 +573,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
           )}
 
           {/* Upgrade CTA for free teams */}
-          {team.plan === 'free' && (
+          {subscriptionTier === 'free' && (
             <button
               onClick={() => router.push('/account/billing')}
               className="w-full bg-gradient-to-r from-amber-50 to-cyan-50 dark:from-amber-900/20 dark:to-cyan-900/20 rounded-xl border border-amber-200/50 dark:border-amber-800/50 p-4 text-left hover:shadow-md transition-all"
@@ -528,72 +592,6 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
               </div>
             </button>
           )}
-
-          {/* Team Radar Chart */}
-          {(() => {
-            const radarAxes: RadarAxis[] = []
-            if (wowStats?.scoresByAngle) {
-              for (const [angle, score] of Object.entries(wowStats.scoresByAngle)) {
-                if (score !== null) {
-                  radarAxes.push({ key: angle, label: ANGLE_LABELS[angle] || angle, value: score })
-                }
-              }
-            }
-            if (vibeMetrics?.weekVibe?.value) {
-              radarAxes.push({ key: 'vibe', label: 'Vibe', value: vibeMetrics.weekVibe.value })
-            }
-            if (radarAxes.length < 3) return null
-
-            const sorted = [...radarAxes].sort((a, b) => b.value - a.value)
-            const strengths = sorted.slice(0, 2)
-            const focusAreas = sorted.slice(-2).reverse()
-
-            return (
-              <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-5">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  {/* Left: title + scores */}
-                  <div className="sm:w-52 shrink-0 flex flex-col">
-                    <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100 mb-4">{t('teamHealthRadar')}</h3>
-
-                    <div className="space-y-3">
-                      {/* Strengths */}
-                      <div className="rounded-lg bg-green-50 dark:bg-green-900/15 px-3 py-2">
-                        <div className="text-[10px] uppercase tracking-wider font-semibold text-green-600 dark:text-green-400 mb-1.5">{t('radarStrengths')}</div>
-                        {strengths.map(s => (
-                          <div key={s.key} className="flex items-center justify-between py-px">
-                            <div className="flex items-center gap-1.5">
-                              <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                              <span className="text-xs text-stone-700 dark:text-stone-300">{s.label}</span>
-                            </div>
-                            <span className="text-xs font-bold tabular-nums text-green-700 dark:text-green-400">{s.value.toFixed(1)}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Focus areas */}
-                      <div className="rounded-lg bg-amber-50 dark:bg-amber-900/15 px-3 py-2">
-                        <div className="text-[10px] uppercase tracking-wider font-semibold text-amber-600 dark:text-amber-400 mb-1.5">{t('radarFocusAreas')}</div>
-                        {focusAreas.map(s => (
-                          <div key={s.key} className="flex items-center justify-between py-px">
-                            <div className="flex items-center gap-1.5">
-                              <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                              <span className="text-xs text-stone-700 dark:text-stone-300">{s.label}</span>
-                            </div>
-                            <span className="text-xs font-bold tabular-nums text-amber-700 dark:text-amber-400">{s.value.toFixed(1)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right: radar chart centered */}
-                  <div className="flex-1 flex items-center justify-center">
-                    <RadarChart axes={radarAxes} size={400} />
-                  </div>
-                </div>
-              </div>
-            )
-          })()}
 
         </div>
       )}

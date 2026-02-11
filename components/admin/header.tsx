@@ -7,6 +7,7 @@ import { useClerk } from '@clerk/nextjs'
 import { useTranslation, useLanguage } from '@/lib/i18n/context'
 import { useTheme } from '@/lib/theme/context'
 import { Button } from '@/components/ui/button'
+import { isPaidTier, type SubscriptionTier } from '@/domain/billing/tiers'
 
 interface Team {
   id: string
@@ -20,12 +21,13 @@ interface AdminHeaderProps {
   userEmail?: string
   userName?: string | null
   userRole?: 'super_admin' | 'scrum_master'
+  subscriptionTier?: SubscriptionTier
 }
 
 type NavMode = 'home' | 'vibe' | 'wow' | 'feedback' | 'coach' | 'settings'
 
 // Inner component that uses useSearchParams
-function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userName, userRole }: AdminHeaderProps) {
+function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userName, userRole, subscriptionTier = 'free' }: AdminHeaderProps) {
   const t = useTranslation()
   const { signOut } = useClerk()
 
@@ -144,7 +146,7 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userName, use
 
             {/* Team Selector (when on team page) */}
             {isOnTeamPage && currentTeam && (
-              <div className="relative ml-2">
+              <div className="relative ml-3 pl-3 border-l border-stone-200 dark:border-stone-700">
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
@@ -152,67 +154,67 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userName, use
                     closeAllDropdowns()
                     setShowTeamSelector(next)
                   }}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg transition-all ${
+                  className={`flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg border transition-all ${
                     showTeamSelector
-                      ? 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100'
-                      : 'text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
+                      ? 'bg-stone-100 dark:bg-stone-800 border-stone-300 dark:border-stone-600 text-stone-900 dark:text-stone-100'
+                      : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:border-stone-300 dark:hover:border-stone-600 hover:bg-stone-50 dark:hover:bg-stone-800'
                   }`}
                 >
-                  <svg className="w-3.5 h-3.5 text-stone-400 dark:text-stone-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <span className="max-w-[140px] truncate">{currentTeam.name}</span>
-                  <svg className={`w-3.5 h-3.5 text-stone-400 transition-transform ${showTeamSelector ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <span className="text-xs font-semibold text-stone-400 dark:text-stone-500 uppercase tracking-wider">Select team:</span>
+                  <span className="font-semibold max-w-35 truncate">{currentTeam.name}</span>
+                  <svg className={`w-3 h-3 text-stone-400 dark:text-stone-500 transition-transform ${showTeamSelector ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
 
                 {/* Team Dropdown */}
                 {showTeamSelector && allTeams.length > 0 && (
-                  <div className="absolute top-full left-0 mt-1.5 w-64 bg-white dark:bg-stone-800 rounded-xl shadow-xl border border-stone-200 dark:border-stone-700 py-1 z-50">
-                    <div className="px-3 py-2 flex items-center justify-between">
-                      <span className="text-xs font-medium text-stone-400 dark:text-stone-500 uppercase tracking-wide">
-                        {t('switchTeam')}
-                      </span>
-                      <span className="text-[10px] text-stone-400 dark:text-stone-500 tabular-nums">
-                        {allTeams.length} {allTeams.length === 1 ? 'team' : 'teams'}
-                      </span>
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-stone-800 rounded-xl shadow-xl border border-stone-200 dark:border-stone-700 overflow-hidden z-50">
+                    <div className="px-4 py-3 bg-stone-50 dark:bg-stone-800/50 border-b border-stone-200 dark:border-stone-700">
+                      <div className="flex items-baseline justify-between">
+                        <span className="text-xs font-semibold text-stone-900 dark:text-stone-100 uppercase tracking-wide">
+                          {t('switchTeam')}
+                        </span>
+                        <span className="text-[10px] font-medium text-stone-400 dark:text-stone-500 tabular-nums">
+                          {allTeams.length}
+                        </span>
+                      </div>
                     </div>
-                    <div className="max-h-64 overflow-y-auto px-1">
+                    <div className="max-h-64 overflow-y-auto p-1.5">
                       {allTeams.map((team) => (
                         <button
                           key={team.id}
                           onClick={() => switchTeam(team.id)}
-                          className={`w-full text-left px-3 py-2.5 text-sm rounded-lg transition-colors flex items-center gap-2.5 ${
+                          className={`w-full text-left px-3 py-2 rounded-lg transition-all flex items-center gap-2.5 ${
                             team.id === currentTeam.id
                               ? 'bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400'
-                              : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700'
+                              : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700/50'
                           }`}
                         >
-                          <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
+                          <span className={`w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-bold shrink-0 ${
                             team.id === currentTeam.id
                               ? 'bg-cyan-100 dark:bg-cyan-900/50 text-cyan-600 dark:text-cyan-400'
                               : 'bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400'
                           }`}>
                             {team.name.charAt(0).toUpperCase()}
                           </span>
-                          <span className="truncate">{team.name}</span>
+                          <span className="text-sm font-medium truncate flex-1">{team.name}</span>
                           {team.id === currentTeam.id && (
-                            <svg className="w-4 h-4 text-cyan-500 shrink-0 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3.5 h-3.5 text-cyan-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                             </svg>
                           )}
                         </button>
                       ))}
                     </div>
-                    <div className="border-t border-stone-200 dark:border-stone-700 mt-1 pt-1 px-1">
+                    <div className="border-t border-stone-200 dark:border-stone-700 p-1.5">
                       <Link
                         href="/teams"
-                        className="flex items-center justify-between px-3 py-2.5 text-sm font-medium text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 rounded-lg transition-colors"
+                        className="flex items-center justify-between px-3 py-2 text-sm font-medium text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 hover:bg-stone-50 dark:hover:bg-stone-700/50 rounded-lg transition-all"
                       >
                         <span>{t('viewAllTeams')}</span>
-                        <svg className="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                         </svg>
                       </Link>
                     </div>
@@ -269,9 +271,16 @@ function AdminHeaderInner({ currentTeam, allTeams = [], userEmail, userName, use
             <div className="hidden md:flex items-center gap-2">
               {/* Username display */}
               {username && (
-                <span className="text-sm font-semibold text-stone-700 dark:text-stone-300">
-                  {username}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-semibold text-stone-700 dark:text-stone-300">
+                    {username}
+                  </span>
+                  {isPaidTier(subscriptionTier) && (
+                    <span className="px-1.5 py-0.5 text-[10px] font-bold bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-full">
+                      Pro
+                    </span>
+                  )}
+                </div>
               )}
 
               {/* Super Admin Button - only for super admins */}

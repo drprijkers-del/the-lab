@@ -146,7 +146,7 @@ export async function getCoachStatus(teamId: string): Promise<CoachStatus> {
   }
 }
 
-export async function generateCoachInsight(teamId: string, lens: CoachLens = 'general'): Promise<CoachInsight> {
+export async function generateCoachInsight(teamId: string, lens: CoachLens = 'general', preferredLanguage?: 'nl' | 'en'): Promise<CoachInsight> {
   await requireAdmin()
   const tier = await getSubscriptionTier()
   const coachMode = TIERS[tier].coachMode
@@ -166,25 +166,27 @@ export async function generateCoachInsight(teamId: string, lens: CoachLens = 'ge
   // Check cache (include lens in hash so each lens caches separately)
   const baseHash = await computeDataHash(teamId)
   const currentHash = createHash('sha256').update(`${baseHash}:${lens}`).digest('hex').substring(0, 16)
-  const { data: cached } = await supabase
-    .from('coach_insights')
-    .select('*')
-    .eq('team_id', teamId)
-    .eq('data_hash', currentHash)
-    .eq('tier', tier)
-    .single()
 
-  if (cached) {
-    const content = cached.content as Record<string, unknown>
-    return {
-      observations: (content.observations as CoachObservation[]) || [],
-      questions: (content.questions as CoachQuestion[]) || [],
-      crossTeamPatterns: content.crossTeamPatterns as CrossTeamPattern[] | undefined,
-      language: (content.language as 'nl' | 'en') || 'nl',
-      generatedAt: cached.generated_at,
-      fromCache: true,
-    }
-  }
+  // TEMPORARY: Cache check disabled for testing
+  // const { data: cached } = await supabase
+  //   .from('coach_insights')
+  //   .select('*')
+  //   .eq('team_id', teamId)
+  //   .eq('data_hash', currentHash)
+  //   .eq('tier', tier)
+  //   .single()
+
+  // if (cached) {
+  //   const content = cached.content as Record<string, unknown>
+  //   return {
+  //     observations: (content.observations as CoachObservation[]) || [],
+  //     questions: (content.questions as CoachQuestion[]) || [],
+  //     crossTeamPatterns: content.crossTeamPatterns as CrossTeamPattern[] | undefined,
+  //     language: (content.language as 'nl' | 'en') || 'nl',
+  //     generatedAt: cached.generated_at,
+  //     fromCache: true,
+  //   }
+  // }
 
   const lensConfig = getLensConfig(lens)
 
@@ -218,7 +220,9 @@ export async function generateCoachInsight(teamId: string, lens: CoachLens = 'ge
     })
   )
 
-  const language = await getLanguage()
+  // Use preferred language from client, fallback to server-side detection
+  const language = preferredLanguage || await getLanguage()
+  console.log('🌐 Coach language:', language, 'preferred:', preferredLanguage)
 
   // Build structured data context
   const dataContext = JSON.stringify({
@@ -247,28 +251,40 @@ export async function generateCoachInsight(teamId: string, lens: CoachLens = 'ge
   const lensPrompt = language === 'nl' ? lensConfig.systemPromptNL : lensConfig.systemPromptEN
 
   const systemPrompt = language === 'nl'
-    ? `Je bent een ervaren Agile Coach die teamdata analyseert voor een Scrum Master of Agile Coach. Je geeft observaties met data-onderbouwing en stelt gerichte coachingvragen. Wees beknopt, concreet en actiegericht. Geen bullet-point lijstjes — schrijf als een coach die naast iemand zit. Schrijf in het Nederlands. Antwoord ALLEEN in valid JSON.\n\nCoach Lens: ${lensPrompt}\n\nBelangrijk: formuleer alle inzichten als hypotheses ("Dit kan erop wijzen dat..."). Label het team NOOIT. Verwijs alleen naar bestaande data.`
-    : `You are an experienced Agile Coach analyzing team data for a Scrum Master or Agile Coach. You provide observations backed by data and ask targeted coaching questions. Be concise, specific, and action-oriented. No bullet-point lists — write like a coach sitting next to someone. Write in English. Respond ONLY in valid JSON.\n\nCoach Lens: ${lensPrompt}\n\nImportant: phrase all insights as hypotheses ("This may indicate..."). NEVER label the team. Only reference existing data.`
+    ? `Je bent een Agile Coach die teamdata analyseert. Geef korte, heldere observaties (max 2-3 zinnen) met cijfers. Gebruik eenvoudige taal. Wees direct en to-the-point. Schrijf in het Nederlands. Antwoord ALLEEN in valid JSON.\n\nCoach Lens: ${lensPrompt}\n\nBelangrijk: formuleer als hypotheses ("Dit wijst mogelijk op..."). Label het team NOOIT. Verwijs alleen naar bestaande data.`
+    : `You are an Agile Coach analyzing team data. Give short, clear observations (max 2-3 sentences) with numbers. Use simple language. Be direct and to-the-point. Write in English. Respond ONLY in valid JSON.\n\nCoach Lens: ${lensPrompt}\n\nImportant: phrase as hypotheses ("This may indicate..."). NEVER label the team. Only reference existing data.`
 
   const focusAngles = lensConfig.primaryAngles.length > 0
     ? `\nPrimary focus angles for this lens: ${lensConfig.primaryAngles.join(', ')}.\nSecondary angles: ${lensConfig.secondaryAngles.join(', ')}.\nPrioritize observations about the primary angles but consider secondary angles for context.`
     : ''
 
-  const userPrompt = `Analyze this team's data and provide coaching insights.
+  const userPrompt = language === 'nl'
+    ? `Analyseer de teamdata. Schrijf ALLES in het Nederlands.
+
+Teamdata:
+${dataContext}
+${focusAngles}
+
+Regels:
+- 1-2 observaties, body max 2 zinnen, eenvoudige taal
+- dataPoints: korte labels met cijfers (bijv. "Vibe score: 3.2", "Sessies: 5")
+- 2-3 coachingvragen met 1 zin uitleg
+
+Alleen strict JSON:
+{"observations":[{"title":"...","body":"...","dataPoints":["..."]}],"questions":[{"question":"...","reasoning":"..."}]}`
+    : `Analyze this team's data. Write EVERYTHING in English.
 
 Team data:
 ${dataContext}
 ${focusAngles}
 
-Provide:
-- 1-2 observations with supporting data points (cite specific numbers from the data)
-- 2-3 targeted coaching questions with brief reasoning for why each question is relevant now
+Rules:
+- 1-2 observations, body max 2 sentences, simple language
+- dataPoints: short labels with numbers (e.g. "Vibe score: 3.2", "Sessions: 5")
+- 2-3 coaching questions with 1-sentence reasoning
 
-Output format (strict JSON, no markdown):
-{
-  "observations": [{ "title": "short title", "body": "observation text with data references", "dataPoints": ["specific metric 1", "specific metric 2"] }],
-  "questions": [{ "question": "the coaching question", "reasoning": "why this question matters now for this team" }]
-}`
+Strict JSON only:
+{"observations":[{"title":"...","body":"...","dataPoints":["..."]}],"questions":[{"question":"...","reasoning":"..."}]}`
 
   // Call Claude Haiku
   const client = getAnthropicClient()
@@ -330,7 +346,7 @@ Output format (strict JSON, no markdown):
   }
 }
 
-export async function generateCrossTeamInsights(): Promise<CrossTeamPattern[]> {
+export async function generateCrossTeamInsights(preferredLanguage?: 'nl' | 'en'): Promise<CrossTeamPattern[]> {
   const adminUser = await requireAdmin()
   const tier = await getSubscriptionTier()
 
@@ -365,18 +381,24 @@ export async function generateCrossTeamInsights(): Promise<CrossTeamPattern[]> {
     })
   )
 
-  const language = await getLanguage()
+  const language = preferredLanguage || await getLanguage()
   const client = getAnthropicClient()
 
   const response = await client.messages.create({
     model: 'claude-haiku-4-5-20251001',
     max_tokens: 768,
     system: language === 'nl'
-      ? 'Je bent een Agile Transition Coach. Analyseer patronen over meerdere teams. Wees concreet en verwijs naar specifieke teams en data. Antwoord ALLEEN in een valid JSON array.'
-      : 'You are an Agile Transition Coach. Analyze patterns across multiple teams. Be specific and reference team names and data. Respond ONLY in a valid JSON array.',
+      ? 'Je bent een Agile Transition Coach. Analyseer patronen over meerdere teams. Zoek naar dingen die bij 3+ teams voorkomen. Wees concreet, kort en to-the-point. Antwoord ALLEEN in een valid JSON array. Schrijf ALLES in het Nederlands.'
+      : 'You are an Agile Transition Coach. Analyze patterns across multiple teams. Look for things that appear in 3+ teams. Be specific, short and to-the-point. Respond ONLY in a valid JSON array. Write EVERYTHING in English.',
     messages: [{
       role: 'user',
-      content: `Find cross-team patterns in this data. Return 1-3 patterns.
+      content: language === 'nl'
+        ? `Vind cross-team patronen in deze data. Geef 1-3 patronen. Schrijf ALLES in het Nederlands.
+
+Teams: ${JSON.stringify(teamSummaries, null, 2)}
+
+Format: [{ "pattern": "beschrijving van het patroon", "teams": ["team naam 1", "team naam 2"], "suggestion": "wat eraan te doen" }]`
+        : `Find cross-team patterns in this data. Return 1-3 patterns. Write EVERYTHING in English.
 
 Teams: ${JSON.stringify(teamSummaries, null, 2)}
 

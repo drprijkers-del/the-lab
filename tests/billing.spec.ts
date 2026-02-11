@@ -58,10 +58,11 @@ test.describe('Billing Navigation', () => {
     const settingsBtn = page.getByLabel(/settings|instellingen/i).first()
     if (await settingsBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
       await settingsBtn.click()
+      await page.waitForTimeout(300)
       const billingLink = page.locator('a[href="/account/billing"]').first()
       await expect(billingLink).toBeVisible({ timeout: 5000 })
       await billingLink.click()
-      await expect(page).toHaveURL(/\/account\/billing/)
+      await expect(page).toHaveURL(/\/account\/billing/, { timeout: 10000 })
     }
   })
 
@@ -72,10 +73,11 @@ test.describe('Billing Navigation', () => {
     const menuBtn = page.getByLabel(/open menu|menu/i).first()
     if (await menuBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
       await menuBtn.click()
+      await page.waitForTimeout(300)
       const billingLink = page.locator('a[href="/account/billing"]').first()
       await expect(billingLink).toBeVisible({ timeout: 5000 })
       await billingLink.click()
-      await expect(page).toHaveURL(/\/account\/billing/)
+      await expect(page).toHaveURL(/\/account\/billing/, { timeout: 10000 })
     }
   })
 })

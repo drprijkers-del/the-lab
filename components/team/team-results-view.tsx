@@ -266,7 +266,7 @@ export function TeamResultsView({ teamName, teamSlug, teamId }: TeamResultsViewP
             ri: { bg: 'bg-purple-500', darkBg: 'dark:bg-purple-600' },
           }[wow.level]!
           return (
-            <div className={`relative overflow-hidden rounded-2xl ${wmConfig.bg} ${wmConfig.darkBg}`}>
+            <div className={`relative isolate overflow-hidden rounded-2xl ${wmConfig.bg} ${wmConfig.darkBg}`}>
               {/* White overlay with fade — matches OverallSignal */}
               <div
                 className="absolute inset-0 bg-white dark:bg-stone-800"
@@ -511,7 +511,12 @@ export function TeamResultsView({ teamName, teamSlug, teamId }: TeamResultsViewP
                 </div>
               </div>
 
-              <RadarChart axes={radarAxes} size={320} />
+              <RadarChart
+                axes={radarAxes}
+                size={320}
+                teamName={teamName}
+                chartTitle="Way of Work Radar"
+              />
             </div>
           )
         })()}

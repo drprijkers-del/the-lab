@@ -1,5 +1,8 @@
 'use client'
 
+import { useRef, useState } from 'react'
+import { copyChartWithBranding } from '@/lib/utils/copy-chart'
+
 export interface RadarAxis {
   key: string
   label: string
@@ -10,10 +13,38 @@ interface RadarChartProps {
   axes: RadarAxis[]
   size?: number
   className?: string
+  // PowerPoint export metadata
+  teamName?: string
+  tier?: string
+  chartTitle?: string
 }
 
-export function RadarChart({ axes, size = 280, className }: RadarChartProps) {
+export function RadarChart({ axes, size = 280, className, teamName, tier, chartTitle }: RadarChartProps) {
+  const chartRef = useRef<HTMLDivElement>(null)
+  const [copying, setCopying] = useState(false)
+  const [copied, setCopied] = useState(false)
+
   if (axes.length < 3) return null
+
+  const handleCopy = async () => {
+    if (!chartRef.current || !teamName) return
+
+    setCopying(true)
+    try {
+      await copyChartWithBranding({
+        chartElement: chartRef.current,
+        teamName,
+        tier,
+        chartTitle,
+      })
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (error) {
+      console.error('Failed to copy chart:', error)
+    } finally {
+      setCopying(false)
+    }
+  }
 
   const padding = 90 // room for labels on all sides
   const viewSize = size + padding * 2
@@ -64,8 +95,40 @@ export function RadarChart({ axes, size = 280, className }: RadarChartProps) {
   }
 
   return (
-    <div className={`w-full ${className || ''}`}>
-      <svg viewBox={`0 0 ${viewSize} ${viewSize}`} className="w-full max-w-140 mx-auto">
+    <div className={`w-full ${className || ''} relative`}>
+      {/* Copy button - only show if teamName provided */}
+      {teamName && (
+        <button
+          onClick={handleCopy}
+          disabled={copying}
+          className="absolute top-2 right-2 z-10 flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-full bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-750 hover:border-stone-300 dark:hover:border-stone-600 transition-colors disabled:opacity-50"
+          title="Copy for PowerPoint"
+        >
+          {copying ? (
+            <>
+              <div className="w-3 h-3 border-2 border-stone-400 border-t-transparent rounded-full animate-spin" />
+              <span>Copying...</span>
+            </>
+          ) : copied ? (
+            <>
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Copied!</span>
+            </>
+          ) : (
+            <>
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              <span>Copy for PPT</span>
+            </>
+          )}
+        </button>
+      )}
+
+      <div ref={chartRef}>
+        <svg viewBox={`0 0 ${viewSize} ${viewSize}`} className="w-full max-w-140 mx-auto">
         {/* Grid polygons */}
         {levels.map(level => (
           <polygon
@@ -148,6 +211,7 @@ export function RadarChart({ axes, size = 280, className }: RadarChartProps) {
           )
         })}
       </svg>
+      </div>
     </div>
   )
 }

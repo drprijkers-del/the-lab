@@ -1,4 +1,4 @@
-export type CoachLens = 'general' | 'product_vs_component' | 'obeya'
+export type CoachLens = 'general' | 'patterns' | 'product_vs_component' | 'obeya'
 
 export interface LensConfig {
   id: CoachLens
@@ -17,6 +17,15 @@ export const LENSES: Record<CoachLens, LensConfig> = {
       'Bekijk het team vanuit een brede Agile lens. Focus op balans tussen alle angles, ritme van verbetering, en de trajectorie van teamontwikkeling. Let op dekkingsgaten (angles die niet gemeten zijn) en score-patronen.',
     systemPromptEN:
       'Look at the team through a broad Agile lens. Focus on balance across all angles, improvement rhythm, and the trajectory of team development. Note coverage gaps (unmeasured angles) and score patterns.',
+  },
+  patterns: {
+    id: 'patterns',
+    primaryAngles: [],
+    secondaryAngles: [],
+    systemPromptNL:
+      'Zoek naar PATRONEN in de data: dingen die 3 of meer keer voorkomen. Kijk naar terugkerende thema\'s in WoW sessies, Vibe trends, en scores. Wat valt steeds weer op? Wat zijn de rode draden? Geef concrete focus-punten waar het team aan moet werken.',
+    systemPromptEN:
+      'Look for PATTERNS in the data: things that appear 3 or more times. Look for recurring themes across WoW sessions, Vibe trends, and scores. What keeps standing out? What are the common threads? Give concrete focus areas the team should work on.',
   },
   product_vs_component: {
     id: 'product_vs_component',

@@ -19,7 +19,8 @@ export default async function BacklogPage() {
     .select('subscription_tier')
     .eq('id', admin.id)
     .single()
-  const isPro = isPaidTier((owner?.subscription_tier || 'free') as SubscriptionTier)
+  const subscriptionTier = (owner?.subscription_tier || 'free') as SubscriptionTier
+  const isPro = isPaidTier(subscriptionTier)
 
   const [backlogItems, releases] = await Promise.all([
     getBacklogItems(),
@@ -28,7 +29,7 @@ export default async function BacklogPage() {
 
   return (
     <>
-      <AdminHeader userEmail={admin.email} userName={admin.firstName} userRole={admin.role} />
+      <AdminHeader userEmail={admin.email} userName={admin.firstName} userRole={admin.role} subscriptionTier={subscriptionTier} />
       <main className="max-w-6xl mx-auto px-4 pt-8 pb-24">
         <BacklogPageContent items={backlogItems} releases={releases} isPro={isPro} />
       </main>

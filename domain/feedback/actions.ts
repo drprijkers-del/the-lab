@@ -32,7 +32,7 @@ async function verifyTeamOwnership(teamId: string, adminUser: AdminUser): Promis
   return data?.owner_id === adminUser.id
 }
 
-// Get or create feedback share link for a team
+// Generate new feedback share link for a team (creates fresh token)
 export async function getFeedbackShareLink(teamId: string): Promise<{ url: string; token: string } | null> {
   const adminUser = await requireAdmin()
   const supabase = await createAdminClient()

@@ -9,7 +9,7 @@ test.describe('Teams List', () => {
 })
 
 test.describe('Team Detail', () => {
-  test('home tab shows Vibe and Way of Work tool cards', async ({ page }) => {
+  test('detail page shows Vibe and Way of Work tool cards', async ({ page }) => {
     await page.goto('/teams')
     const firstTeamLink = page.locator('a[href^="/teams/"]:not([href$="/new"])').first()
     await expect(firstTeamLink).toBeVisible({ timeout: 10000 })
@@ -17,7 +17,7 @@ test.describe('Team Detail', () => {
     await expect(page).toHaveURL(/\/teams\/[^/]+/)
     await page.waitForTimeout(2000)
 
-    // Home tab should show Vibe and Way of Work cards
+    // Accordion tool cards should show Vibe and Way of Work
     await expect(page.getByText('Vibe').first()).toBeVisible({ timeout: 10000 })
     await expect(page.getByText('Way of Work').first()).toBeVisible()
 
@@ -26,14 +26,14 @@ test.describe('Team Detail', () => {
     expect(main).not.toContain('Ceremonies')
   })
 
-  test('wow tab shows Way of Work content with Shu-Ha-Ri', async ({ page }) => {
+  test('wow section shows Way of Work content with Shu-Ha-Ri', async ({ page }) => {
     await page.goto('/teams')
     const firstTeamLink = page.locator('a[href^="/teams/"]:not([href$="/new"])').first()
     await expect(firstTeamLink).toBeVisible({ timeout: 10000 })
     await firstTeamLink.click()
     await page.waitForURL(/\/teams\/[^/]+/)
 
-    // Navigate to wow tab
+    // Open WoW accordion section via URL param
     const url = page.url()
     await page.goto(`${url}?tab=wow`)
     await page.waitForTimeout(2000)
@@ -45,14 +45,14 @@ test.describe('Team Detail', () => {
     expect(mainText).toMatch(/守|破|離|Way of Work|WoW|Shu|Ha|Ri/)
   })
 
-  test('settings tab shows Way of Work tool toggle', async ({ page }) => {
+  test('settings page shows Way of Work tool toggle', async ({ page }) => {
     await page.goto('/teams')
     const firstTeamLink = page.locator('a[href^="/teams/"]:not([href$="/new"])').first()
     await expect(firstTeamLink).toBeVisible({ timeout: 10000 })
     await firstTeamLink.click()
     await page.waitForURL(/\/teams\/[^/]+/)
 
-    // Navigate to settings tab
+    // Navigate to settings
     const settingsTab = page.locator('[href*="tab=settings"], button').filter({ hasText: /settings|instellingen/i }).first()
     if (await settingsTab.isVisible({ timeout: 3000 })) {
       await settingsTab.click()

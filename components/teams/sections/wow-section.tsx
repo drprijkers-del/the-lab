@@ -4,18 +4,42 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useTranslation } from '@/lib/i18n/context'
 import type { WowSessionWithStats, WowLevel } from '@/domain/wow/types'
+import type { PublicWowStats } from '@/domain/metrics/public-actions'
+import type { TeamMetrics } from '@/domain/metrics/types'
+import type { SubscriptionTier } from '@/domain/billing/tiers'
+import { isPaidTier } from '@/domain/billing/tiers'
+import { RadarChart, type RadarAxis } from '@/components/ui/radar-chart'
 
 interface WowSectionProps {
   teamId: string
+  teamName: string
   teamPlan: string
   wowStats: { total_sessions: number; active_sessions: number; average_score: number | null; level: string } | null
   wowSessions: WowSessionWithStats[]
   angleLabels: Record<string, string>
+  // Radar data
+  radarWowStats?: PublicWowStats | null
+  vibeMetrics?: TeamMetrics | null
+  subscriptionTier?: SubscriptionTier
 }
 
-export function WowSection({ teamId, teamPlan, wowStats, wowSessions, angleLabels }: WowSectionProps) {
+export function WowSection({ teamId, teamName, teamPlan, wowStats, wowSessions, angleLabels, radarWowStats, vibeMetrics, subscriptionTier = 'free' }: WowSectionProps) {
   const t = useTranslation()
-  const [sessionsLevelTab, setSessionsLevelTab] = useState<WowLevel>('shu')
+  const [sessionsLevelTab, setSessionsLevelTab] = useState<WowLevel>((wowStats?.level as WowLevel) || 'shu')
+
+  const [showWowFlow, setShowWowFlow] = useState(() => {
+    if (typeof window === 'undefined') return true
+    const stored = localStorage.getItem('wow_flow_visible')
+    return stored === null ? true : stored === 'true'
+  })
+
+  const toggleWowFlow = () => {
+    setShowWowFlow(prev => {
+      const next = !prev
+      localStorage.setItem('wow_flow_visible', String(next))
+      return next
+    })
+  }
 
   const currentTeamLevel = (wowStats?.level as WowLevel) || 'shu'
   const levelOrder: WowLevel[] = ['shu', 'ha', 'ri']
@@ -23,14 +47,79 @@ export function WowSection({ teamId, teamPlan, wowStats, wowSessions, angleLabel
 
   const filteredSessions = wowSessions.filter(s => (s.level || 'shu') === sessionsLevelTab)
 
+  const isPro = isPaidTier(subscriptionTier)
+
   const levelTabs: { id: WowLevel; kanji: string; label: string; locked: boolean; color: string; proLocked?: boolean }[] = [
     { id: 'shu', kanji: '守', label: 'Shu', locked: false, color: 'amber' },
-    { id: 'ha', kanji: '破', label: 'Ha', locked: currentLevelIndex < 1 || teamPlan !== 'pro', color: 'cyan', proLocked: teamPlan !== 'pro' && currentLevelIndex >= 1 },
-    { id: 'ri', kanji: '離', label: 'Ri', locked: currentLevelIndex < 2 || teamPlan !== 'pro', color: 'purple', proLocked: teamPlan !== 'pro' && currentLevelIndex >= 2 },
+    { id: 'ha', kanji: '破', label: 'Ha', locked: !isPro, color: 'cyan', proLocked: !isPro },
+    { id: 'ri', kanji: '離', label: 'Ri', locked: !isPro, color: 'purple', proLocked: !isPro },
   ]
+
+  // Build radar chart data
+  const radarAxes: RadarAxis[] = []
+  if (radarWowStats?.scoresByAngle) {
+    for (const [angle, score] of Object.entries(radarWowStats.scoresByAngle)) {
+      if (score !== null) {
+        radarAxes.push({ key: angle, label: angleLabels[angle] || angle, value: score })
+      }
+    }
+  }
+  if (vibeMetrics?.weekVibe?.value) {
+    radarAxes.push({ key: 'vibe', label: 'Vibe', value: vibeMetrics.weekVibe.value })
+  }
+
+  const showRadar = radarAxes.length >= 3
+  const sorted = showRadar ? [...radarAxes].sort((a, b) => b.value - a.value) : []
+  const strengths = sorted.slice(0, 2)
+  const focusAreas = sorted.slice(-2).reverse()
 
   return (
     <div className="space-y-6 pt-3">
+      {/* Title and flow explanation - collapsible */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-200">
+            {t('wowFlowTitle')}
+          </h2>
+          <button
+            onClick={toggleWowFlow}
+            className="p-1 rounded-md hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors group"
+            title={showWowFlow ? 'Hide flow' : 'Show flow'}
+          >
+            <svg
+              className={`w-4 h-4 text-stone-400 group-hover:text-stone-600 dark:group-hover:text-stone-300 transition-transform ${
+                showWowFlow ? 'rotate-180' : ''
+              }`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+        <div className="accordion-content" data-open={showWowFlow}>
+          <div className="space-y-3">
+            <p className="text-sm text-stone-600 dark:text-stone-300 leading-relaxed">
+              {t('wowFlowTagline')}
+            </p>
+            <p className="text-sm text-stone-500 dark:text-stone-400 leading-relaxed">
+              {t('wowFlowExplanation')}
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {[t('wowStep1'), t('wowStep2'), t('wowStep3'), t('wowStep4')].map((step, i) => (
+                <div key={i} className="flex items-start gap-2.5 p-3 rounded-xl bg-cyan-50 dark:bg-cyan-900/20">
+                  <span className="w-5 h-5 rounded-full bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                    {i + 1}
+                  </span>
+                  <span className="text-xs text-stone-700 dark:text-stone-300 leading-snug">{step}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Sessions with Level Tabs */}
       <div className="bg-stone-50 dark:bg-stone-700/30 rounded-xl overflow-hidden">
         {/* Level Tabs */}
@@ -101,7 +190,7 @@ export function WowSection({ teamId, teamPlan, wowStats, wowSessions, angleLabel
                   </div>
                 )}
                 <span className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-700 text-stone-400 dark:text-stone-500 group-hover:bg-cyan-50 dark:group-hover:bg-cyan-900/30 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
-                  {t('open')}
+                  {session.status === 'active' ? t('open') : t('view')}
                 </span>
               </div>
             </Link>
@@ -123,6 +212,59 @@ export function WowSection({ teamId, teamPlan, wowStats, wowSessions, angleLabel
           </Link>
         </div>
       </div>
+
+      {/* Team Radar Chart */}
+      {showRadar && (
+        <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-5">
+          <div className="flex flex-col sm:flex-row gap-4">
+            {/* Left: title + scores */}
+            <div className="sm:w-52 shrink-0 flex flex-col">
+              <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100 mb-4">{t('teamHealthRadar')}</h3>
+
+              <div className="space-y-3">
+                {/* Strengths */}
+                <div className="rounded-lg bg-green-50 dark:bg-green-900/15 px-3 py-2">
+                  <div className="text-[10px] uppercase tracking-wider font-semibold text-green-600 dark:text-green-400 mb-1.5">{t('radarStrengths')}</div>
+                  {strengths.map(s => (
+                    <div key={s.key} className="flex items-center justify-between py-px">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                        <span className="text-xs text-stone-700 dark:text-stone-300">{s.label}</span>
+                      </div>
+                      <span className="text-xs font-bold tabular-nums text-green-700 dark:text-green-400">{s.value.toFixed(1)}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Focus areas */}
+                <div className="rounded-lg bg-amber-50 dark:bg-amber-900/15 px-3 py-2">
+                  <div className="text-[10px] uppercase tracking-wider font-semibold text-amber-600 dark:text-amber-400 mb-1.5">{t('radarFocusAreas')}</div>
+                  {focusAreas.map(s => (
+                    <div key={s.key} className="flex items-center justify-between py-px">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                        <span className="text-xs text-stone-700 dark:text-stone-300">{s.label}</span>
+                      </div>
+                      <span className="text-xs font-bold tabular-nums text-amber-700 dark:text-amber-400">{s.value.toFixed(1)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right: radar chart centered */}
+            <div className="flex-1 flex items-center justify-center">
+              <RadarChart
+                axes={radarAxes}
+                size={400}
+                teamName={teamName}
+                tier={subscriptionTier}
+                chartTitle="Way of Work Radar"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

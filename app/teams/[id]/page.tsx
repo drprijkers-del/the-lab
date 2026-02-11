@@ -50,6 +50,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
         userEmail={admin.email}
         userName={admin.firstName}
         userRole={admin.role}
+        subscriptionTier={subscriptionTier}
       />
       <main className="max-w-6xl mx-auto px-4 pt-6 pb-24">
         <TeamDetailContent team={team} vibeMetrics={vibeMetrics} vibeInsights={vibeInsights} wowSessions={wowSessions} wowStats={wowStats} subscriptionTier={subscriptionTier} />

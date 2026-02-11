@@ -28,7 +28,7 @@ test.describe('Rename Verification', () => {
     expect(text).toContain('Way of Work')
   })
 
-  test('wow tab uses "Way of Work" labels', async ({ page }) => {
+  test('wow section uses "Way of Work" labels', async ({ page }) => {
     await page.goto('/teams')
     const firstTeamLink = page.locator('a[href^="/teams/"]').first()
     await expect(firstTeamLink).toBeVisible({ timeout: 10000 })

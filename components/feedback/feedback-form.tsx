@@ -207,6 +207,14 @@ export function FeedbackForm({ teamSlug, teamName, tokenHash }: FeedbackFormProp
             {t('feedbackUnderstand')}
           </Button>
 
+          {/* Close button */}
+          <button
+            onClick={() => window.close()}
+            className="w-full mt-3 px-6 py-2 text-sm font-medium text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
+          >
+            {t('closePage')}
+          </button>
+
           {/* Footer */}
           <p className="text-xs text-center text-stone-400 dark:text-stone-500 mt-6">
             {t('feedbackAnonymousNote')}
@@ -269,6 +277,15 @@ export function FeedbackForm({ teamSlug, teamName, tokenHash }: FeedbackFormProp
           >
             {submitting ? t('feedbackSubmitting') : t('feedbackSubmit')}
           </Button>
+
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={() => window.close()}
+            className="w-full mt-3 px-6 py-2 text-sm font-medium text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
+          >
+            {t('closePage')}
+          </button>
         </form>
 
         {/* Footer note */}

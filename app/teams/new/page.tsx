@@ -3,14 +3,18 @@ import { requireAdmin } from '@/lib/auth/admin'
 import { AdminHeader } from '@/components/admin/header'
 import { NewTeamForm } from '@/components/teams/new-team-form'
 import { getTranslations } from '@/lib/i18n/server'
+import { getSubscriptionTier } from '@/domain/coach/actions'
 
 export default async function NewTeamPage() {
   const admin = await requireAdmin()
-  const t = await getTranslations()
+  const [t, subscriptionTier] = await Promise.all([
+    getTranslations(),
+    getSubscriptionTier(),
+  ])
 
   return (
     <>
-      <AdminHeader userEmail={admin.email} userName={admin.firstName} userRole={admin.role} />
+      <AdminHeader userEmail={admin.email} userName={admin.firstName} userRole={admin.role} subscriptionTier={subscriptionTier} />
       <main className="max-w-2xl mx-auto px-4 pt-8 pb-24">
         {/* Back link */}
         <Link

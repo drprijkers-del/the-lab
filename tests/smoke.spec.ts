@@ -5,10 +5,10 @@ import { test, expect } from '@playwright/test'
  *
  * Covers the critical end-to-end journeys:
  * 1. Login → Teams list
- * 2. Team detail → tabs visible
- * 3. Vibe tab → share link visible
- * 4. WoW tab → session creation possible
- * 5. Coach tab → tier-appropriate content
+ * 2. Team detail → accordion sections visible
+ * 3. Vibe section → share link visible
+ * 4. WoW section → session creation possible
+ * 5. Coach section → tier-appropriate content
  * 6. Billing page → tier cards + pricing
  */
 
@@ -19,14 +19,14 @@ test.describe('Smoke Test — Core Navigation', () => {
     await expect(page.locator('main')).toBeVisible({ timeout: 10000 })
   })
 
-  test('2. Team detail page loads with all tabs', async ({ page }) => {
+  test('2. Team detail page loads with all tool cards', async ({ page }) => {
     await page.goto('/teams')
     const firstTeamLink = page.locator('a[href^="/teams/"]:not([href$="/new"])').first()
     await expect(firstTeamLink).toBeVisible({ timeout: 10000 })
     await firstTeamLink.click()
     await expect(page).toHaveURL(/\/teams\/[^/]+/)
 
-    // Core tabs should be present
+    // Core tool cards should be present
     const main = page.locator('main')
     await expect(main).toBeVisible({ timeout: 10000 })
     await expect(page.getByText('Vibe').first()).toBeVisible()
@@ -35,14 +35,14 @@ test.describe('Smoke Test — Core Navigation', () => {
 })
 
 test.describe('Smoke Test — Vibe Check', () => {
-  test('3. Vibe tab shows share link', async ({ page }) => {
+  test('3. Vibe section shows share link', async ({ page }) => {
     await page.goto('/teams')
     const firstTeamLink = page.locator('a[href^="/teams/"]:not([href$="/new"])').first()
     await expect(firstTeamLink).toBeVisible({ timeout: 10000 })
     await firstTeamLink.click()
     await page.waitForURL(/\/teams\/[^/]+/)
 
-    // Navigate to Vibe tab
+    // Open Vibe accordion section
     await page.getByText('Vibe').first().click()
     await page.waitForTimeout(500)
 
@@ -54,14 +54,14 @@ test.describe('Smoke Test — Vibe Check', () => {
 })
 
 test.describe('Smoke Test — Way of Work', () => {
-  test('4. WoW tab loads and shows sessions or new session option', async ({ page }) => {
+  test('4. WoW section loads and shows sessions or new session option', async ({ page }) => {
     await page.goto('/teams')
     const firstTeamLink = page.locator('a[href^="/teams/"]:not([href$="/new"])').first()
     await expect(firstTeamLink).toBeVisible({ timeout: 10000 })
     await firstTeamLink.click()
     await page.waitForURL(/\/teams\/[^/]+/)
 
-    // Navigate to WoW tab
+    // Open WoW accordion section
     await page.getByText('Way of Work').first().click()
     await page.waitForTimeout(500)
 
@@ -95,7 +95,7 @@ test.describe('Smoke Test — Way of Work', () => {
 })
 
 test.describe('Smoke Test — Coach Tab', () => {
-  test('6. Coach tab shows content (ProGate or AI Coach)', async ({ page }) => {
+  test('6. Coach section shows content (ProGate or AI Coach)', async ({ page }) => {
     await page.goto('/teams')
     const firstTeamLink = page.locator('a[href^="/teams/"]:not([href$="/new"])').first()
     await expect(firstTeamLink).toBeVisible({ timeout: 10000 })

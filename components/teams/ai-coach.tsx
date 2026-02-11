@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/context'
 import type { CoachInsight, CoachStatus, CrossTeamPattern } from '@/domain/coach/actions'
 import { getCoachStatus, generateCoachInsight, generateCrossTeamInsights } from '@/domain/coach/actions'
@@ -109,30 +108,18 @@ export function AiCoach({ teamId, teamName, subscriptionTier }: AiCoachProps) {
   return (
     <div className="space-y-6">
 
-      {/* ── Section 1: Context + Lens ── */}
-      <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6">
-
-        {/* Title + subtitle */}
-        <div className="flex items-start gap-3 mb-3">
-          <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
-            <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-          </div>
-          <div>
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('aiCoachTitle')}</h3>
-            <p className="text-sm text-stone-600 dark:text-stone-400 mt-0.5">{t('aiCoachSubtitle')}</p>
-          </div>
-        </div>
-
-        {/* Context line */}
-        <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed mb-5">
+      {/* Context + Lens */}
+      <div className="space-y-3">
+        <p className="text-sm text-stone-500 dark:text-stone-400 leading-relaxed">
+          {t('aiCoachSubtitle')}
+        </p>
+        <p className="text-xs text-stone-400 dark:text-stone-500 leading-relaxed">
           {t('aiCoachContextLine')}
         </p>
 
         {/* New data badge */}
         {status?.hasNewData && insight && !generating && (
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 mb-4">
+          <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
@@ -141,70 +128,71 @@ export function AiCoach({ teamId, teamName, subscriptionTier }: AiCoachProps) {
           </div>
         )}
 
-        {/* Perspective selector — ABOVE CTA (context before action) */}
-        <div className="mb-4">
-          <div className="relative">
-            <button
-              onClick={() => setLensOpen(!lensOpen)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors rounded-lg border border-stone-200 dark:border-stone-700"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-              {t('coachLensLabel')}: {t(LENS_OPTIONS.find(l => l.id === activeLens)?.labelKey || 'lensGeneral')}
-              <svg className={`w-3 h-3 transition-transform ${lensOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
+        {/* Perspective selector */}
+        <div className="relative">
+          <button
+            onClick={() => setLensOpen(!lensOpen)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors rounded-full bg-stone-50 dark:bg-stone-700/30 border border-stone-200 dark:border-stone-700"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            {t('coachLensLabel')}: {t(LENS_OPTIONS.find(l => l.id === activeLens)?.labelKey || 'lensGeneral')}
+            <svg className={`w-3 h-3 transition-transform ${lensOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
 
-            {lensOpen && (
-              <div className="absolute left-0 top-full mt-1 z-20 w-72 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl shadow-lg overflow-hidden">
-                {LENS_OPTIONS.map((lens) => (
-                  <button
-                    key={lens.id}
-                    onClick={() => handleLensChange(lens.id)}
-                    className={`w-full text-left px-4 py-3 hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors ${
-                      activeLens === lens.id ? 'bg-emerald-50 dark:bg-emerald-900/20' : ''
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full ${activeLens === lens.id ? 'bg-emerald-500' : 'bg-stone-300 dark:bg-stone-600'}`} />
-                      <span className="text-sm font-medium text-stone-800 dark:text-stone-200">{t(lens.labelKey)}</span>
-                    </div>
-                    <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5 ml-4">{t(lens.descKey)}</p>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          {lensOpen && (
+            <div className="absolute left-0 top-full mt-1 z-20 w-72 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl shadow-lg overflow-hidden">
+              {LENS_OPTIONS.map((lens) => (
+                <button
+                  key={lens.id}
+                  onClick={() => handleLensChange(lens.id)}
+                  className={`w-full text-left px-4 py-3 hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors ${
+                    activeLens === lens.id ? 'bg-emerald-50 dark:bg-emerald-900/20' : ''
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${activeLens === lens.id ? 'bg-emerald-500' : 'bg-stone-300 dark:bg-stone-600'}`} />
+                    <span className="text-sm font-medium text-stone-800 dark:text-stone-200">{t(lens.labelKey)}</span>
+                  </div>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5 ml-4">{t(lens.descKey)}</p>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
-
       </div>
 
       {/* Error */}
       {error && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+        <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-xl">
           <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
         </div>
       )}
 
-      {/* ── Section 2: Results ── */}
+      {/* Results */}
       {insight && (
         <div className="space-y-5">
-          {/* Action prompt — tells user what to do with these results */}
-          <div className="flex items-start gap-3 p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
-            <span className="text-lg shrink-0">&#x1f3af;</span>
+          {/* Action prompt */}
+          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20">
+            <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
+            </span>
             <div>
-              <p className="text-sm font-medium text-emerald-800 dark:text-emerald-200">{t('coachPickPrompt')}</p>
-              <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-0.5">{t('coachPickDetail')}</p>
+              <span className="text-xs font-medium text-emerald-800 dark:text-emerald-200">{t('coachPickPrompt')}</span>
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 ml-1">{t('coachPickDetail')}</span>
             </div>
           </div>
 
           {/* Observations */}
           {insight.observations.length > 0 && (
-            <div>
-              <div className="flex items-center justify-between mb-3">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
                 <h4 className="font-medium text-stone-900 dark:text-stone-100 text-sm">{t('aiCoachObservations')}</h4>
                 {insight.fromCache && insight.generatedAt && (
                   <span className="text-[10px] text-stone-400 dark:text-stone-500">
@@ -212,12 +200,9 @@ export function AiCoach({ teamId, teamName, subscriptionTier }: AiCoachProps) {
                   </span>
                 )}
               </div>
-              <div className="space-y-3">
+              <div className="bg-stone-50 dark:bg-stone-700/30 rounded-xl overflow-hidden divide-y divide-stone-100 dark:divide-stone-700">
                 {insight.observations.map((obs, idx) => (
-                  <div
-                    key={idx}
-                    className="p-5 bg-gradient-to-r from-emerald-50 to-cyan-50 dark:from-emerald-900/20 dark:to-cyan-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800"
-                  >
+                  <div key={idx} className="p-4">
                     <div className="flex items-start gap-3">
                       <span className="w-7 h-7 rounded-full bg-emerald-500 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                         {idx + 1}
@@ -246,14 +231,11 @@ export function AiCoach({ teamId, teamName, subscriptionTier }: AiCoachProps) {
 
           {/* Questions */}
           {insight.questions.length > 0 && (
-            <div>
-              <h4 className="font-medium text-stone-900 dark:text-stone-100 text-sm mb-3">{t('aiCoachQuestions')}</h4>
-              <div className="space-y-3">
+            <div className="space-y-3">
+              <h4 className="font-medium text-stone-900 dark:text-stone-100 text-sm">{t('aiCoachQuestions')}</h4>
+              <div className="bg-stone-50 dark:bg-stone-700/30 rounded-xl overflow-hidden divide-y divide-stone-100 dark:divide-stone-700">
                 {insight.questions.map((q, idx) => (
-                  <div
-                    key={idx}
-                    className="p-4 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700"
-                  >
+                  <div key={idx} className="p-4">
                     <div className="flex items-start gap-3">
                       <span className="w-6 h-6 rounded-full bg-cyan-500 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                         {idx + 1}
@@ -273,73 +255,89 @@ export function AiCoach({ teamId, teamName, subscriptionTier }: AiCoachProps) {
             </div>
           )}
 
-          {/* "How to bring this up" — coaching script suggestion */}
-          <div className="p-4 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700">
-            <h5 className="font-medium text-stone-700 dark:text-stone-300 text-sm mb-2">
-              {t('coachPlayItOut')}
-            </h5>
-            <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed italic">
-              {t('coachPlayItOutText')}
-            </p>
+          {/* "How to bring this up" */}
+          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-stone-50 dark:bg-stone-700/30">
+            <span className="w-5 h-5 rounded-full bg-stone-200 dark:bg-stone-600 text-stone-500 dark:text-stone-400 flex items-center justify-center shrink-0 mt-0.5">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </span>
+            <div>
+              <span className="text-xs font-medium text-stone-700 dark:text-stone-300">{t('coachPlayItOut')}</span>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5 italic leading-relaxed">{t('coachPlayItOutText')}</p>
+            </div>
           </div>
 
-          {/* Disclaimer — AI is assistive, not authoritative */}
+          {/* Disclaimer */}
           <p className="text-xs text-stone-400 dark:text-stone-500 text-center italic">
             {t('aiCoachDisclaimer')}
           </p>
 
-          {/* Regenerate CTA — below results */}
+          {/* Regenerate — row style when there's new data */}
           {status?.hasNewData && !generating && (
-            <div className="space-y-2">
-              <Button
+            <div className="bg-stone-50 dark:bg-stone-700/30 rounded-xl overflow-hidden">
+              <button
                 onClick={handleGenerate}
-                loading={generating}
                 disabled={generating || (status?.dailyGenerationsLeft === 0)}
-                className="w-full"
+                className="flex items-center gap-3 p-4 w-full text-left group hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 transition-colors disabled:opacity-50"
               >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-                {t('aiCoachGenerate')}
-              </Button>
-              {status?.dailyGenerationsLeft !== undefined && status.dailyGenerationsLeft < MAX_DAILY && (
-                <p className="text-[10px] text-stone-400 dark:text-stone-500 text-center">
-                  {status.dailyGenerationsLeft === 0
-                    ? t('aiCoachDailyLimitReached')
-                    : `${status.dailyGenerationsLeft}/5 ${t('aiCoachDailyLimit')}`}
-                </p>
-              )}
+                <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </div>
+                <div>
+                  <span className="block text-sm font-medium text-stone-600 dark:text-stone-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                    {t('aiCoachGenerate')}
+                  </span>
+                  {status?.dailyGenerationsLeft !== undefined && status.dailyGenerationsLeft < MAX_DAILY && (
+                    <span className="block text-[10px] text-stone-400 dark:text-stone-500">
+                      {status.dailyGenerationsLeft === 0
+                        ? t('aiCoachDailyLimitReached')
+                        : `${status.dailyGenerationsLeft}/5 ${t('aiCoachDailyLimit')}`}
+                    </span>
+                  )}
+                </div>
+              </button>
             </div>
           )}
         </div>
       )}
 
-      {/* ── Primary CTA — below context (no results yet) ── */}
+      {/* Primary CTA — ghost tile (no results yet) */}
       {!insight && (
-        <div className="space-y-2">
-          <Button
+        <div className="bg-stone-50 dark:bg-stone-700/30 rounded-xl overflow-hidden">
+          <button
             onClick={handleGenerate}
-            loading={generating}
             disabled={generating || (status?.dailyGenerationsLeft === 0)}
-            className="w-full"
+            className="flex items-center gap-3 p-4 w-full text-left group hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 transition-colors disabled:opacity-50"
           >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-            {generating ? t('aiCoachGenerating') : t('aiCoachGenerate')}
-          </Button>
-
-          {status?.dailyGenerationsLeft !== undefined && status.dailyGenerationsLeft < MAX_DAILY && (
-            <p className="text-[10px] text-stone-400 dark:text-stone-500 text-center">
-              {status.dailyGenerationsLeft === 0
-                ? t('aiCoachDailyLimitReached')
-                : `${status.dailyGenerationsLeft}/5 ${t('aiCoachDailyLimit')}`}
-            </p>
-          )}
+            <div className="w-10 h-10 rounded-lg border-2 border-dashed border-stone-200 dark:border-stone-600 group-hover:border-emerald-400 dark:group-hover:border-emerald-600 flex items-center justify-center transition-colors">
+              {generating ? (
+                <div className="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <svg className="w-4 h-4 text-stone-400 dark:text-stone-500 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              )}
+            </div>
+            <div>
+              <span className="block text-sm font-medium text-stone-400 dark:text-stone-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                {generating ? t('aiCoachGenerating') : t('aiCoachGenerate')}
+              </span>
+              {status?.dailyGenerationsLeft !== undefined && status.dailyGenerationsLeft < MAX_DAILY && (
+                <span className="block text-[10px] text-stone-400 dark:text-stone-500">
+                  {status.dailyGenerationsLeft === 0
+                    ? t('aiCoachDailyLimitReached')
+                    : `${status.dailyGenerationsLeft}/5 ${t('aiCoachDailyLimit')}`}
+                </span>
+              )}
+            </div>
+          </button>
         </div>
       )}
 
-      {/* ── Section 3: Cross-team Patterns (TC only) ── */}
+      {/* Cross-team Patterns (TC only) */}
       {showCrossTeam && (
         <div className="border-t border-stone-200 dark:border-stone-700 pt-6 space-y-4">
           <div>
@@ -348,47 +346,59 @@ export function AiCoach({ teamId, teamName, subscriptionTier }: AiCoachProps) {
           </div>
 
           {crossTeamPatterns.length === 0 && (
-            <Button
-              onClick={handleCrossTeam}
-              loading={crossTeamGenerating}
-              variant="secondary"
-              className="w-full"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
-              </svg>
-              {crossTeamGenerating ? t('crossTeamGenerating') : t('crossTeamGenerate')}
-            </Button>
+            <div className="bg-stone-50 dark:bg-stone-700/30 rounded-xl overflow-hidden">
+              <button
+                onClick={handleCrossTeam}
+                disabled={crossTeamGenerating}
+                className="flex items-center gap-3 p-4 w-full text-left group hover:bg-purple-50/50 dark:hover:bg-purple-900/10 transition-colors disabled:opacity-50"
+              >
+                <div className="w-10 h-10 rounded-lg border-2 border-dashed border-stone-200 dark:border-stone-600 group-hover:border-purple-400 dark:group-hover:border-purple-600 flex items-center justify-center transition-colors">
+                  {crossTeamGenerating ? (
+                    <div className="w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <svg className="w-4 h-4 text-stone-400 dark:text-stone-500 group-hover:text-purple-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+                    </svg>
+                  )}
+                </div>
+                <span className="text-sm font-medium text-stone-400 dark:text-stone-500 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                  {crossTeamGenerating ? t('crossTeamGenerating') : t('crossTeamGenerate')}
+                </span>
+              </button>
+            </div>
           )}
 
           {crossTeamPatterns.length > 0 && (
             <div className="space-y-3">
-              {crossTeamPatterns.map((pattern, idx) => (
-                <div
-                  key={idx}
-                  className="p-5 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl border border-purple-200 dark:border-purple-800"
-                >
-                  <p className="text-stone-800 dark:text-stone-200 text-sm font-medium mb-2">{pattern.pattern}</p>
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    <span className="text-[10px] font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider mr-1">{t('crossTeamTeams')}:</span>
-                    {pattern.teams.map((tn, tIdx) => (
-                      <span key={tIdx} className="px-2 py-0.5 text-xs rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300">
-                        {tn}
+              <div className="bg-stone-50 dark:bg-stone-700/30 rounded-xl overflow-hidden divide-y divide-stone-100 dark:divide-stone-700">
+                {crossTeamPatterns.map((pattern, idx) => (
+                  <div key={idx} className="p-4 space-y-3">
+                    <div className="flex items-start gap-3">
+                      <span className="w-7 h-7 rounded-full bg-purple-500 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                        {idx + 1}
                       </span>
-                    ))}
+                      <p className="text-stone-800 dark:text-stone-200 text-sm font-medium">{pattern.pattern}</p>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 ml-10">
+                      {pattern.teams.map((tn, tIdx) => (
+                        <span key={tIdx} className="px-2 py-0.5 text-xs rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300">
+                          {tn}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="ml-10 flex items-start gap-2.5 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20">
+                      <span className="text-[10px] font-medium text-purple-500 dark:text-purple-400 uppercase tracking-wider shrink-0 mt-0.5">{t('crossTeamSuggestion')}</span>
+                      <p className="text-xs text-stone-700 dark:text-stone-300 leading-snug">{pattern.suggestion}</p>
+                    </div>
                   </div>
-                  <div className="bg-white/60 dark:bg-stone-800/60 rounded-lg p-3">
-                    <p className="text-[10px] font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-1">{t('crossTeamSuggestion')}</p>
-                    <p className="text-sm text-stone-700 dark:text-stone-300">{pattern.suggestion}</p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
 
               <div className="text-center">
                 <button
                   onClick={handleCrossTeam}
                   disabled={crossTeamGenerating}
-                  className="text-xs text-purple-600 hover:text-purple-700 dark:text-purple-400 font-medium disabled:opacity-50"
+                  className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-700 text-stone-400 dark:text-stone-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 hover:text-purple-600 dark:hover:text-purple-400 transition-colors disabled:opacity-50"
                 >
                   {crossTeamGenerating ? t('crossTeamGenerating') : t('crossTeamGenerate')}
                 </button>

@@ -28,6 +28,7 @@ type TimeView = 'live' | 'day' | 'week'
 export function VibeMetrics({ metrics, insights }: VibeMetricsProps) {
   const { language } = useLanguage()
   const [activeView, setActiveView] = useState<TimeView>('week')
+  const [showPreview, setShowPreview] = useState(false)
 
   const labels = {
     nl: {
@@ -39,14 +40,14 @@ export function VibeMetrics({ metrics, insights }: VibeMetricsProps) {
       vsYesterday: 'vs gisteren',
       vsLastWeek: 'vs vorige week',
       // Participation
-      participation: 'Deelname vandaag',
+      participation: 'Vibe deelname',
       of: 'van',
       checkedIn: 'ingecheckt',
       // States
       noData: 'Nog geen data',
       noDataDetail: 'Wacht op eerste check-ins...',
-      notEnoughData: 'Onvoldoende data',
-      notEnoughDetail: 'Minimaal 3 check-ins voor betrouwbare metrics.',
+      notEnoughData: 'Bijna klaar!',
+      notEnoughDetail: 'We hebben nog een paar check-ins nodig (minimaal 3) om betrouwbare metrics te berekenen. Hieronder zie je een voorbeeld van wat je kunt verwachten.',
       // Insights
       signals: 'Signalen',
       // Momentum
@@ -65,14 +66,14 @@ export function VibeMetrics({ metrics, insights }: VibeMetricsProps) {
       vsYesterday: 'vs yesterday',
       vsLastWeek: 'vs last week',
       // Participation
-      participation: 'Participation today',
+      participation: 'Vibe participation',
       of: 'of',
       checkedIn: 'checked in',
       // States
       noData: 'No data yet',
       noDataDetail: 'Waiting for first check-ins...',
-      notEnoughData: 'Insufficient data',
-      notEnoughDetail: 'Minimum 3 check-ins for reliable metrics.',
+      notEnoughData: 'Almost there!',
+      notEnoughDetail: 'We need a few more check-ins (minimum 3) to calculate reliable metrics. Below you can preview what to expect.',
       // Insights
       signals: 'Signals',
       // Momentum
@@ -90,10 +91,16 @@ export function VibeMetrics({ metrics, insights }: VibeMetricsProps) {
   if (metrics.participation.teamSize === 0) {
     return (
       <Card>
-        <CardContent className="py-12 text-center">
-          <div className="text-5xl mb-4 opacity-30">⚗️</div>
-          <h3 className="font-semibold text-stone-600 dark:text-stone-400 mb-2">{t.noData}</h3>
-          <p className="text-sm text-stone-400 dark:text-stone-500">{t.noDataDetail}</p>
+        <CardContent className="py-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-lg bg-stone-100 dark:bg-stone-700 flex items-center justify-center shrink-0">
+              <span className="text-xl opacity-40">⚗️</span>
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300 mb-1">{t.noData}</h3>
+              <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">{t.noDataDetail}</p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     )
@@ -103,11 +110,120 @@ export function VibeMetrics({ metrics, insights }: VibeMetricsProps) {
   if (!metrics.hasEnoughData) {
     return (
       <Card>
-        <CardContent className="py-8 text-center">
-          <div className="text-4xl mb-4 opacity-40">📊</div>
-          <h3 className="font-semibold text-stone-600 dark:text-stone-400 mb-2">{t.notEnoughData}</h3>
-          <p className="text-sm text-stone-400 dark:text-stone-500 mb-4">{t.notEnoughDetail}</p>
-          <ParticipationBar metrics={metrics} t={t} language={language} />
+        <CardContent className="py-4 space-y-4">
+          {/* Title with friendly info */}
+          <div>
+            <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2">
+              {language === 'nl' ? 'Team Vibe Metrics' : 'Team Vibe Metrics'}
+            </h3>
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-cyan-50/50 dark:bg-cyan-900/10 border border-cyan-100 dark:border-cyan-900/30">
+              <span className="text-lg shrink-0">🌱</span>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs leading-relaxed text-stone-600 dark:text-stone-400">
+                  <span className="font-semibold text-cyan-700 dark:text-cyan-400">{t.notEnoughData}</span> {t.notEnoughDetail}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Participation - compact */}
+          <div className="border-t border-stone-100 dark:border-stone-700 pt-3">
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-pink-500 dark:text-pink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg>
+                <span className="text-xs text-stone-500 dark:text-stone-400">{t.participation}</span>
+              </div>
+              <span className="text-xs font-medium text-stone-600 dark:text-stone-400">
+                {metrics.participation.today}/{metrics.participation.teamSize}
+              </span>
+            </div>
+            <div className="h-1.5 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all duration-500 ${
+                  metrics.participation.rate >= 60
+                    ? 'bg-cyan-500'
+                    : metrics.participation.rate >= 30
+                      ? 'bg-amber-400'
+                      : 'bg-stone-300 dark:bg-stone-500'
+                }`}
+                style={{ width: `${Math.min(metrics.participation.rate, 100)}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Preview toggle button */}
+          <div className="border-t border-stone-100 dark:border-stone-700 pt-3">
+            <button
+              onClick={() => setShowPreview(!showPreview)}
+              className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors group"
+            >
+              <span className="text-xs font-medium text-stone-500 dark:text-stone-400 group-hover:text-stone-700 dark:group-hover:text-stone-300">
+                {language === 'nl' ? 'Voorbeeld van volledige metrics' : 'Preview full metrics view'}
+              </span>
+              <svg
+                className={`w-4 h-4 text-stone-400 group-hover:text-stone-600 dark:group-hover:text-stone-300 transition-transform ${
+                  showPreview ? 'rotate-180' : ''
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {/* Preview content with slide animation */}
+            <div
+              className="accordion-content"
+              data-open={showPreview}
+            >
+              <div className="pt-3">
+                {/* Colored border box to make it stand out */}
+                <div className="border-2 border-cyan-200 dark:border-cyan-800 rounded-xl bg-linear-to-br from-cyan-50/50 to-purple-50/30 dark:from-cyan-950/20 dark:to-purple-950/10 p-3 opacity-60 pointer-events-none">
+                  <p className="text-[10px] uppercase tracking-wider font-bold text-cyan-600 dark:text-cyan-400 mb-2 text-center">
+                    {language === 'nl' ? 'Voorbeeld' : 'Example'}
+                  </p>
+
+                  {/* Simplified main view - just the key metric */}
+                  <div className="bg-white/80 dark:bg-stone-900/50 rounded-lg border border-cyan-200/50 dark:border-cyan-800/50 p-3 text-center mb-2">
+                    <div className="flex items-center justify-center gap-1.5 mb-1.5">
+                      <span className="inline-flex rounded-full h-1.5 w-1.5 bg-cyan-500" />
+                      <span className="text-[10px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
+                        {language === 'nl' ? 'LIVE' : 'LIVE'}
+                      </span>
+                    </div>
+                    <div className="inline-block px-4 py-1.5 rounded-lg bg-green-100 dark:bg-green-900/40 mb-1.5">
+                      <span className="text-base font-bold text-green-600 dark:text-green-400">
+                        {language === 'nl' ? 'Flow' : 'Flow'}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center gap-1">
+                      <span className="text-lg font-bold text-green-500">↑</span>
+                      <span className="text-xs font-semibold text-green-600 dark:text-green-400">+0.3</span>
+                    </div>
+                  </div>
+
+                  {/* Compact key insights - 2 cards only */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-white/80 dark:bg-stone-900/50 rounded-lg border border-cyan-200/50 dark:border-cyan-800/50 px-2 py-1.5 text-center">
+                      <div className="text-lg text-green-500 mb-0.5">↗</div>
+                      <div className="text-[9px] font-semibold text-stone-600 dark:text-stone-400">
+                        {language === 'nl' ? '7d stijgend' : '7d rising'}
+                      </div>
+                    </div>
+                    <div className="bg-white/80 dark:bg-stone-900/50 rounded-lg border border-cyan-200/50 dark:border-cyan-800/50 px-2 py-1.5 text-center">
+                      <div className="text-lg mb-0.5">⚡</div>
+                      <div className="text-[9px] font-semibold text-stone-600 dark:text-stone-400">
+                        {language === 'nl' ? 'Inzichten' : 'Insights'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
     )
