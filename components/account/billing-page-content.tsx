@@ -7,7 +7,7 @@ import { useTranslation } from '@/lib/i18n/context'
 import { Button } from '@/components/ui/button'
 import { TierCard } from './tier-card'
 import { getAccountBillingInfo, changeSubscriptionTier, cancelAccountSubscription, type AccountBillingInfo } from '@/domain/billing/actions'
-import { TIER_ORDER, isPaidTier, type SubscriptionTier } from '@/domain/billing/tiers'
+import { TIER_ORDER, TIERS, isPaidTier, type SubscriptionTier } from '@/domain/billing/tiers'
 
 interface BillingPageContentProps {
   billingInfo: AccountBillingInfo | null
@@ -20,7 +20,12 @@ export function BillingPageContent({ billingInfo: initialBillingInfo }: BillingP
   const searchParams = useSearchParams()
   const [billingInfo, setBillingInfo] = useState(initialBillingInfo)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const [downgradeTarget, setDowngradeTarget] = useState<SubscriptionTier | null>(null)
+  const [upgradeTarget, setUpgradeTarget] = useState<SubscriptionTier | null>(null)
+  const [termsAccepted, setTermsAccepted] = useState(false)
   const prevStatusRef = useRef(billingInfo?.billingStatus)
+  const currentTier = billingInfo?.tier || 'free'
+  const currentTierIdx = TIER_ORDER.indexOf(currentTier)
 
   // Detect post-checkout return via URL param
   const statusParam = searchParams.get('status')
@@ -71,13 +76,28 @@ export function BillingPageContent({ billingInfo: initialBillingInfo }: BillingP
     }
   }, [billingInfo?.billingStatus, paymentState, fetchBilling])
 
-  const handleSelectTier = async (tier: SubscriptionTier) => {
-    setActionLoading(tier)
+  const handleSelectTier = (selectedTier: SubscriptionTier) => {
+    const selectedIdx = TIER_ORDER.indexOf(selectedTier)
+    if (selectedIdx < currentTierIdx) {
+      setDowngradeTarget(selectedTier)
+      return
+    }
+    // Show upgrade confirmation with terms checkbox
+    setTermsAccepted(false)
+    setUpgradeTarget(selectedTier)
+  }
+
+  const handleConfirmUpgrade = async () => {
+    if (!upgradeTarget || !termsAccepted) return
+    const selectedTier = upgradeTarget
+    setUpgradeTarget(null)
+
+    setActionLoading(selectedTier)
     try {
-      const result = await changeSubscriptionTier(tier, returnUrl)
+      const result = await changeSubscriptionTier(selectedTier, returnUrl)
       if (result.success && result.checkoutUrl) {
         window.location.assign(result.checkoutUrl)
-        return // Don't clear loading — we're navigating away
+        return
       }
       if (result.error) {
         alert(result.error)
@@ -90,14 +110,40 @@ export function BillingPageContent({ billingInfo: initialBillingInfo }: BillingP
     setActionLoading(null)
   }
 
-  const handleCancel = async () => {
-    if (!confirm(t('billingCancelConfirm'))) return
-    setActionLoading('cancel')
-    const result = await cancelAccountSubscription()
-    if (result.success) {
-      await fetchBilling()
+  const handleCancel = () => {
+    setDowngradeTarget('free')
+  }
+
+  const handleConfirmDowngrade = async () => {
+    if (!downgradeTarget) return
+    const targetTier = downgradeTarget
+    setDowngradeTarget(null)
+
+    if (targetTier === 'free') {
+      setActionLoading('cancel')
+      const result = await cancelAccountSubscription()
+      if (result.success) {
+        await fetchBilling()
+      }
+      setActionLoading(null)
+    } else {
+      setActionLoading(targetTier)
+      try {
+        const result = await changeSubscriptionTier(targetTier, returnUrl)
+        if (result.success && result.checkoutUrl) {
+          window.location.assign(result.checkoutUrl)
+          return
+        }
+        if (result.error) {
+          alert(result.error)
+        }
+        await fetchBilling()
+      } catch (e) {
+        console.error('Downgrade failed:', e)
+        alert('Something went wrong. Please try again.')
+      }
+      setActionLoading(null)
     }
-    setActionLoading(null)
   }
 
   if (!billingInfo) {
@@ -110,7 +156,6 @@ export function BillingPageContent({ billingInfo: initialBillingInfo }: BillingP
   }
 
   const { tier, billingStatus, billingPeriodEnd, teamCount, maxTeams, recentPayments } = billingInfo
-  const currentTierIdx = TIER_ORDER.indexOf(tier)
   const isFree = tier === 'free'
 
   return (
@@ -277,7 +322,8 @@ export function BillingPageContent({ billingInfo: initialBillingInfo }: BillingP
       {/* Tier Comparison */}
       <div>
         <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-2">{t('tierCompareTitle')}</h2>
-        <p className="text-sm text-stone-500 dark:text-stone-400 mb-6">{t('tierCompareDesc')}</p>
+        <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">{t('tierCompareDesc')}</p>
+        <p className="text-xs text-stone-400 dark:text-stone-500 italic mb-6">{t('tierCompareDisclaimer')}</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {TIER_ORDER.map((tierKey, idx) => (
             <TierCard
@@ -287,7 +333,7 @@ export function BillingPageContent({ billingInfo: initialBillingInfo }: BillingP
               isDowngrade={idx < currentTierIdx}
               loading={actionLoading === tierKey}
               onSelect={handleSelectTier}
-              recommended={tierKey === 'scrum_master'}
+              recommended={isFree && tierKey === 'scrum_master'}
             />
           ))}
         </div>
@@ -306,6 +352,21 @@ export function BillingPageContent({ billingInfo: initialBillingInfo }: BillingP
             {t('tierEnterpriseContact')}
           </Link>
         </div>
+      </div>
+
+      {/* Philosophy */}
+      <div className="border-l-2 border-stone-300 dark:border-stone-600 pl-5 py-1">
+        <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-3">{t('billingPhilosophyTitle')}</p>
+        <ul className="space-y-2">
+          {[t('billingPhilosophy1'), t('billingPhilosophy2'), t('billingPhilosophy3'), t('billingPhilosophy4')].map((line) => (
+            <li key={line} className="flex items-start gap-2.5">
+              <svg className="w-3.5 h-3.5 text-green-500 dark:text-green-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">{line}</span>
+            </li>
+          ))}
+        </ul>
       </div>
 
       {/* What's included in Pro? */}
@@ -467,6 +528,195 @@ export function BillingPageContent({ billingInfo: initialBillingInfo }: BillingP
           </div>
         </div>
       )}
+
+      {/* Downgrade Confirmation Modal */}
+      {downgradeTarget && (() => {
+        const toFree = downgradeTarget === 'free'
+        const targetName = toFree ? t('tierFree')
+          : downgradeTarget === 'scrum_master' ? t('tierScrumMaster')
+          : downgradeTarget === 'agile_coach' ? t('tierAgileCoach')
+          : t('tierTransitionCoach')
+        const targetTeams = TIERS[downgradeTarget].maxTeams
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
+              onClick={() => setDowngradeTarget(null)}
+            />
+
+            {/* Modal */}
+            <div className="relative bg-white dark:bg-stone-800 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-700 w-full max-w-md p-6 space-y-5">
+              {/* Header */}
+              <div>
+                <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-3">
+                  <svg className="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold text-stone-900 dark:text-stone-100">
+                  {toFree ? t('downgradeToFreeTitle') : t('downgradeTierTitle')}
+                </h3>
+                <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+                  {toFree ? t('downgradeToFreeDesc') : t('downgradeTierDesc').replace('{tier}', targetName)}
+                </p>
+              </div>
+
+              {/* What changes */}
+              <div className="bg-stone-50 dark:bg-stone-900/50 rounded-xl p-4 space-y-3">
+                <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">{t('downgradeWhatChanges')}</p>
+                <ul className="space-y-2">
+                  {toFree ? (
+                    <>
+                      <li className="flex items-start gap-2 text-sm text-stone-600 dark:text-stone-300">
+                        <svg className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                        {t('downgradeTeamsTo').replace('{n}', '1')}
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-stone-600 dark:text-stone-300">
+                        <svg className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                        {t('downgradeLoseAngles')}
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-stone-600 dark:text-stone-300">
+                        <svg className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                        {t('downgradeLoseCoach')}
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-stone-600 dark:text-stone-300">
+                        <svg className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                        {t('downgradeHaRiReset')}
+                      </li>
+                    </>
+                  ) : (
+                    <>
+                      <li className="flex items-start gap-2 text-sm text-stone-600 dark:text-stone-300">
+                        <svg className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                        {t('downgradeTeamsTo').replace('{n}', String(targetTeams))}
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-stone-600 dark:text-stone-300">
+                        <svg className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                        {t('downgradeCoachChange')}
+                      </li>
+                    </>
+                  )}
+                </ul>
+              </div>
+
+              {/* No lock-in message */}
+              <div className="flex items-start gap-2.5 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
+                <svg className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <p className="text-sm text-green-700 dark:text-green-300">
+                  {billingPeriodEnd
+                    ? t('downgradeKeepAccess').replace('{date}', new Date(billingPeriodEnd).toLocaleDateString('nl-NL'))
+                    : t('downgradeImmediate')}
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-1">
+                <button
+                  onClick={() => setDowngradeTarget(null)}
+                  className="flex-1 px-4 py-2.5 text-sm font-medium rounded-lg border border-stone-200 dark:border-stone-600 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
+                >
+                  {t('downgradeCancel')}
+                </button>
+                <Button
+                  onClick={handleConfirmDowngrade}
+                  loading={actionLoading === downgradeTarget || actionLoading === 'cancel'}
+                  variant="danger"
+                  size="sm"
+                  className="flex-1"
+                >
+                  {toFree ? t('downgradeConfirmFree') : t('downgradeConfirmTier')}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* Upgrade Confirmation Modal (terms acceptance) */}
+      {upgradeTarget && (() => {
+        const targetName = upgradeTarget === 'scrum_master' ? t('tierScrumMaster')
+          : upgradeTarget === 'agile_coach' ? t('tierAgileCoach')
+          : t('tierTransitionCoach')
+        const price = TIERS[upgradeTarget].price
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div
+              className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
+              onClick={() => setUpgradeTarget(null)}
+            />
+            <div className="relative bg-white dark:bg-stone-800 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-700 w-full max-w-md p-6 space-y-5">
+              <div>
+                <div className="w-10 h-10 rounded-full bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center mb-3">
+                  <svg className="w-5 h-5 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold text-stone-900 dark:text-stone-100">
+                  {t('upgradeConfirmTitle').replace('{tier}', targetName)}
+                </h3>
+                <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+                  {t('upgradeConfirmDesc').replace('{price}', price)}
+                </p>
+              </div>
+
+              {/* Terms checkbox */}
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-cyan-600 focus:ring-cyan-500"
+                />
+                <span className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed">
+                  {t('upgradeTermsAgree')}{' '}
+                  <Link href="/terms" target="_blank" className="underline text-cyan-600 dark:text-cyan-400 hover:text-cyan-500">
+                    {t('footerTerms').toLowerCase()}
+                  </Link>
+                  {' '}{t('upgradeTermsAnd')}{' '}
+                  <Link href="/privacy" target="_blank" className="underline text-cyan-600 dark:text-cyan-400 hover:text-cyan-500">
+                    {t('footerPrivacy').toLowerCase()}
+                  </Link>
+                </span>
+              </label>
+
+              <div className="flex gap-3 pt-1">
+                <button
+                  onClick={() => setUpgradeTarget(null)}
+                  className="flex-1 px-4 py-2.5 text-sm font-medium rounded-lg border border-stone-200 dark:border-stone-600 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
+                >
+                  {t('downgradeCancel')}
+                </button>
+                <Button
+                  onClick={handleConfirmUpgrade}
+                  loading={actionLoading === upgradeTarget}
+                  disabled={!termsAccepted}
+                  size="sm"
+                  className="flex-1"
+                >
+                  {t('upgradeConfirmButton')}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
     </div>
   )
 }

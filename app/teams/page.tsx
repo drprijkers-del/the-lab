@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { AdminHeader } from '@/components/admin/header'
 import { TeamsPageContent } from '@/components/teams/teams-page-content'
 import { getSubscriptionTier } from '@/domain/coach/actions'
+import { ensurePlanSync } from '@/domain/billing/actions'
 
 export interface TeamOwner {
   id: string
@@ -12,6 +13,9 @@ export interface TeamOwner {
 
 export default async function TeamsPage() {
   const admin = await requireAdmin()
+
+  // Ensure team plans match subscription tier (auto-heals webhook misses)
+  await ensurePlanSync()
 
   const [teams, subscriptionTier] = await Promise.all([
     getTeamsUnified(),

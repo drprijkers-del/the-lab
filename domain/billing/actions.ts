@@ -396,6 +396,37 @@ export async function syncTeamPlans(adminUserId: string, tier: SubscriptionTier,
   return syncTeamPlansInternal(adminUserId, tier, billingStatus)
 }
 
+// --- Ensure plan sync on page load (lightweight check) ---
+
+export async function ensurePlanSync(): Promise<void> {
+  const adminUser = await requireAdmin()
+  const supabase = await createAdminClient()
+
+  const { data } = await supabase
+    .from('admin_users')
+    .select('subscription_tier, billing_status')
+    .eq('id', adminUser.id)
+    .single()
+
+  if (!data) return
+
+  const tier = (data.subscription_tier || 'free') as SubscriptionTier
+  const billingStatus = (data.billing_status || 'none') as string
+  const expectedPlan = isPaidTier(tier) && (billingStatus === 'active' || billingStatus === 'cancelled') ? 'pro' : 'free'
+
+  // Check if any owned team has a mismatched plan
+  const { data: mismatchedTeams } = await supabase
+    .from('teams')
+    .select('id')
+    .eq('owner_id', adminUser.id)
+    .neq('plan', expectedPlan)
+    .limit(1)
+
+  if (mismatchedTeams && mismatchedTeams.length > 0) {
+    await syncTeamPlansInternal(adminUser.id, tier, billingStatus)
+  }
+}
+
 // --- Legacy: per-team subscription (kept for backward compat during transition) ---
 
 export async function startSubscription(teamId: string): Promise<{

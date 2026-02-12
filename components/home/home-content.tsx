@@ -600,7 +600,12 @@ export function HomeContent() {
       </main>
 
       {/* Footer */}
-      <footer className="pt-6 pb-12 text-center relative z-10">
+      <footer className="pt-6 pb-12 text-center relative z-10 space-y-3">
+        <div className="flex justify-center gap-4 text-xs">
+          <Link href="/terms" className="text-stone-500 hover:text-stone-300 transition-colors">{t('footerTerms')}</Link>
+          <Link href="/privacy" className="text-stone-500 hover:text-stone-300 transition-colors">{t('footerPrivacy')}</Link>
+          <Link href="/cookies" className="text-stone-500 hover:text-stone-300 transition-colors">{t('footerCookies')}</Link>
+        </div>
         <p className="text-xs text-stone-500">
           <a
             href="https://pinkpollos.nl"

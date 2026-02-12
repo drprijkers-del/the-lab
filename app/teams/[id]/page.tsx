@@ -8,6 +8,7 @@ import { AdminHeader } from '@/components/admin/header'
 import { TeamDetailContent } from '@/components/teams/team-detail-content'
 import { getLanguage } from '@/lib/i18n/server'
 import { getSubscriptionTier } from '@/domain/coach/actions'
+import { ensurePlanSync } from '@/domain/billing/actions'
 
 interface TeamPageProps {
   params: Promise<{ id: string }>
@@ -17,6 +18,8 @@ export default async function TeamPage({ params }: TeamPageProps) {
   const admin = await requireAdmin()
   const { id } = await params
   const language = await getLanguage()
+  // Ensure team plans match subscription tier (auto-heals webhook misses)
+  await ensurePlanSync()
   // First fetch team to determine plan, then fetch metrics with correct trend window
   const [teamData, allTeams] = await Promise.all([
     getTeamUnified(id),
