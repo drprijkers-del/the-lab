@@ -37,8 +37,8 @@ test.describe('Homepage', () => {
 
   test('language toggle switches to English', async ({ page }) => {
     await page.goto('/')
-    // Find and click the language toggle
-    const toggle = page.locator('button:has-text("EN"), button:has-text("NL")')
+    // Find and click the language toggle in the header
+    const toggle = page.locator('header button:has-text("EN"), header button:has-text("NL")')
     if (await toggle.isVisible()) {
       await toggle.click()
       // After toggle, page should have English or Dutch content

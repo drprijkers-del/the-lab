@@ -55,14 +55,6 @@ export function FeedbackTool({ teamId, teamName }: FeedbackToolProps) {
     setFeedbackLoading(false)
   }
 
-  // Load share link and feedback on mount
-  /* eslint-disable react-hooks/set-state-in-effect -- async data fetch, setState in callback */
-  useEffect(() => {
-    loadFeedback()
-    handleGetShareLink() // Auto-fetch/create link on mount
-  }, [teamId])
-  /* eslint-enable react-hooks/set-state-in-effect */
-
   const handleGetShareLink = async () => {
     setShareLoading(true)
     try {
@@ -75,6 +67,14 @@ export function FeedbackTool({ teamId, teamName }: FeedbackToolProps) {
     }
     setShareLoading(false)
   }
+
+  // Load share link and feedback on mount
+  /* eslint-disable react-hooks/set-state-in-effect -- async data fetch, setState in callback */
+  useEffect(() => {
+    loadFeedback()
+    handleGetShareLink() // Auto-fetch/create link on mount
+  }, [teamId])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleDeactivateLink = async () => {
     if (!confirm(t('feedbackDeactivateConfirm'))) return

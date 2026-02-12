@@ -112,7 +112,7 @@ export function VibeSection({
                 </div>
                 <div className="min-w-0">
                   <div className="font-medium text-stone-900 dark:text-stone-100">Team check-in link</div>
-                  <div className="text-xs text-stone-500 dark:text-stone-400">Preview what your team will see, then share via Slack or email — they can't reshare from within the page</div>
+                  <div className="text-xs text-stone-500 dark:text-stone-400">Preview what your team will see, then share via Slack or email — they can&apos;t reshare from within the page</div>
                 </div>
               </div>
               <div className="flex items-center gap-1.5 shrink-0 ml-3">
