@@ -31,20 +31,11 @@ export const metadata: Metadata = {
     siteName: 'Pulse Labs',
     title: 'Pulse Labs — Team Health Tools for Agile Coaches',
     description: 'Simple daily check-ins. Real-time team insights. Vibe Check, Way of Work, Feedback & Coach Preparation for scrum masters, agile coaches and team leads.',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'Pulse Labs — Team Health Tools',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Pulse Labs — Team Health Tools',
     description: 'Vibe Check, Way of Work, Team Feedback & AI Coach Preparation for agile teams.',
-    images: ['/og-image.png'],
   },
   robots: {
     index: true,
@@ -63,7 +54,7 @@ export const metadata: Metadata = {
     'daily check-in', 'team insights', 'agile tools', 'shu ha ri',
   ],
   verification: {
-    google: 'GOOGLE_SEARCH_CONSOLE_VERIFICATION_CODE',
+    google: '4silc--5zyxhws3nX_4xB4aywoS_mjhCE0kJ5ynmU4w',
   },
 };
 

@@ -65,7 +65,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
     if (urlTab && validSections.includes(urlTab as SectionType)) {
       return urlTab as SectionType
     }
-    return null
+    return 'vibe'
   }
 
   const [activeTab, setActiveTab] = useState<TabType>(getInitialTab)
