@@ -110,7 +110,7 @@ export async function generateCoachPreparation(teamId: string, preferredLanguage
   const tier = await getSubscriptionTier()
   const coachMode = TIERS[tier].coachMode
 
-  if (coachMode !== 'ai' && coachMode !== 'ai_cross_team') {
+  if (coachMode !== 'ai') {
     throw new Error('AI Coach requires Agile Coach or higher tier')
   }
 

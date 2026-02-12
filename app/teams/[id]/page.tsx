@@ -8,7 +8,9 @@ import { AdminHeader } from '@/components/admin/header'
 import { TeamDetailContent } from '@/components/teams/team-detail-content'
 import { getLanguage } from '@/lib/i18n/server'
 import { getSubscriptionTier } from '@/domain/coach/actions'
+import { getCrossTeamInsights } from '@/domain/coach/cross-team'
 import { ensurePlanSync } from '@/domain/billing/actions'
+import { getFeaturesForTier } from '@/domain/billing/tiers'
 
 interface TeamPageProps {
   params: Promise<{ id: string }>
@@ -20,26 +22,30 @@ export default async function TeamPage({ params }: TeamPageProps) {
   const language = await getLanguage()
   // Ensure team plans match subscription tier (auto-heals webhook misses)
   await ensurePlanSync()
-  // First fetch team to determine plan, then fetch metrics with correct trend window
-  const [teamData, allTeams] = await Promise.all([
+
+  // First batch: team data + subscription tier (needed for trendDays computation)
+  const [teamData, allTeams, subscriptionTier] = await Promise.all([
     getTeamUnified(id),
     getTeamsUnified(),
+    getSubscriptionTier(),
   ])
 
   if (!teamData) {
     notFound()
   }
 
-  // Pro teams get 60 days of trend data (30 + 30 previous), free gets 14 (7 + 7)
-  const trendDays = teamData.plan === 'pro' ? 60 : 14
+  const features = getFeaturesForTier(subscriptionTier)
+  // Trend window: features.trendDays (7 or 30) × 2 for current + previous period
+  const trendDays = features.trendDays * 2
 
-  const [team, vibeMetrics, vibeInsights, wowSessions, wowStats, subscriptionTier] = await Promise.all([
+  // Second batch: metrics, sessions, and conditional cross-team data
+  const [team, vibeMetrics, vibeInsights, wowSessions, wowStats, crossTeamData] = await Promise.all([
     Promise.resolve(teamData),
     getTeamMetrics(id, trendDays),
     getTeamInsights(id, language),
     getTeamSessions(id),
     getPublicWowStats(id),
-    getSubscriptionTier(),
+    features.crossTeam ? getCrossTeamInsights(language) : Promise.resolve(null),
   ])
 
   // Prepare team list for header selector
@@ -56,7 +62,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
         subscriptionTier={subscriptionTier}
       />
       <main className="max-w-6xl mx-auto px-4 pt-6 pb-24">
-        <TeamDetailContent team={team} vibeMetrics={vibeMetrics} vibeInsights={vibeInsights} wowSessions={wowSessions} wowStats={wowStats} subscriptionTier={subscriptionTier} />
+        <TeamDetailContent team={team} vibeMetrics={vibeMetrics} vibeInsights={vibeInsights} wowSessions={wowSessions} wowStats={wowStats} subscriptionTier={subscriptionTier} crossTeamData={crossTeamData} />
       </main>
     </>
   )

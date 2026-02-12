@@ -15,6 +15,8 @@ import type { TeamMetrics, VibeInsight } from '@/domain/metrics/types'
 import type { WowSessionWithStats, WowLevel } from '@/domain/wow/types'
 import type { PublicWowStats } from '@/domain/metrics/public-actions'
 import type { SubscriptionTier } from '@/domain/billing/tiers'
+import { getFeaturesForTier } from '@/domain/billing/tiers'
+import type { CrossTeamInsights } from '@/domain/coach/cross-team'
 
 interface TeamDetailContentProps {
   team: UnifiedTeam
@@ -23,6 +25,7 @@ interface TeamDetailContentProps {
   wowSessions?: WowSessionWithStats[]
   wowStats?: PublicWowStats | null
   subscriptionTier?: SubscriptionTier
+  crossTeamData?: CrossTeamInsights | null
 }
 
 type TabType = 'home' | 'vibe' | 'wow' | 'feedback' | 'coach' | 'settings'
@@ -46,10 +49,11 @@ const ANGLE_LABELS: Record<string, string> = {
   leadership: 'Leadership',
 }
 
-export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSessions = [], wowStats, subscriptionTier = 'free' }: TeamDetailContentProps) {
+export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSessions = [], wowStats, subscriptionTier = 'free', crossTeamData }: TeamDetailContentProps) {
   const t = useTranslation()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const tierFeatures = getFeaturesForTier(subscriptionTier)
 
   // Determine if settings view should be shown
   const getInitialTab = (): TabType => {
@@ -63,6 +67,8 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
     const urlTab = searchParams.get('tab') as string | null
     const validSections: SectionType[] = ['vibe', 'wow', 'feedback', 'coach']
     if (urlTab && validSections.includes(urlTab as SectionType)) {
+      // If coach tab requested but not available, fall back to vibe
+      if (urlTab === 'coach' && !tierFeatures.coach) return 'vibe'
       return urlTab as SectionType
     }
     return 'vibe'
@@ -112,8 +118,10 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
       setActiveTab('settings')
       setOpenSection(null)
     } else if (urlTab && validSections.includes(urlTab as SectionType)) {
+      // If coach tab requested but not available, fall back to vibe
+      const section = (urlTab === 'coach' && !tierFeatures.coach) ? 'vibe' : urlTab as SectionType
       setActiveTab('home')
-      setOpenSection(urlTab as SectionType)
+      setOpenSection(section)
     } else {
       setActiveTab('home')
       if (!urlTab) setOpenSection('vibe')
@@ -454,50 +462,56 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
               </div>
             )}
 
-            {/* Coach */}
-            <button
-              onClick={() => toggleSection('coach')}
-              className={`bg-white dark:bg-stone-800 rounded-xl border p-2.5 text-left transition-all cursor-pointer touch-manipulation ${
-                openSection === 'coach'
-                  ? 'border-emerald-400 dark:border-emerald-600 shadow-md ring-1 ring-emerald-200 dark:ring-emerald-800 sticky top-14 z-10'
-                  : 'border-stone-200 dark:border-stone-700'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center shrink-0">
-                  <svg className="w-4.5 h-4.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">{t('coachQuestionsTab')}</h3>
-                  <p className="text-[11px] text-stone-500 dark:text-stone-400">{t('coachCardDesc')}</p>
-                </div>
-                <svg className={`w-4 h-4 shrink-0 transition-transform ${
-                  openSection === 'coach' ? 'text-emerald-500 rotate-90' : 'text-stone-300 dark:text-stone-600'
-                }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </button>
-            {openSection === 'coach' && (
-              <div className="pt-3 pb-4">
-                <CoachSection
-                  teamId={team.id}
-                  teamName={team.name}
-                  teamPlan={team.plan}
-                  subscriptionTier={subscriptionTier}
-                  vibeAverageScore={team.vibe?.average_score || null}
-                  vibeParticipation={(() => {
-                    const effectiveSize = team.expected_team_size || team.vibe?.participant_count || 1
-                    const todayCount = team.vibe?.today_entries || 0
-                    return effectiveSize > 0 ? Math.round((todayCount / effectiveSize) * 100) : 0
-                  })()}
-                  wowSessions={wowSessions}
-                  onNavigateToVibe={() => toggleSection('vibe')}
-                  onNavigateToWow={() => toggleSection('wow')}
-                />
-              </div>
+            {/* Coach — hidden for free tier */}
+            {tierFeatures.coach && (
+              <>
+                <button
+                  onClick={() => toggleSection('coach')}
+                  className={`bg-white dark:bg-stone-800 rounded-xl border p-2.5 text-left transition-all cursor-pointer touch-manipulation ${
+                    openSection === 'coach'
+                      ? 'border-emerald-400 dark:border-emerald-600 shadow-md ring-1 ring-emerald-200 dark:ring-emerald-800 sticky top-14 z-10'
+                      : 'border-stone-200 dark:border-stone-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center shrink-0">
+                      <svg className="w-4.5 h-4.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">{t('coachQuestionsTab')}</h3>
+                      <p className="text-[11px] text-stone-500 dark:text-stone-400">{t('coachCardDesc')}</p>
+                    </div>
+                    <svg className={`w-4 h-4 shrink-0 transition-transform ${
+                      openSection === 'coach' ? 'text-emerald-500 rotate-90' : 'text-stone-300 dark:text-stone-600'
+                    }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </button>
+                {openSection === 'coach' && (
+                  <div className="pt-3 pb-4">
+                    <CoachSection
+                      teamId={team.id}
+                      teamName={team.name}
+                      teamPlan={team.plan}
+                      subscriptionTier={subscriptionTier}
+                      vibeAverageScore={team.vibe?.average_score || null}
+                      vibeParticipation={(() => {
+                        const effectiveSize = team.expected_team_size || team.vibe?.participant_count || 1
+                        const todayCount = team.vibe?.today_entries || 0
+                        return effectiveSize > 0 ? Math.round((todayCount / effectiveSize) * 100) : 0
+                      })()}
+                      wowSessions={wowSessions}
+                      onNavigateToVibe={() => toggleSection('vibe')}
+                      onNavigateToWow={() => toggleSection('wow')}
+                      crossTeamEnabled={tierFeatures.crossTeam}
+                      crossTeamData={crossTeamData}
+                    />
+                  </div>
+                )}
+              </>
             )}
 
             {/* Share Results */}
@@ -680,45 +694,47 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
               </div>
             </button>
 
-            {/* Preparation / Coach */}
-            <button
-              onClick={() => toggleSection('coach')}
-              className={`relative bg-white dark:bg-stone-800 rounded-xl border p-2.5 sm:p-3 text-left hover:shadow-md transition-all group cursor-pointer touch-manipulation ${
-                openSection === 'coach'
-                  ? 'border-emerald-400 dark:border-emerald-600 shadow-md ring-1 ring-emerald-200 dark:ring-emerald-800'
-                  : 'border-stone-200 dark:border-stone-700 hover:border-emerald-300 dark:hover:border-emerald-700'
-              }`}
-            >
-              {openSection === 'coach' && (
-                <div className="hidden sm:block absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-8 border-t-emerald-400 dark:border-t-emerald-600" />
-              )}
-              <div className="flex items-center gap-3 sm:flex-col sm:items-start sm:gap-0">
-                <div className="flex items-center justify-between sm:w-full sm:mb-2">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
-                    <svg className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            {/* Preparation / Coach — hidden for free tier */}
+            {tierFeatures.coach && (
+              <button
+                onClick={() => toggleSection('coach')}
+                className={`relative bg-white dark:bg-stone-800 rounded-xl border p-2.5 sm:p-3 text-left hover:shadow-md transition-all group cursor-pointer touch-manipulation ${
+                  openSection === 'coach'
+                    ? 'border-emerald-400 dark:border-emerald-600 shadow-md ring-1 ring-emerald-200 dark:ring-emerald-800'
+                    : 'border-stone-200 dark:border-stone-700 hover:border-emerald-300 dark:hover:border-emerald-700'
+                }`}
+              >
+                {openSection === 'coach' && (
+                  <div className="hidden sm:block absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-8 border-t-emerald-400 dark:border-t-emerald-600" />
+                )}
+                <div className="flex items-center gap-3 sm:flex-col sm:items-start sm:gap-0">
+                  <div className="flex items-center justify-between sm:w-full sm:mb-2">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                      <svg className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                    </div>
+                    <svg className={`hidden sm:block w-4 h-4 transition-all mt-1 ${
+                      openSection === 'coach'
+                        ? 'text-emerald-500 rotate-90'
+                        : 'text-stone-300 dark:text-stone-600 group-hover:text-emerald-500 group-hover:translate-x-0.5'
+                    }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
-                  <svg className={`hidden sm:block w-4 h-4 transition-all mt-1 ${
-                    openSection === 'coach'
-                      ? 'text-emerald-500 rotate-90'
-                      : 'text-stone-300 dark:text-stone-600 group-hover:text-emerald-500 group-hover:translate-x-0.5'
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">{t('coachQuestionsTab')}</h3>
+                    <p className="text-[11px] text-stone-500 dark:text-stone-400 mt-0.5 leading-snug sm:block hidden">{t('coachCardDesc')}</p>
+                    <p className="text-[11px] text-stone-500 dark:text-stone-400 sm:hidden">{t('coachCardDesc')}</p>
+                  </div>
+                  <svg className={`sm:hidden w-4 h-4 shrink-0 transition-transform ${
+                    openSection === 'coach' ? 'text-emerald-500 rotate-90' : 'text-stone-300 dark:text-stone-600'
                   }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">{t('coachQuestionsTab')}</h3>
-                  <p className="text-[11px] text-stone-500 dark:text-stone-400 mt-0.5 leading-snug sm:block hidden">{t('coachCardDesc')}</p>
-                  <p className="text-[11px] text-stone-500 dark:text-stone-400 sm:hidden">{t('coachCardDesc')}</p>
-                </div>
-                <svg className={`sm:hidden w-4 h-4 shrink-0 transition-transform ${
-                  openSection === 'coach' ? 'text-emerald-500 rotate-90' : 'text-stone-300 dark:text-stone-600'
-                }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </button>
+              </button>
+            )}
 
             {/* Share Results — opens external page */}
             <div
@@ -846,7 +862,7 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
               {openSection === 'feedback' && (
                 <FeedbackSection teamId={team.id} teamName={team.name} />
               )}
-              {openSection === 'coach' && (
+              {openSection === 'coach' && tierFeatures.coach && (
                 <CoachSection
                   teamId={team.id}
                   teamName={team.name}
@@ -861,6 +877,8 @@ export function TeamDetailContent({ team, vibeMetrics, vibeInsights = [], wowSes
                   wowSessions={wowSessions}
                   onNavigateToVibe={() => toggleSection('vibe')}
                   onNavigateToWow={() => toggleSection('wow')}
+                  crossTeamEnabled={tierFeatures.crossTeam}
+                  crossTeamData={crossTeamData}
                 />
               )}
             </div>

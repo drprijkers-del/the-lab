@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useLanguage } from '@/lib/i18n/context'
 import { ProGate } from '@/components/teams/pro-gate'
 import type { WowSessionWithStats } from '@/domain/wow/types'
 import type { SubscriptionTier } from '@/domain/billing/tiers'
 import { TIERS } from '@/domain/billing/tiers'
 import { generateCoachPreparation, generateRuleBasedPreparation, type CoachPreparation } from '@/domain/coach/actions'
+import type { CrossTeamInsights } from '@/domain/coach/cross-team'
 
 interface CoachSectionProps {
   teamId: string
@@ -18,6 +20,8 @@ interface CoachSectionProps {
   wowSessions: WowSessionWithStats[]
   onNavigateToVibe?: () => void
   onNavigateToWow?: () => void
+  crossTeamEnabled: boolean
+  crossTeamData?: CrossTeamInsights | null
 }
 
 export function CoachSection({
@@ -28,6 +32,8 @@ export function CoachSection({
   wowSessions,
   onNavigateToVibe,
   onNavigateToWow,
+  crossTeamEnabled,
+  crossTeamData,
 }: CoachSectionProps) {
   const { language, t } = useLanguage()
 
@@ -224,6 +230,46 @@ export function CoachSection({
                   </p>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* 5. Cross-Team Patterns — enabled */}
+          {crossTeamEnabled && crossTeamData && crossTeamData.insights.length > 0 && (
+            <div className="rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 p-3 sm:p-4 space-y-3">
+              <h3 className="text-sm font-semibold text-indigo-800 dark:text-indigo-200">
+                {t('coachCrossTeamTitle')}
+              </h3>
+              <ul className="space-y-2">
+                {crossTeamData.insights.map((insight, i) => (
+                  <li key={i} className="flex items-start gap-2.5">
+                    <span className="mt-1 w-2 h-2 rounded-full shrink-0 bg-indigo-400" />
+                    <span className="text-sm text-stone-700 dark:text-stone-300 leading-relaxed">{insight}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Cross-team locked card — SM tier only */}
+          {!crossTeamEnabled && (
+            <div className="rounded-xl border-2 border-dashed border-stone-200 dark:border-stone-700 p-4 sm:p-6 text-center space-y-3">
+              <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center mx-auto">
+                <svg className="w-5 h-5 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h3 className="font-medium text-stone-700 dark:text-stone-300 text-sm">
+                {t('coachCrossTeamLockedTitle')}
+              </h3>
+              <p className="text-xs text-stone-500 dark:text-stone-400 max-w-sm mx-auto">
+                {t('coachCrossTeamLockedDesc')}
+              </p>
+              <Link
+                href="/account/billing"
+                className="inline-block text-xs font-medium px-4 py-2 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-colors"
+              >
+                {t('coachCrossTeamUpgrade')}
+              </Link>
             </div>
           )}
         </div>
