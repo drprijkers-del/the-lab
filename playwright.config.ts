@@ -13,6 +13,9 @@ if (fs.existsSync(envPath)) {
   }
 }
 
+const testPort = process.env.TEST_PORT || '3000'
+const testBaseUrl = process.env.TEST_BASE_URL || `http://localhost:${testPort}`
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
@@ -21,7 +24,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: process.env.TEST_BASE_URL || 'http://localhost:3000',
+    baseURL: testBaseUrl,
     ignoreHTTPSErrors: !!process.env.TEST_BASE_URL,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
@@ -52,9 +55,9 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
+    command: `npx next dev --port ${testPort}`,
+    url: testBaseUrl,
     reuseExistingServer: true,
-    timeout: 30000,
+    timeout: 60000,
   },
 })
